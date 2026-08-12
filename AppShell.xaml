@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="WashTrack.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:WashTrack.MVVM.Views"
+    >
+
+    <!-- <ShellContent
+    Title="Dashboard"
+    ContentTemplate="{DataTemplate views:DashboardPage}"
+    Route="DashboardPage" /> -->
+
+
+    <ShellContent
+        Title="Services"
+        ContentTemplate="{DataTemplate views:ServicesPage}"
+        Route="ServicesPage" />
+
+    <ShellContent
+        Title="Transactions"
+        ContentTemplate="{DataTemplate views:TransactionsPage}"
+        Route="TransactionsPage" />
+
+    
+    <ShellContent
+        Title="Customers"
+        ContentTemplate="{DataTemplate views:CustomersPage}"
+        Route="CustomersPage" />
+    
+   <!--
+    <ShellContent
+        Title="Inventory"
+        ContentTemplate="{DataTemplate views:InventoryPage}"
+        Route="InventoryPage" />
+
+    <ShellContent
+        Title="Reports"
+        ContentTemplate="{DataTemplate views:ReportsPage}"
+        Route="ReportsPage" />
+    
+    -->
+
+</Shell>

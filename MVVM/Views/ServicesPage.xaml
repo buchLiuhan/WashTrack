@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:WashTrack.MVVM.ViewModels"
+             xmlns:models="clr-namespace:WashTrack.Models"
+             x:Class="WashTrack.MVVM.Views.ServicesPage"
+             x:DataType="vm:ServicesViewModel"
+             Title="Services &amp; Pricing">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="+ Add"
+                     Command="{Binding AddServiceCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <Grid RowDefinitions="Auto,Auto,*">
+
+        <Grid Grid.Row="0"
+              ColumnDefinitions="*,Auto"
+              Margin="16,8">
+            <Label Grid.Column="0"
+                   Text="Manage your laundry services"
+                   Style="{StaticResource MutedLabelStyle}"
+                   VerticalOptions="Center" />
+            <Button Grid.Column="1"
+                    Text="{Binding ToggleButtonText}"
+                    Style="{StaticResource SecondaryButton}"
+                    HeightRequest="40"
+                    Padding="12,0"
+                    FontSize="12"
+                    Command="{Binding ToggleInactiveCommand}" />
+        </Grid>
+
+        <Border Grid.Row="1"
+                IsVisible="{Binding ShowingInactive}"
+                BackgroundColor="#FFF3CD"
+                Stroke="{StaticResource WarningColor}"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 8"
+                Padding="12,8"
+                Margin="16,0">
+            <Label Text="Showing inactive services. Restore or permanently delete them here."
+                   FontSize="12"
+                   TextColor="#856404" />
+        </Border>
+
+        <ActivityIndicator Grid.Row="2"
+                           IsRunning="{Binding IsLoading}"
+                           IsVisible="{Binding IsLoading}"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding Services}"
+                        IsVisible="{Binding IsLoading,
+                            Converter={StaticResource InverseBoolConverter}}"
+                        Margin="16">
+
+            <CollectionView.EmptyView>
+                <Label Text="No services found."
+                       Style="{StaticResource EmptyStateLabel}"
+                       Margin="0,60,0,0" />
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Service">
+                    <Border Style="{StaticResource CardStyle}"
+                            Margin="0,4">
+                        <Grid RowDefinitions="Auto,Auto,Auto">
+
+                            <Label Grid.Row="0"
+                                   Text="{Binding ServiceName}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource TextPrimaryColor}" />
+
+                            <Label Grid.Row="1"
+                                   Text="{Binding ., Converter={StaticResource PriceDisplayConverter}}"
+                                   Style="{StaticResource AccentLabelStyle}"
+                                   Margin="0,2,0,0" />
+
+                            <!-- Active Buttons -->
+                            <StackLayout Grid.Row="2"
+                                         Orientation="Horizontal"
+                                         Spacing="8"
+                                         Margin="0,8,0,0"
+                                         IsVisible="{Binding IsActive}">
+                                <Button Text="Edit"
+                                        Style="{StaticResource AccentButton}"
+                                        HeightRequest="32"
+                                        Padding="12,0"
+                                        FontSize="12"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ServicesViewModel}}, Path=EditServiceCommand}"
+                                        CommandParameter="{Binding .}" />
+                                <Button Text="Deactivate"
+                                        Style="{StaticResource DangerButton}"
+                                        HeightRequest="32"
+                                        Padding="12,0"
+                                        FontSize="12"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ServicesViewModel}}, Path=DeleteServiceCommand}"
+                                        CommandParameter="{Binding .}" />
+                            </StackLayout>
+
+                            <!-- Inactive Buttons -->
+                            <StackLayout Grid.Row="2"
+                 Orientation="Horizontal"
+                 Spacing="8"
+                 Margin="0,8,0,0"
+                 IsVisible="{Binding IsActive, Converter={StaticResource InverseBoolConverter}}">
+                                <Button Text="Restore"
+                Style="{StaticResource AccentButton}"
+                HeightRequest="32"
+                Padding="12,0"
+                FontSize="12"
+                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ServicesViewModel}}, Path=RestoreServiceCommand}"
+                CommandParameter="{Binding .}" />
+                                <Button Text="Delete"
+                Style="{StaticResource DangerButton}"
+                HeightRequest="32"
+                Padding="12,0"
+                FontSize="12"
+                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ServicesViewModel}}, Path=PermanentDeleteServiceCommand}"
+                CommandParameter="{Binding .}" />
+                            </StackLayout>
+
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

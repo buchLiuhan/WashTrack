@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:WashTrack.MVVM.ViewModels"
+             xmlns:models="clr-namespace:WashTrack.Models"
+             x:Class="WashTrack.MVVM.Views.ReportsPage"
+             x:DataType="vm:ReportsViewModel"
+             Title="Reports">
+
+    <ScrollView>
+        <StackLayout Padding="16" Spacing="0">
+
+            <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}"
+                               HorizontalOptions="Center"
+                               Margin="0,24,0,0" />
+
+            <!-- Date Filter -->
+            <Label Text="DATE RANGE"
+                   Style="{StaticResource SectionHeaderLabel}" />
+
+            <Grid ColumnDefinitions="*,*"
+                  ColumnSpacing="8"
+                  Margin="0,0,0,8">
+
+                <StackLayout Grid.Column="0" Spacing="4">
+                    <Label Text="From"
+                           Style="{StaticResource FieldLabelStyle}" />
+                    <DatePicker Date="{Binding StartDate}"
+                                Format="MMM dd, yyyy"
+                                TextColor="{StaticResource TextPrimaryColor}"
+                                BackgroundColor="{StaticResource InputBackgroundColor}" />
+                </StackLayout>
+
+                <StackLayout Grid.Column="1" Spacing="4">
+                    <Label Text="To"
+                           Style="{StaticResource FieldLabelStyle}" />
+                    <DatePicker Date="{Binding EndDate}"
+                                Format="MMM dd, yyyy"
+                                TextColor="{StaticResource TextPrimaryColor}"
+                                BackgroundColor="{StaticResource InputBackgroundColor}" />
+                </StackLayout>
+            </Grid>
+
+            <Button Text="Generate Report"
+                    Style="{StaticResource AccentButton}"
+                    Command="{Binding FilterCommand}"
+                    Margin="0,8,0,16" />
+
+            <!-- Summary Cards -->
+            <Label Text="SUMMARY"
+                   Style="{StaticResource SectionHeaderLabel}"
+                   IsVisible="{Binding IsLoading,
+                       Converter={StaticResource InverseBoolConverter}}" />
+
+            <Grid ColumnDefinitions="*,*,*"
+                  ColumnSpacing="8"
+                  Margin="0,0,0,16"
+                  IsVisible="{Binding IsLoading,
+                      Converter={StaticResource InverseBoolConverter}}">
+
+                <Border Grid.Column="0"
+                        Style="{StaticResource DarkCardStyle}">
+                    <StackLayout Spacing="4" HorizontalOptions="Center">
+                        <Label Text="{Binding TotalRevenue, StringFormat='₱{0:F2}'}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource TextLightColor}"
+                               HorizontalOptions="Center" />
+                        <Label Text="Revenue"
+                               FontSize="11"
+                               TextColor="{StaticResource TextLightColor}"
+                               Opacity="0.8"
+                               HorizontalOptions="Center" />
+                    </StackLayout>
+                </Border>
+
+                <Border Grid.Column="1"
+                        Style="{StaticResource DarkCardStyle}">
+                    <StackLayout Spacing="4" HorizontalOptions="Center">
+                        <Label Text="{Binding TotalTransactions}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource TextLightColor}"
+                               HorizontalOptions="Center" />
+                        <Label Text="Jobs"
+                               FontSize="11"
+                               TextColor="{StaticResource TextLightColor}"
+                               Opacity="0.8"
+                               HorizontalOptions="Center" />
+                    </StackLayout>
+                </Border>
+
+                <Border Grid.Column="2"
+                        Style="{StaticResource DarkCardStyle}">
+                    <StackLayout Spacing="4" HorizontalOptions="Center">
+                        <Label Text="{Binding AverageTransactionValue, StringFormat='₱{0:F2}'}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource TextLightColor}"
+                               HorizontalOptions="Center" />
+                        <Label Text="Average"
+                               FontSize="11"
+                               TextColor="{StaticResource TextLightColor}"
+                               Opacity="0.8"
+                               HorizontalOptions="Center" />
+                    </StackLayout>
+                </Border>
+            </Grid>
+
+            <!-- Transaction List -->
+            <Label Text="TRANSACTIONS"
+                   Style="{StaticResource SectionHeaderLabel}"
+                   IsVisible="{Binding IsLoading,
+                       Converter={StaticResource InverseBoolConverter}}" />
+
+            <CollectionView ItemsSource="{Binding Transactions}"
+                            IsVisible="{Binding IsLoading,
+                                Converter={StaticResource InverseBoolConverter}}">
+
+                <CollectionView.EmptyView>
+                    <Label Text="No transactions found for this date range."
+                           Style="{StaticResource EmptyStateLabel}"
+                           Margin="0,24,0,0" />
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Transaction">
+                        <Border Style="{StaticResource CardStyle}"
+                                Margin="0,4">
+                            <Grid ColumnDefinitions="*,Auto"
+                                  RowDefinitions="Auto,Auto">
+
+                                <Label Grid.Column="0" Grid.Row="0"
+                                       Text="{Binding Customer.Name}"
+                                       FontAttributes="Bold"
+                                       TextColor="{StaticResource TextPrimaryColor}" />
+
+                                <Label Grid.Column="0" Grid.Row="1"
+                                       Text="{Binding Service.ServiceName}"
+                                       Style="{StaticResource MutedLabelStyle}" />
+
+                                <StackLayout Grid.Column="1"
+                                             Grid.RowSpan="2"
+                                             VerticalOptions="Center"
+                                             HorizontalOptions="End"
+                                             Spacing="4">
+                                    <Label Text="{Binding TotalCost, StringFormat='₱{0:F2}'}"
+                                           Style="{StaticResource AccentLabelStyle}"
+                                           HorizontalOptions="End" />
+                                    <Label Text="{Binding CreatedAt, StringFormat='{0:MMM dd}'}"
+                                           Style="{StaticResource MutedLabelStyle}"
+                                           HorizontalOptions="End" />
+                                </StackLayout>
+
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

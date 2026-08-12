@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:WashTrack.MVVM.ViewModels"
+             x:Class="WashTrack.MVVM.Views.DashboardPage"
+             x:DataType="vm:DashboardViewModel"
+             Title="WashTrack"
+             Shell.NavBarIsVisible="True">
+
+    <ScrollView>
+        <StackLayout Padding="16" Spacing="0">
+
+            <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}"
+                               HorizontalOptions="Center"
+                               Margin="0,24,0,0" />
+
+            <!-- Header -->
+            <Label Text="Good day! 👋"
+                   FontSize="22"
+                   FontAttributes="Bold"
+                   TextColor="{StaticResource TextPrimaryColor}"
+                   Margin="0,16,0,4" />
+
+            <Label Text="Here's your laundry shop overview."
+                   Style="{StaticResource MutedLabelStyle}"
+                   Margin="0,0,0,16" />
+
+            <!-- Low Stock Alert -->
+            <Border IsVisible="{Binding HasLowStock}"
+                    BackgroundColor="#FFF3CD"
+                    Stroke="#F39C12"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 8"
+                    Padding="12,10"
+                    Margin="0,0,0,12">
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Grid.Column="0"
+                           Text="{Binding LowStockCount, StringFormat='⚠️ {0} item(s) are running low on stock.'}"
+                           FontSize="13"
+                           TextColor="#856404"
+                           VerticalOptions="Center" />
+                    <Label Grid.Column="1"
+                           Text="View →"
+                           TextColor="{StaticResource AccentColor}"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GoToInventoryCommand}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </Grid>
+            </Border>
+
+            <!-- Sales Cards -->
+            <Label Text="SALES OVERVIEW"
+                   Style="{StaticResource SectionHeaderLabel}" />
+
+            <Grid ColumnDefinitions="*,*"
+                  ColumnSpacing="8"
+                  Margin="0,0,0,8">
+
+                <Border Grid.Column="0"
+                        Style="{StaticResource DarkCardStyle}">
+                    <StackLayout Spacing="4">
+                        <Label Text="Today"
+                               FontSize="12"
+                               TextColor="{StaticResource TextLightColor}"
+                               Opacity="0.8" />
+                        <Label Text="{Binding TotalSalesToday, StringFormat='₱{0:F2}'}"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource TextLightColor}" />
+                        <Label Text="Total Sales"
+                               FontSize="11"
+                               TextColor="{StaticResource TextLightColor}"
+                               Opacity="0.7" />
+                    </StackLayout>
+                </Border>
+
+                <Border Grid.Column="1"
+                        Style="{StaticResource DarkCardStyle}">
+                    <StackLayout Spacing="4">
+                        <Label Text="This Month"
+                               FontSize="12"
+                               TextColor="{StaticResource TextLightColor}"
+                               Opacity="0.8" />
+                        <Label Text="{Binding TotalSalesThisMonth, StringFormat='₱{0:F2}'}"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource TextLightColor}" />
+                        <Label Text="Total Sales"
+                               FontSize="11"
+                               TextColor="{StaticResource TextLightColor}"
+                               Opacity="0.7" />
+                    </StackLayout>
+                </Border>
+            </Grid>
+
+            <!-- Jobs + Customers -->
+            <Label Text="OPERATIONS"
+                   Style="{StaticResource SectionHeaderLabel}" />
+
+            <Grid ColumnDefinitions="*,*,*"
+                  ColumnSpacing="8"
+                  Margin="0,0,0,8">
+
+                <Border Grid.Column="0"
+                        Style="{StaticResource CardStyle}">
+                    <StackLayout Spacing="4" HorizontalOptions="Center">
+                        <Label Text="{Binding PendingJobs}"
+                               FontSize="24"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource WarningColor}"
+                               HorizontalOptions="Center" />
+                        <Label Text="Pending"
+                               FontSize="11"
+                               Style="{StaticResource MutedLabelStyle}"
+                               HorizontalOptions="Center" />
+                    </StackLayout>
+                </Border>
+
+                <Border Grid.Column="1"
+                        Style="{StaticResource CardStyle}">
+                    <StackLayout Spacing="4" HorizontalOptions="Center">
+                        <Label Text="{Binding CompletedJobsToday}"
+                               FontSize="24"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource SuccessColor}"
+                               HorizontalOptions="Center" />
+                        <Label Text="Done Today"
+                               FontSize="11"
+                               Style="{StaticResource MutedLabelStyle}"
+                               HorizontalOptions="Center" />
+                    </StackLayout>
+                </Border>
+
+                <Border Grid.Column="2"
+                        Style="{StaticResource CardStyle}">
+                    <StackLayout Spacing="4" HorizontalOptions="Center">
+                        <Label Text="{Binding TotalCustomers}"
+                               FontSize="24"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource AccentColor}"
+                               HorizontalOptions="Center" />
+                        <Label Text="Customers"
+                               FontSize="11"
+                               Style="{StaticResource MutedLabelStyle}"
+                               HorizontalOptions="Center" />
+                    </StackLayout>
+                </Border>
+            </Grid>
+
+            <!-- Quick Actions -->
+            <Label Text="QUICK ACTIONS"
+                   Style="{StaticResource SectionHeaderLabel}" />
+
+            <Grid ColumnDefinitions="*,*"
+                  RowDefinitions="Auto,Auto"
+                  ColumnSpacing="8"
+                  RowSpacing="8"
+                  Margin="0,0,0,16">
+
+                <Button Grid.Row="0" Grid.Column="0"
+                        Text="+ New Transaction"
+                        Style="{StaticResource PrimaryButton}"
+                        Command="{Binding GoToTransactionsCommand}" />
+
+                <Button Grid.Row="0" Grid.Column="1"
+                        Text="Customers"
+                        Style="{StaticResource SecondaryButton}"
+                        Command="{Binding GoToCustomersCommand}" />
+
+                <Button Grid.Row="1" Grid.Column="0"
+                        Text="Inventory"
+                        Style="{StaticResource SecondaryButton}"
+                        Command="{Binding GoToInventoryCommand}" />
+
+                <Button Grid.Row="1" Grid.Column="1"
+                        Text="Reports"
+                        Style="{StaticResource SecondaryButton}"
+                        Command="{Binding GoToReportsCommand}" />
+            </Grid>
+
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

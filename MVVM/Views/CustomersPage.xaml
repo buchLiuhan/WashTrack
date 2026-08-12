@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:WashTrack.MVVM.ViewModels"
+             xmlns:models="clr-namespace:WashTrack.Models"
+             x:Class="WashTrack.MVVM.Views.CustomersPage"
+             x:DataType="vm:CustomersViewModel"
+             Title="Customers">
+
+    <Grid RowDefinitions="Auto,Auto,*">
+
+        <!-- Search + Toggle -->
+        <Grid Grid.Row="0"
+              ColumnDefinitions="*,Auto"
+              Margin="16,8">
+            <SearchBar Grid.Column="0"
+                       Placeholder="Search customers..."
+                       Text="{Binding SearchText}" />
+            <Button Grid.Column="1"
+                    Text="{Binding ToggleButtonText}"
+                    Style="{StaticResource SecondaryButton}"
+                    HeightRequest="40"
+                    Padding="12,0"
+                    FontSize="12"
+                    Margin="8,0,0,0"
+                    Command="{Binding ToggleInactiveCommand}" />
+        </Grid>
+
+        <!-- Inactive Banner -->
+        <Border Grid.Row="1"
+                IsVisible="{Binding ShowingInactive}"
+                BackgroundColor="#FFF3CD"
+                Stroke="{StaticResource WarningColor}"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 8"
+                Padding="12,8"
+                Margin="16,0">
+            <Label Text="Showing inactive customers. Restore or permanently delete them here."
+                   FontSize="12"
+                   TextColor="#856404" />
+        </Border>
+
+        <ActivityIndicator Grid.Row="2"
+                           IsRunning="{Binding IsLoading}"
+                           IsVisible="{Binding IsLoading}"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding CustomerOrders}"
+                        IsVisible="{Binding IsLoading,
+                            Converter={StaticResource InverseBoolConverter}}"
+                        Margin="16,0,16,16">
+
+            <CollectionView.EmptyView>
+                <Label Text="No customers here."
+                       Style="{StaticResource EmptyStateLabel}"
+                       Margin="0,60,0,0" />
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:CustomerWithOrders">
+                    <Border Style="{StaticResource CardStyle}"
+                            Margin="0,4">
+                        <StackLayout Spacing="8">
+
+                            <!-- Customer Header -->
+                            <Grid ColumnDefinitions="Auto,*,Auto">
+
+                                <Border Grid.Column="0"
+                                        BackgroundColor="{StaticResource AccentColor}"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 24"
+                                        HeightRequest="48"
+                                        WidthRequest="48"
+                                        Margin="0,0,12,0">
+                                    <Label Text="👤"
+                                           FontSize="20"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center" />
+                                </Border>
+
+                                <StackLayout Grid.Column="1"
+                                             VerticalOptions="Center"
+                                             Spacing="2">
+                                    <Label Text="{Binding Customer.Name}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimaryColor}" />
+                                    <Label Text="{Binding Customer.ContactNumber}"
+                                           Style="{StaticResource MutedLabelStyle}" />
+                                    <Border IsVisible="{Binding HasPendingPayment}"
+                                            BackgroundColor="{StaticResource WarningColor}"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 12"
+                                            Padding="8,2"
+                                            HorizontalOptions="Start"
+                                            Margin="0,2,0,0">
+                                        <Label Text="₱ Pending Payment"
+                                               TextColor="{StaticResource TextLightColor}"
+                                               FontSize="10"
+                                               FontAttributes="Bold" />
+                                    </Border>
+                                </StackLayout>
+
+                                <!-- Active Customer Buttons -->
+                                <StackLayout Grid.Column="2"
+                                             Orientation="Horizontal"
+                                             Spacing="8"
+                                             VerticalOptions="Center"
+                                             IsVisible="{Binding Customer.IsActive}">
+
+                                    <Button Text="Edit"
+                                            Style="{StaticResource AccentButton}"
+                                            HeightRequest="32"
+                                            Padding="10,0"
+                                            FontSize="12"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CustomersViewModel}}, Path=EditCustomerCommand}"
+                                            CommandParameter="{Binding Customer}" />
+
+                                    <Button Text="Deactivate"
+                                            Style="{StaticResource DangerButton}"
+                                            HeightRequest="32"
+                                            Padding="10,0"
+                                            FontSize="12"
+                                            IsVisible="{Binding CanDelete}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CustomersViewModel}}, Path=DeactivateCustomerCommand}"
+                                            CommandParameter="{Binding .}" />
+                                </StackLayout>
+
+                                <!-- Inactive Customer Buttons -->
+                                <StackLayout Grid.Column="2"
+                                             Orientation="Horizontal"
+                                             Spacing="8"
+                                             VerticalOptions="Center"
+                                             IsVisible="{Binding Customer.IsActive,
+                                                 Converter={StaticResource InverseBoolConverter}}">
+
+                                    <Button Text="Restore"
+                                            Style="{StaticResource AccentButton}"
+                                            HeightRequest="32"
+                                            Padding="10,0"
+                                            FontSize="12"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CustomersViewModel}}, Path=RestoreCustomerCommand}"
+                                            CommandParameter="{Binding .}" />
+
+                                    <Button Text="Delete"
+                                            Style="{StaticResource DangerButton}"
+                                            HeightRequest="32"
+                                            Padding="10,0"
+                                            FontSize="12"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CustomersViewModel}}, Path=PermanentDeleteCommand}"
+                                            CommandParameter="{Binding .}" />
+                                </StackLayout>
+
+                            </Grid>
+
+                            <!-- Active Orders (only for active customers) -->
+                            <StackLayout IsVisible="{Binding HasActiveOrders}"
+                                         Spacing="4">
+
+                                <BoxView HeightRequest="1"
+                                         Color="{StaticResource BorderColor}"
+                                         Margin="0,4" />
+
+                                <Label Text="ACTIVE ORDERS"
+                                       Style="{StaticResource SectionHeaderLabel}"
+                                       Margin="0,0,0,4" />
+
+                                <CollectionView ItemsSource="{Binding ActiveOrders}">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate x:DataType="models:Transaction">
+                                            <Grid ColumnDefinitions="*,Auto"
+                                                  Padding="0,4">
+
+                                                <StackLayout Grid.Column="0" Spacing="2">
+                                                    <Label Text="{Binding Items.Count, StringFormat='{0} item(s)'}"
+                                                           FontAttributes="Bold"
+                                                           TextColor="{StaticResource TextPrimaryColor}"
+                                                           FontSize="14" />
+                                                    <Label Text="{Binding TotalCost, StringFormat='₱{0:F2}'}"
+                                                           Style="{StaticResource MutedLabelStyle}" />
+                                                </StackLayout>
+
+                                                <Button Grid.Column="1"
+                                                        Text="✓ Done"
+                                                        Style="{StaticResource PrimaryButton}"
+                                                        HeightRequest="36"
+                                                        Padding="10,0"
+                                                        FontSize="12"
+                                                        VerticalOptions="Center"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CustomersViewModel}}, Path=MarkOrderDoneCommand}"
+                                                        CommandParameter="{Binding .}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+
+                            </StackLayout>
+
+                            <!-- No Active Orders -->
+                            <Label Text="No active orders"
+                                   Style="{StaticResource MutedLabelStyle}"
+                                   IsVisible="{Binding HasActiveOrders,
+                                       Converter={StaticResource InverseBoolConverter}}"
+                                   FontSize="12" />
+
+                        </StackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

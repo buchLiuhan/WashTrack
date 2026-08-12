@@ -1,0 +1,276 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- ═══════════════════════════════════════ -->
+    <!--                 COLORS                  -->
+    <!-- ═══════════════════════════════════════ -->
+
+    <Color x:Key="PrimaryColor">#034078</Color>
+    <Color x:Key="PrimaryDarkColor">#001f54</Color>
+    <Color x:Key="PrimaryDarkestColor">#051923</Color>
+    <Color x:Key="AccentColor">#1282a2</Color>
+    <Color x:Key="DarkNavyColor">#0a1128</Color>
+    <Color x:Key="PageBackgroundColor">#fefcfb</Color>
+    <Color x:Key="CardBackgroundColor">#FFFFFF</Color>
+    <Color x:Key="InputBackgroundColor">#F5F5F5</Color>
+    <Color x:Key="TextPrimaryColor">#0a1128</Color>
+    <Color x:Key="TextLightColor">#fefcfb</Color>
+    <Color x:Key="TextMutedColor">#888888</Color>
+    <Color x:Key="TextAccentColor">#1282a2</Color>
+    <Color x:Key="SuccessColor">#2ECC71</Color>
+    <Color x:Key="DangerColor">#E74C3C</Color>
+    <Color x:Key="WarningColor">#F39C12</Color>
+    <Color x:Key="BorderColor">#E0E0E0</Color>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!--                 PAGE                    -->
+    <!-- ═══════════════════════════════════════ -->
+
+    <Style TargetType="ContentPage" ApplyToDerivedTypes="True">
+        <Setter Property="BackgroundColor" Value="{StaticResource PageBackgroundColor}" />
+    </Style>
+
+    <Style TargetType="Shell" ApplyToDerivedTypes="True">
+        <Setter Property="Shell.BackgroundColor" Value="{StaticResource PrimaryColor}" />
+        <Setter Property="Shell.ForegroundColor" Value="{StaticResource TextLightColor}" />
+        <Setter Property="Shell.TitleColor" Value="{StaticResource TextLightColor}" />
+        <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource PrimaryDarkColor}" />
+        <Setter Property="Shell.TabBarForegroundColor" Value="{StaticResource TextLightColor}" />
+        <Setter Property="Shell.TabBarUnselectedColor" Value="#80fefcfb" />
+    </Style>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!--                LABELS                   -->
+    <!-- ═══════════════════════════════════════ -->
+
+    <Style TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource TextPrimaryColor}" />
+        <Setter Property="FontFamily" Value="OpenSansRegular" />
+        <Setter Property="FontSize" Value="14" />
+    </Style>
+
+    <Style x:Key="PageTitleLabel" TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource TextPrimaryColor}" />
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="Margin" Value="0,0,0,8" />
+    </Style>
+
+    <Style x:Key="SectionHeaderLabel" TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource PrimaryColor}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="TextTransform" Value="Uppercase" />
+        <Setter Property="Margin" Value="0,16,0,4" />
+    </Style>
+
+    <Style x:Key="FieldLabelStyle" TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource TextPrimaryColor}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="Margin" Value="0,8,0,4" />
+    </Style>
+
+    <Style x:Key="MutedLabelStyle" TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource TextMutedColor}" />
+        <Setter Property="FontSize" Value="13" />
+    </Style>
+
+    <Style x:Key="AccentLabelStyle" TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource AccentColor}" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontAttributes" Value="Bold" />
+    </Style>
+
+    <Style x:Key="EmptyStateLabel" TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource TextMutedColor}" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="HorizontalTextAlignment" Value="Center" />
+    </Style>
+
+    <Style x:Key="PillLabelStyle" TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource TextLightColor}" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="VerticalOptions" Value="Center" />
+    </Style>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!--                BUTTONS                  -->
+    <!-- ═══════════════════════════════════════ -->
+
+    <Style TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryColor}" />
+        <Setter Property="TextColor" Value="{StaticResource TextLightColor}" />
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="16,12" />
+        <Setter Property="HeightRequest" Value="48" />
+    </Style>
+
+    <Style x:Key="CompleteButtonStyle" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource InputBackgroundColor}" />
+        <Setter Property="TextColor" Value="{StaticResource TextMutedColor}" />
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="HeightRequest" Value="38" />
+    </Style>
+
+    <Style x:Key="PrimaryButton" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryColor}" />
+        <Setter Property="TextColor" Value="{StaticResource TextLightColor}" />
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="16,12" />
+        <Setter Property="HeightRequest" Value="48" />
+    </Style>
+
+    <Style x:Key="AccentButton" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource AccentColor}" />
+        <Setter Property="TextColor" Value="{StaticResource TextLightColor}" />
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="16,12" />
+        <Setter Property="HeightRequest" Value="48" />
+    </Style>
+
+    <Style x:Key="SecondaryButton" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="TextColor" Value="{StaticResource PrimaryColor}" />
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="16,12" />
+        <Setter Property="HeightRequest" Value="48" />
+        <Setter Property="BorderColor" Value="{StaticResource PrimaryColor}" />
+        <Setter Property="BorderWidth" Value="1.5" />
+    </Style>
+
+    <Style x:Key="DangerButton" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource DangerColor}" />
+        <Setter Property="TextColor" Value="{StaticResource TextLightColor}" />
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="16,12" />
+        <Setter Property="HeightRequest" Value="48" />
+    </Style>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!--                INPUTS                   -->
+    <!-- ═══════════════════════════════════════ -->
+
+    <Style TargetType="Entry">
+        <Setter Property="TextColor" Value="{StaticResource TextPrimaryColor}" />
+        <Setter Property="PlaceholderColor" Value="{StaticResource TextMutedColor}" />
+        <Setter Property="BackgroundColor" Value="{StaticResource InputBackgroundColor}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="HeightRequest" Value="48" />
+    </Style>
+
+    <Style TargetType="Editor">
+        <Setter Property="TextColor" Value="{StaticResource TextPrimaryColor}" />
+        <Setter Property="PlaceholderColor" Value="{StaticResource TextMutedColor}" />
+        <Setter Property="BackgroundColor" Value="{StaticResource InputBackgroundColor}" />
+        <Setter Property="FontSize" Value="14" />
+    </Style>
+
+    <Style TargetType="Picker">
+        <Setter Property="TextColor" Value="{StaticResource TextPrimaryColor}" />
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="TitleColor" Value="{StaticResource TextMutedColor}" />
+        <Setter Property="HeightRequest" Value="48" />
+    </Style>
+
+    <Style TargetType="SearchBar">
+        <Setter Property="TextColor" Value="{StaticResource TextPrimaryColor}" />
+        <Setter Property="PlaceholderColor" Value="{StaticResource TextMutedColor}" />
+        <Setter Property="BackgroundColor" Value="{StaticResource InputBackgroundColor}" />
+        <Setter Property="CancelButtonColor" Value="{StaticResource AccentColor}" />
+    </Style>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!--             CARDS / BORDERS             -->
+    <!-- ═══════════════════════════════════════ -->
+
+    <Style x:Key="CardStyle" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource CardBackgroundColor}" />
+        <Setter Property="Stroke" Value="{StaticResource BorderColor}" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 10" />
+        <Setter Property="Padding" Value="16" />
+        <Setter Property="Margin" Value="0,4" />
+    </Style>
+
+    <Style x:Key="DarkCardStyle" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryColor}" />
+        <Setter Property="Stroke" Value="Transparent" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 10" />
+        <Setter Property="Padding" Value="16" />
+        <Setter Property="Margin" Value="0,4" />
+    </Style>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!--              PILLS / BADGES             -->
+    <!-- ═══════════════════════════════════════ -->
+
+    <Style x:Key="PillPrimary" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryColor}" />
+        <Setter Property="Stroke" Value="Transparent" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 20" />
+        <Setter Property="Padding" Value="12,4" />
+    </Style>
+
+    <Style x:Key="PillAccent" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource AccentColor}" />
+        <Setter Property="Stroke" Value="Transparent" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 20" />
+        <Setter Property="Padding" Value="12,4" />
+    </Style>
+
+    <Style x:Key="PillSuccess" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource SuccessColor}" />
+        <Setter Property="Stroke" Value="Transparent" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 20" />
+        <Setter Property="Padding" Value="12,4" />
+    </Style>
+
+    <Style x:Key="PillWarning" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource WarningColor}" />
+        <Setter Property="Stroke" Value="Transparent" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 20" />
+        <Setter Property="Padding" Value="12,4" />
+    </Style>
+
+    <Style x:Key="PillDanger" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource DangerColor}" />
+        <Setter Property="Stroke" Value="Transparent" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 20" />
+        <Setter Property="Padding" Value="12,4" />
+    </Style>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!--              MISC / OTHER               -->
+    <!-- ═══════════════════════════════════════ -->
+
+    <Style TargetType="ActivityIndicator">
+        <Setter Property="Color" Value="{StaticResource AccentColor}" />
+    </Style>
+
+</ResourceDictionary>

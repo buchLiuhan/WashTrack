@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:WashTrack.MVVM.ViewModels"
+             x:Class="WashTrack.MVVM.Views.InventoryDetailPage"
+             x:DataType="vm:InventoryDetailViewModel"
+             Title="{Binding Title}">
+
+    <ScrollView>
+        <StackLayout Padding="24" Spacing="4">
+
+            <Label Text="ITEM DETAILS"
+                   Style="{StaticResource SectionHeaderLabel}" />
+
+            <Label Text="Item Name"
+                   Style="{StaticResource FieldLabelStyle}" />
+            <Entry Placeholder="e.g. Detergent, Fabric Conditioner"
+                   Text="{Binding ItemName}" />
+
+            <Label Text="Current Stock"
+                   Style="{StaticResource FieldLabelStyle}" />
+            <Entry Placeholder="e.g. 5000"
+                   Text="{Binding CurrentStock}"
+                   Keyboard="Numeric" />
+
+            <Label Text="Unit"
+                   Style="{StaticResource FieldLabelStyle}" />
+            <Entry Placeholder="e.g. ml, pcs"
+                   Text="{Binding Unit}" />
+
+            <Label Text="ALERT SETTINGS"
+                   Style="{StaticResource SectionHeaderLabel}" />
+
+            <Label Text="Minimum Threshold (Low Stock Alert)"
+                   Style="{StaticResource FieldLabelStyle}" />
+            <Entry Placeholder="e.g. 500"
+                   Text="{Binding MinimumThreshold}"
+                   Keyboard="Numeric" />
+
+            <Label Text="Reorder Quantity (Optional)"
+                   Style="{StaticResource FieldLabelStyle}" />
+            <Entry Placeholder="e.g. 5000"
+                   Text="{Binding ReorderQuantity}"
+                   Keyboard="Numeric" />
+
+            <Button Text="Save Item"
+                    Style="{StaticResource PrimaryButton}"
+                    Command="{Binding SaveCommand}"
+                    Margin="0,24,0,8" />
+
+            <Button Text="Cancel"
+                    Style="{StaticResource SecondaryButton}"
+                    Command="{Binding CancelCommand}" />
+
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

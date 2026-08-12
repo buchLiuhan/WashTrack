@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:WashTrack.MVVM.ViewModels"
+             xmlns:models="clr-namespace:WashTrack.Models"
+             x:Class="WashTrack.MVVM.Views.TransactionDetailPage"
+             x:DataType="vm:TransactionDetailViewModel"
+             Title="{Binding Title}">
+
+    <ScrollView>
+        <StackLayout Padding="24" Spacing="4">
+
+            <Label Text="{Binding Transaction.TransactionId, StringFormat='Receipt #{0:D4}'}"
+                   Style="{StaticResource MutedLabelStyle}"
+                   IsVisible="{Binding IsViewMode}"
+                   Margin="0,0,0,8" />
+
+            <Label Text="TRANSACTION DETAILS"
+                   Style="{StaticResource SectionHeaderLabel}" />
+
+            <StackLayout IsVisible="{Binding ShowWashSection}">
+                <Label Text="Wash Status"
+                       Style="{StaticResource FieldLabelStyle}" />
+                <Grid ColumnDefinitions="*,Auto"
+                      BackgroundColor="{StaticResource InputBackgroundColor}">
+                    <Picker Grid.Column="0"
+                            ItemsSource="{Binding WashStatusOptions}"
+                            SelectedItem="{Binding SelectedWashStatus}"
+                            TextColor="{StaticResource TextPrimaryColor}"
+                            BackgroundColor="Transparent" />
+                    <Label Grid.Column="1"
+                           Text="▼"
+                           TextColor="{StaticResource TextMutedColor}"
+                           VerticalOptions="Center"
+                           Margin="0,0,12,0" />
+                </Grid>
+                <Button Text="Confirm"
+                        Style="{StaticResource PrimaryButton}"
+                        Command="{Binding ConfirmWashStatusCommand}"
+                        Margin="0,24,0,8" />
+                <Button Text="Cancel"
+                        Style="{StaticResource SecondaryButton}"
+                        Command="{Binding CancelCommand}" />
+            </StackLayout>
+
+            <StackLayout IsVisible="{Binding WashMode, Converter={StaticResource InverseBoolConverter}}">
+
+                <Label Text="Customer"
+                   Style="{StaticResource FieldLabelStyle}"
+                   IsVisible="{Binding ShowFullEditSection}" />
+
+                <Entry Placeholder="Type customer name..."
+                   Text="{Binding CustomerSearch}"
+                   IsReadOnly="{Binding IsViewMode}"
+                   IsVisible="{Binding ShowFullEditSection}" />
+
+                <Border IsVisible="{Binding ShowCustomerSuggestions}"
+                    Style="{StaticResource CardStyle}"
+                    Padding="0"
+                    Margin="0,-4,0,0">
+                    <CollectionView ItemsSource="{Binding FilteredCustomers}"
+                                MaximumHeightRequest="200">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:Customer">
+                                <Grid Padding="16,12"
+                                  BackgroundColor="{StaticResource CardBackgroundColor}">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionDetailViewModel}}, Path=SelectCustomerCommand}"
+                                        CommandParameter="{Binding .}" />
+                                    </Grid.GestureRecognizers>
+                                    <StackLayout Spacing="2">
+                                        <Label Text="{Binding Name}"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimaryColor}" />
+                                        <Label Text="{Binding ContactNumber}"
+                                           Style="{StaticResource MutedLabelStyle}" />
+                                    </StackLayout>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Border>
+
+                <Border IsVisible="{Binding ShowAddCustomerOption}"
+                    BackgroundColor="#E3F2FD"
+                    Stroke="{StaticResource AccentColor}"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 8"
+                    Padding="12,10"
+                    Margin="0,0,0,4">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackLayout Grid.Column="0"
+                                 VerticalOptions="Center"
+                                 Spacing="2">
+                            <Label Text="No customer found."
+                               FontSize="13"
+                               TextColor="{StaticResource TextPrimaryColor}" />
+                            <Label Text="Add as new customer?"
+                               FontSize="12"
+                               TextColor="{StaticResource TextMutedColor}" />
+                        </StackLayout>
+                        <Button Grid.Column="1"
+                            Text="+ Add"
+                            Style="{StaticResource AccentButton}"
+                            HeightRequest="36"
+                            Padding="12,0"
+                            Command="{Binding GoToAddCustomerCommand}" />
+                    </Grid>
+                </Border>
+
+                <Border IsVisible="{Binding SelectedCustomerName,
+                        Converter={StaticResource StringToBoolConverter}}"
+                    BackgroundColor="#E8F5E9"
+                    Stroke="{StaticResource SuccessColor}"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 8"
+                    Padding="12,8"
+                    Margin="0,4,0,8">
+                    <Label Text="{Binding SelectedCustomerName, StringFormat='✓ {0}'}"
+                       TextColor="{StaticResource SuccessColor}"
+                       FontAttributes="Bold"
+                       FontSize="13" />
+                </Border>
+
+                <Label Text="Fulfillment"
+                   Style="{StaticResource FieldLabelStyle}"
+                   IsVisible="{Binding ShowFullEditSection}" />
+                <Grid ColumnDefinitions="*,Auto"
+                  BackgroundColor="{StaticResource InputBackgroundColor}"
+                  IsVisible="{Binding ShowFullEditSection}">
+                    <Picker Grid.Column="0"
+                        ItemsSource="{Binding FulfillmentOptions}"
+                        SelectedItem="{Binding SelectedFulfillmentType}"
+                        TextColor="{StaticResource TextPrimaryColor}"
+                        BackgroundColor="Transparent"
+                        IsEnabled="{Binding IsViewMode, Converter={StaticResource InverseBoolConverter}}" />
+                    <Label Grid.Column="1"
+                       Text="▼"
+                       TextColor="{StaticResource TextMutedColor}"
+                       VerticalOptions="Center"
+                       Margin="0,0,12,0" />
+                </Grid>
+
+                <Border IsVisible="{Binding ShowAddAddressOption}"
+                    BackgroundColor="#FFF3CD"
+                    Stroke="{StaticResource WarningColor}"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 8"
+                    Padding="12,10"
+                    Margin="0,8,0,4">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackLayout Grid.Column="0"
+                                 VerticalOptions="Center"
+                                 Spacing="2">
+                            <Label Text="No address on file."
+                               FontSize="13"
+                               TextColor="{StaticResource TextPrimaryColor}" />
+                            <Label Text="Required for delivery."
+                               FontSize="12"
+                               TextColor="{StaticResource TextMutedColor}" />
+                        </StackLayout>
+                        <Button Grid.Column="1"
+                            Text="+ Add Address"
+                            Style="{StaticResource AccentButton}"
+                            HeightRequest="36"
+                            Padding="12,0"
+                            Command="{Binding GoToAddAddressCommand}" />
+                    </Grid>
+                </Border>
+
+                <StackLayout IsVisible="{Binding ShowFullEditSection}">
+
+                    <Label Text="Service"
+                       Style="{StaticResource FieldLabelStyle}" />
+
+                    <Grid ColumnDefinitions="*,Auto"
+                      BackgroundColor="{StaticResource InputBackgroundColor}">
+                        <Picker Grid.Column="0"
+                            ItemsSource="{Binding Services}"
+                            SelectedItem="{Binding SelectedService}"
+                            ItemDisplayBinding="{Binding ServiceName}"
+                            Title="Select Service"
+                            TextColor="{StaticResource TextPrimaryColor}"
+                            BackgroundColor="Transparent"
+                            TitleColor="{StaticResource TextMutedColor}" />
+                        <Label Grid.Column="1"
+                           Text="▼"
+                           TextColor="{StaticResource TextMutedColor}"
+                           VerticalOptions="Center"
+                           Margin="0,0,12,0" />
+                    </Grid>
+
+                    <Label Margin="0,4,0,8">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Need to add a service? "
+                                  TextColor="{StaticResource TextMutedColor}"
+                                  FontSize="12" />
+                                <Span Text="Manage Services →"
+                                  TextColor="{StaticResource AccentColor}"
+                                  FontSize="12"
+                                  FontAttributes="Bold">
+                                    <Span.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding GoToServicesCommand}" />
+                                    </Span.GestureRecognizers>
+                                </Span>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+
+                    <Label Text="{Binding QuantityLabel}"
+                       Style="{StaticResource FieldLabelStyle}" />
+                    <Entry Placeholder="e.g. 3.5"
+                       Text="{Binding WeightKg}"
+                       Keyboard="Numeric" />
+
+                    <Button Text="+ Add Service to Cart"
+                        Style="{StaticResource AccentButton}"
+                        Command="{Binding AddServiceToCartCommand}"
+                        Margin="0,12,0,0" />
+                </StackLayout>
+
+                <Label Text="ITEMS"
+                   Style="{StaticResource SectionHeaderLabel}" />
+
+                <CollectionView ItemsSource="{Binding CartItems}">
+                    <CollectionView.EmptyView>
+                        <Label Text="No services added yet."
+                           Style="{StaticResource MutedLabelStyle}"
+                           Margin="0,8,0,8" />
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:TransactionItem">
+                            <StackLayout>
+                                <Grid ColumnDefinitions="*,Auto,Auto"
+                                  Padding="0,10">
+                                    <StackLayout Grid.Column="0" Spacing="2">
+                                        <Label Text="{Binding Service.ServiceName}"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimaryColor}" />
+                                        <Label Text="{Binding WeightKg, StringFormat='{0}kg'}"
+                                           Style="{StaticResource MutedLabelStyle}" />
+                                    </StackLayout>
+                                    <Label Grid.Column="1"
+                                       Text="{Binding LineCost, StringFormat='₱{0:F2}'}"
+                                       Style="{StaticResource AccentLabelStyle}"
+                                       VerticalOptions="Center"
+                                       Margin="0,0,8,0" />
+                                    <Button Grid.Column="2"
+                                        Text="✕"
+                                        Style="{StaticResource DangerButton}"
+                                        WidthRequest="36"
+                                        HeightRequest="36"
+                                        Padding="0"
+                                        FontSize="13"
+                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionDetailViewModel}}, Path=ShowFullEditSection}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionDetailViewModel}}, Path=RemoveCartItemCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Grid>
+                                <BoxView HeightRequest="1"
+                                     Color="{StaticResource BorderColor}" />
+                            </StackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Grid ColumnDefinitions="*,Auto"
+                  Margin="0,16,0,0">
+                    <Label Grid.Column="0"
+                       Text="TOTAL"
+                       FontSize="16"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource TextPrimaryColor}"
+                       VerticalOptions="Center" />
+                    <Label Grid.Column="1"
+                       Text="{Binding CartTotal, StringFormat='₱{0:F2}'}"
+                       FontSize="22"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource PrimaryColor}"
+                       VerticalOptions="Center" />
+                </Grid>
+
+                <Label Text="Payment"
+                   Style="{StaticResource FieldLabelStyle}"
+                   Margin="0,16,0,4"
+                   IsVisible="{Binding ShowFullEditSection}" />
+                <Grid ColumnDefinitions="*,Auto"
+                  BackgroundColor="{StaticResource InputBackgroundColor}"
+                  IsVisible="{Binding ShowFullEditSection}">
+                    <Picker Grid.Column="0"
+                        ItemsSource="{Binding PaymentOptions}"
+                        SelectedItem="{Binding SelectedPaymentType}"
+                        TextColor="{StaticResource TextPrimaryColor}"
+                        BackgroundColor="Transparent"
+                        IsEnabled="{Binding IsViewMode, Converter={StaticResource InverseBoolConverter}}" />
+                    <Label Grid.Column="1"
+                       Text="▼"
+                       TextColor="{StaticResource TextMutedColor}"
+                       VerticalOptions="Center"
+                       Margin="0,0,12,0" />
+                </Grid>
+
+                <StackLayout IsVisible="{Binding IsPayNow}">
+                    <Label Text="Cash Received"
+                       Style="{StaticResource FieldLabelStyle}"
+                       IsVisible="{Binding IsViewMode, Converter={StaticResource InverseBoolConverter}}" />
+                    <Entry Placeholder="e.g. 500"
+                       Text="{Binding CashReceived}"
+                       Keyboard="Numeric"
+                       IsVisible="{Binding IsViewMode, Converter={StaticResource InverseBoolConverter}}" />
+
+                    <Border Style="{StaticResource CardStyle}"
+                        Margin="0,4"
+                        IsVisible="{Binding IsViewMode, Converter={StaticResource InverseBoolConverter}}">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0"
+                               Text="Change"
+                               VerticalOptions="Center" />
+                            <Label Grid.Column="1"
+                               Text="{Binding Change, StringFormat='₱{0:F2}'}"
+                               Style="{StaticResource AccentLabelStyle}" />
+                        </Grid>
+                    </Border>
+                </StackLayout>
+
+                <StackLayout IsVisible="{Binding IsPayLater}">
+                    <Border Style="{StaticResource CardStyle}"
+                        Margin="0,4"
+                        IsVisible="{Binding IsViewMode, Converter={StaticResource InverseBoolConverter}}">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0"
+                               Text="Amount Due Later"
+                               VerticalOptions="Center" />
+                            <Label Grid.Column="1"
+                               Text="{Binding CartTotal, StringFormat='₱{0:F2}'}"
+                               Style="{StaticResource AccentLabelStyle}" />
+                        </Grid>
+                    </Border>
+                </StackLayout>
+
+                <StackLayout IsVisible="{Binding IsViewMode}">
+                    <Label Text="PAYMENT"
+                       Style="{StaticResource SectionHeaderLabel}" />
+                    <Label Text="{Binding SelectedPaymentType}"
+                       FontSize="16"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource AccentColor}" />
+                    <Label Text="{Binding AmountPaid, StringFormat='Paid: ₱{0:F2}'}"
+                       Style="{StaticResource MutedLabelStyle}" />
+
+                    <Label Text="STATUS"
+                       Style="{StaticResource SectionHeaderLabel}" />
+                    <Label Text="{Binding Status}"
+                       FontSize="16"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource AccentColor}" />
+                </StackLayout>
+
+                <Button Text="{Binding SaveButtonText}"
+                    Style="{StaticResource PrimaryButton}"
+                    Command="{Binding CompleteTransactionCommand}"
+                    Margin="0,24,0,8"
+                    IsVisible="{Binding ShowMainActionButtons}" />
+
+                <Button Text="Cancel"
+                    Style="{StaticResource SecondaryButton}"
+                    Command="{Binding CancelCommand}"
+                    IsVisible="{Binding ShowMainActionButtons}" />
+
+                <Button Text="Continue"
+                    Style="{StaticResource SecondaryButton}"
+                    Command="{Binding CancelCommand}"
+                    IsVisible="{Binding IsViewMode}" />
+
+            </StackLayout>
+
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

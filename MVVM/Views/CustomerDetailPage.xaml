@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:WashTrack.MVVM.ViewModels"
+             xmlns:models="clr-namespace:WashTrack.Models"
+             x:Class="WashTrack.MVVM.Views.CustomerDetailPage"
+             x:DataType="vm:CustomerDetailViewModel"
+             Title="{Binding Title}">
+
+    <ScrollView>
+        <StackLayout Padding="24" Spacing="4">
+
+            <Label Text="CUSTOMER INFORMATION"
+                   Style="{StaticResource SectionHeaderLabel}" />
+
+            <Label Text="Full Name"
+                   Style="{StaticResource FieldLabelStyle}" />
+            <Entry Placeholder="e.g. Juan dela Cruz"
+                   Text="{Binding Name}" />
+
+            <Label Text="Contact Number"
+                   Style="{StaticResource FieldLabelStyle}" />
+            <Entry Placeholder="e.g. 09xxxxxxxxx"
+                   Text="{Binding ContactNumber}"
+                   Keyboard="Telephone" />
+
+            <Label Text="Email (Optional)"
+                   Style="{StaticResource FieldLabelStyle}" />
+            <Entry Placeholder="e.g. juan@email.com"
+                   Text="{Binding Email}"
+                   Keyboard="Email" />
+
+            <Label Text="Address"
+                   Style="{StaticResource FieldLabelStyle}" />
+            <Entry Placeholder="e.g. Brgy. San Jose, Cebu City"
+                   Text="{Binding Address}" />
+
+            <Button Text="{Binding SaveButtonText}"
+                    Style="{StaticResource PrimaryButton}"
+                    Command="{Binding SaveCommand}"
+                    Margin="0,24,0,8" />
+
+            <Button Text="Cancel"
+                    Style="{StaticResource SecondaryButton}"
+                    Command="{Binding CancelCommand}"
+                    IsVisible="{Binding FromTransaction, Converter={StaticResource InverseBoolConverter}}" />
+
+            <Border IsVisible="{Binding HasCompleted}"
+                    Style="{StaticResource DarkCardStyle}"
+                    Margin="0,16,0,0">
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Grid.Column="0"
+                           Text="Total Spent"
+                           TextColor="{StaticResource TextLightColor}"
+                           FontSize="15"
+                           VerticalOptions="Center" />
+                    <Label Grid.Column="1"
+                           Text="{Binding TotalSpent, StringFormat='₱{0:F2}'}"
+                           TextColor="{StaticResource TextLightColor}"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Label Text="PENDING ORDERS"
+                   Style="{StaticResource SectionHeaderLabel}"
+                   IsVisible="{Binding HasPending}" />
+
+            <CollectionView ItemsSource="{Binding PendingTransactions}"
+                            IsVisible="{Binding HasPending}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Transaction">
+                        <Border Style="{StaticResource CardStyle}"
+                                Margin="0,4">
+                            <Grid ColumnDefinitions="*,Auto"
+                                  RowDefinitions="Auto,Auto,Auto">
+
+                                <Label Grid.Column="0" Grid.Row="0"
+                                       Text="{Binding Items.Count, StringFormat='{0} item(s)'}"
+                                       FontAttributes="Bold"
+                                       TextColor="{StaticResource TextPrimaryColor}" />
+
+                                <Label Grid.Column="0" Grid.Row="1"
+                                       Text="{Binding CreatedAt, StringFormat='{0:MMM dd, yyyy}'}"
+                                       Style="{StaticResource MutedLabelStyle}" />
+
+                                <Label Grid.Column="1" Grid.Row="0"
+                                       Grid.RowSpan="3"
+                                       Text="{Binding TotalCost, StringFormat='₱{0:F2}'}"
+                                       Style="{StaticResource AccentLabelStyle}"
+                                       VerticalOptions="Center" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Label Text="TRANSACTION HISTORY"
+                   Style="{StaticResource SectionHeaderLabel}"
+                   IsVisible="{Binding HasCompleted}" />
+
+            <CollectionView ItemsSource="{Binding CompletedTransactions}"
+                            IsVisible="{Binding HasCompleted}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Transaction">
+                        <Border Style="{StaticResource CardStyle}"
+                                Margin="0,4">
+                            <Grid ColumnDefinitions="*,Auto"
+                                  RowDefinitions="Auto,Auto">
+
+                                <Label Grid.Column="0" Grid.Row="0"
+                                       Text="{Binding Items.Count, StringFormat='{0} item(s)'}"
+                                       FontAttributes="Bold"
+                                       TextColor="{StaticResource TextPrimaryColor}" />
+
+                                <Label Grid.Column="0" Grid.Row="1"
+                                       Text="{Binding CompletedAt, StringFormat='Completed: {0:MMM dd, yyyy}'}"
+                                       Style="{StaticResource MutedLabelStyle}" />
+
+                                <StackLayout Grid.Column="1"
+                                             Grid.RowSpan="2"
+                                             VerticalOptions="Center"
+                                             HorizontalOptions="End"
+                                             Spacing="2">
+                                    <Label Text="{Binding TotalCost, StringFormat='₱{0:F2}'}"
+                                           Style="{StaticResource AccentLabelStyle}"
+                                           HorizontalOptions="End" />
+                                    <Border Style="{StaticResource PillSuccess}"
+                                            HorizontalOptions="End">
+                                        <Label Text="Done"
+                                               Style="{StaticResource PillLabelStyle}" />
+                                    </Border>
+                                </StackLayout>
+
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Label Text="No transaction history yet."
+                   Style="{StaticResource MutedLabelStyle}"
+                   IsVisible="{Binding HasCompleted,
+                       Converter={StaticResource InverseBoolConverter}}"
+                   Margin="0,8,0,0"
+                   FontSize="13" />
+
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
