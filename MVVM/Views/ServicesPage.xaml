@@ -65,62 +65,73 @@
                 <DataTemplate x:DataType="models:Service">
                     <Border Style="{StaticResource CardStyle}"
                             Margin="0,4">
-                        <Grid RowDefinitions="Auto,Auto,Auto">
+                        <Grid RowDefinitions="Auto,Auto,Auto"
+                              ColumnDefinitions="Auto,Auto,*">
 
                             <Label Grid.Row="0"
+                                   Grid.ColumnSpan="3"
                                    Text="{Binding ServiceName}"
                                    FontSize="16"
                                    FontAttributes="Bold"
                                    TextColor="{StaticResource TextPrimaryColor}" />
 
                             <Label Grid.Row="1"
+                                   Grid.ColumnSpan="3"
                                    Text="{Binding ., Converter={StaticResource PriceDisplayConverter}}"
                                    Style="{StaticResource AccentLabelStyle}"
                                    Margin="0,2,0,0" />
 
-                            <!-- Active Buttons -->
-                            <StackLayout Grid.Row="2"
-                                         Orientation="Horizontal"
-                                         Spacing="8"
-                                         Margin="0,8,0,0"
-                                         IsVisible="{Binding IsActive}">
-                                <Button Text="Edit"
-                                        Style="{StaticResource AccentButton}"
-                                        HeightRequest="32"
-                                        Padding="12,0"
-                                        FontSize="12"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ServicesViewModel}}, Path=EditServiceCommand}"
-                                        CommandParameter="{Binding .}" />
-                                <Button Text="Deactivate"
-                                        Style="{StaticResource DangerButton}"
-                                        HeightRequest="32"
-                                        Padding="12,0"
-                                        FontSize="12"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ServicesViewModel}}, Path=DeleteServiceCommand}"
-                                        CommandParameter="{Binding .}" />
-                            </StackLayout>
+                            <!-- Active: Edit -->
+                            <Button Grid.Row="2"
+                                    Grid.Column="0"
+                                    Text="Edit"
+                                    Style="{StaticResource AccentButton}"
+                                    HeightRequest="32"
+                                    Padding="12,0"
+                                    FontSize="12"
+                                    Margin="0,8,8,0"
+                                    IsVisible="{Binding IsActive}"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ServicesViewModel}}, Path=EditServiceCommand}"
+                                    CommandParameter="{Binding .}" />
 
-                            <!-- Inactive Buttons -->
-                            <StackLayout Grid.Row="2"
-                 Orientation="Horizontal"
-                 Spacing="8"
-                 Margin="0,8,0,0"
-                 IsVisible="{Binding IsActive, Converter={StaticResource InverseBoolConverter}}">
-                                <Button Text="Restore"
-                Style="{StaticResource AccentButton}"
-                HeightRequest="32"
-                Padding="12,0"
-                FontSize="12"
-                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ServicesViewModel}}, Path=RestoreServiceCommand}"
-                CommandParameter="{Binding .}" />
-                                <Button Text="Delete"
-                Style="{StaticResource DangerButton}"
-                HeightRequest="32"
-                Padding="12,0"
-                FontSize="12"
-                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ServicesViewModel}}, Path=PermanentDeleteServiceCommand}"
-                CommandParameter="{Binding .}" />
-                            </StackLayout>
+                            <!-- Active: Deactivate -->
+                            <Button Grid.Row="2"
+                                    Grid.Column="1"
+                                    Text="Deactivate"
+                                    Style="{StaticResource DangerButton}"
+                                    HeightRequest="32"
+                                    Padding="12,0"
+                                    FontSize="12"
+                                    Margin="0,8,0,0"
+                                    IsVisible="{Binding IsActive}"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ServicesViewModel}}, Path=DeleteServiceCommand}"
+                                    CommandParameter="{Binding .}" />
+
+                            <!-- Inactive: Restore -->
+                            <Button Grid.Row="2"
+                                    Grid.Column="0"
+                                    Text="Restore"
+                                    Style="{StaticResource AccentButton}"
+                                    HeightRequest="32"
+                                    Padding="12,0"
+                                    FontSize="12"
+                                    Margin="0,8,8,0"
+                                    IsVisible="{Binding IsActive, Converter={StaticResource InverseBoolConverter}}"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ServicesViewModel}}, Path=RestoreServiceCommand}"
+                                    CommandParameter="{Binding .}" />
+
+                            <!-- Inactive: Delete -->
+                            <Button Grid.Row="2"
+                                    Grid.Column="1"
+                                    Text="Delete"
+                                    Style="{StaticResource DangerButton}"
+                                    HeightRequest="32"
+                                    Padding="12,0"
+                                    FontSize="12"
+                                    Margin="0,8,0,0"
+                                    IsVisible="{Binding IsActive, Converter={StaticResource InverseBoolConverter}}"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ServicesViewModel}}, Path=PermanentDeleteServiceCommand}"
+                                    CommandParameter="{Binding .}" />
 
                         </Grid>
                     </Border>

@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:WashTrack.MVVM.ViewModels"
              xmlns:models="clr-namespace:WashTrack.Models"
+             xmlns:sys="clr-namespace:System;assembly=netstandard"
              x:Class="WashTrack.MVVM.Views.TransactionsPage"
              x:DataType="vm:TransactionsViewModel"
              Title="Transactions">
@@ -14,6 +15,7 @@
 
     <Grid RowDefinitions="Auto,*">
 
+        <!-- Header + tab toggle -->
         <Grid Grid.Row="0"
               ColumnDefinitions="*,Auto"
               Margin="16,8">
@@ -50,51 +52,56 @@
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Transaction">
+                    <!-- Flattened card: one Grid, no nested StackLayouts -->
                     <Border Style="{StaticResource CardStyle}"
                             Margin="0,4">
-                        <StackLayout Spacing="4">
+                        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                              ColumnDefinitions="*,Auto">
 
-                            <Grid ColumnDefinitions="*,Auto">
-                                <Grid.GestureRecognizers>
+                            <!-- Row 0: customer name + total (tap to open) -->
+                            <VerticalStackLayout Grid.Row="0" Grid.Column="0">
+                                <VerticalStackLayout.GestureRecognizers>
                                     <TapGestureRecognizer
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionsViewModel}}, Path=ViewTransactionCommand}"
                                         CommandParameter="{Binding .}" />
-                                </Grid.GestureRecognizers>
-                                <StackLayout Grid.Column="0" Spacing="2">
-                                    <Label Text="{Binding Customer.Name}"
-                                           FontSize="16"
-                                           FontAttributes="Bold"
-                                           TextColor="{StaticResource TextPrimaryColor}" />
-                                    <Label Text="{Binding Items.Count, StringFormat='{0} item(s)'}"
-                                           Style="{StaticResource MutedLabelStyle}" />
-                                </StackLayout>
-                                <Label Grid.Column="1"
-                                       Text="{Binding TotalCost, StringFormat='₱{0:F2}'}"
-                                       Style="{StaticResource AccentLabelStyle}"
-                                       VerticalOptions="Start" />
-                            </Grid>
-
-                            <Grid ColumnDefinitions="*,Auto"
-                                  Margin="0,4,0,0">
-                                <Grid.GestureRecognizers>
-                                    <TapGestureRecognizer
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionsViewModel}}, Path=ViewTransactionCommand}"
-                                        CommandParameter="{Binding .}" />
-                                </Grid.GestureRecognizers>
-                                <Label Grid.Column="0"
-                                       Text="{Binding CreatedAt, StringFormat='{0:MMM dd, yyyy}'}"
+                                </VerticalStackLayout.GestureRecognizers>
+                                <Label Text="{Binding Customer.Name}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="{StaticResource TextPrimaryColor}" />
+                                <Label Text="{Binding Items.Count, StringFormat='{0} item(s)'}"
                                        Style="{StaticResource MutedLabelStyle}" />
+                            </VerticalStackLayout>
 
-                                <Border Grid.Column="1"
-                                        HorizontalOptions="End"
-                                        Style="{StaticResource PillSuccess}"
-                                        IsVisible="{Binding Status, Converter={StaticResource IsCompletedConverter}}">
-                                    <Label Text="Completed"
-                                           Style="{StaticResource PillLabelStyle}" />
-                                </Border>
-                            </Grid>
+                            <Label Grid.Row="0" Grid.Column="1"
+                                   Text="{Binding TotalCost, StringFormat='₱{0:F2}'}"
+                                   Style="{StaticResource AccentLabelStyle}"
+                                   VerticalOptions="Start" />
 
-                            <Label Style="{StaticResource MutedLabelStyle}"
+                            <!-- Row 1: date + completed pill -->
+                            <Label Grid.Row="1" Grid.Column="0"
+                                   Text="{Binding CreatedAt, StringFormat='{0:MMM dd, yyyy}'}"
+                                   Style="{StaticResource MutedLabelStyle}"
+                                   Margin="0,4,0,0">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionsViewModel}}, Path=ViewTransactionCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Label.GestureRecognizers>
+                            </Label>
+
+                            <Border Grid.Row="1" Grid.Column="1"
+                                    HorizontalOptions="End"
+                                    Style="{StaticResource PillSuccess}"
+                                    Margin="0,4,0,0"
+                                    IsVisible="{Binding Status, Converter={StaticResource IsCompletedConverter}}">
+                                <Label Text="Completed"
+                                       Style="{StaticResource PillLabelStyle}" />
+                            </Border>
+
+                            <!-- Row 2: tap hint -->
+                            <Label Grid.Row="2" Grid.ColumnSpan="2"
+                                   Style="{StaticResource MutedLabelStyle}"
                                    FontSize="11"
                                    FontAttributes="Italic"
                                    Margin="0,4,0,0"
@@ -111,11 +118,13 @@
                                 </Label.Triggers>
                             </Label>
 
-                            <StackLayout Orientation="Horizontal"
-                                         Spacing="8"
-                                         Margin="0,8,0,0"
-                                         IsVisible="{Binding Status, Converter={StaticResource IsPendingConverter}}">
+                            <!-- Row 3: payment + wash pills (pending only) -->
+                            <HorizontalStackLayout Grid.Row="3" Grid.ColumnSpan="2"
+                                                   Spacing="8"
+                                                   Margin="0,8,0,0"
+                                                   IsVisible="{Binding Status, Converter={StaticResource IsPendingConverter}}">
 
+                                <!-- Not paid yet: tappable, opens collect payment -->
                                 <Border Style="{StaticResource PillWarning}"
                                         IsVisible="{Binding IsPaid, Converter={StaticResource InverseBoolConverter}}">
                                     <Border.GestureRecognizers>
@@ -126,11 +135,13 @@
                                     <Label Text="Pending payment" Style="{StaticResource PillLabelStyle}" />
                                 </Border>
 
+                                <!-- Paid: display only, no longer tappable -->
                                 <Border Style="{StaticResource PillSuccess}"
                                         IsVisible="{Binding IsPaid}">
                                     <Label Text="Paid" Style="{StaticResource PillLabelStyle}" />
                                 </Border>
 
+                                <!-- Wash status: tappable, moves forward only -->
                                 <Border StrokeThickness="0"
                                         StrokeShape="RoundRectangle 20"
                                         Padding="12,4"
@@ -152,13 +163,16 @@
                                            Style="{StaticResource PillLabelStyle}" />
                                 </Border>
 
-                            </StackLayout>
+                            </HorizontalStackLayout>
 
-                            <Grid ColumnDefinitions="*,*"
+                            <!-- Row 4: Complete + Delete (pending only) -->
+                            <Grid Grid.Row="4" Grid.ColumnSpan="2"
+                                  ColumnDefinitions="*,*"
                                   ColumnSpacing="8"
                                   Margin="0,8,0,0"
                                   IsVisible="{Binding Status, Converter={StaticResource IsPendingConverter}}">
 
+                                <!-- Gray until paid AND washed, then turns green -->
                                 <Button Grid.Column="0"
                                         Text="Complete"
                                         Style="{StaticResource CompleteButtonStyle}"
@@ -167,7 +181,11 @@
                                     <Button.Triggers>
                                         <MultiTrigger TargetType="Button">
                                             <MultiTrigger.Conditions>
-                                                <BindingCondition Binding="{Binding IsPaid}" Value="True" />
+                                                <BindingCondition Binding="{Binding IsPaid}">
+                                                    <BindingCondition.Value>
+                                                        <sys:Boolean>True</sys:Boolean>
+                                                    </BindingCondition.Value>
+                                                </BindingCondition>
                                                 <BindingCondition Binding="{Binding WashStatus}" Value="Washed" />
                                             </MultiTrigger.Conditions>
                                             <Setter Property="BackgroundColor" Value="{StaticResource SuccessColor}" />
@@ -185,7 +203,7 @@
                                         CommandParameter="{Binding .}" />
                             </Grid>
 
-                        </StackLayout>
+                        </Grid>
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

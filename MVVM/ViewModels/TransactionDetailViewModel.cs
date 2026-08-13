@@ -17,6 +17,8 @@ namespace WashTrack.MVVM.ViewModels
     {
         private readonly WashTrackContext _context;
 
+        // ===== BOUND STATE =====
+
         [ObservableProperty] private Transaction transaction = new();
         [ObservableProperty] private string title = "New Transaction";
         [ObservableProperty] private ObservableCollection<Customer> customers = new();
@@ -43,38 +45,71 @@ namespace WashTrack.MVVM.ViewModels
         [ObservableProperty] private decimal change;
         [ObservableProperty] private decimal amountPaid;
         [ObservableProperty] private bool collectingPayment = false;
+        [ObservableProperty] private DateTime createdAt = DateTime.Now;
 
+        // Wash status mode
         [ObservableProperty] private bool washMode = false;
-        [ObservableProperty] private ObservableCollection<string> washStatusOptions = new() { "To Be Washed", "Washing", "Washed" };
+        [ObservableProperty] private ObservableCollection<string> washStatusOptions = new();
         [ObservableProperty] private string selectedWashStatus = "To Be Washed";
+        private string _currentWashStatus = "To Be Washed";
 
         private bool _suppressSearch = false;
         private int _existingTransactionId = 0;
+
+        // ===== MODE FLAGS =====
+        // These decide which parts of the page are shown or locked.
+
+        // True when we're editing a transaction that already exists.
+        public bool IsEditingExisting => _existingTransactionId != 0;
+
+        // True only when creating a brand new transaction — the only time
+        // customer, fulfillment and payment type can be chosen.
+        public bool CanEditOrderTerms => !IsEditingExisting && !CollectingPayment && !WashMode && !IsViewMode;
+
+        // Services can be added/removed on any pending transaction.
+        public bool CanEditServices => !CollectingPayment && !WashMode && !IsViewMode;
+
+        // Whole normal section (everything that isn't wash mode).
+        public bool ShowFullEditSection => !CollectingPayment && !WashMode;
+
+        public bool ShowWashSection => WashMode;
+        public bool ShowMainActionButtons => !IsViewMode && !WashMode;
+
+        // Read-only payment line shown while editing an existing pending order.
+        public bool ShowPaymentSummary => IsEditingExisting && !CollectingPayment && !WashMode && !IsViewMode;
+
+        public string PaymentSummaryText =>
+            AmountPaid >= CartTotal && CartTotal > 0
+                ? $"Paid — ₱{AmountPaid:F2}"
+                : $"{SelectedPaymentType} — ₱{CartTotal:F2} due";
 
         public string SaveButtonText
         {
             get
             {
                 if (CollectingPayment) return "Confirm Payment";
-                return _existingTransactionId != 0 ? "Save Changes" : "Complete Transaction";
+                return IsEditingExisting ? "Save Changes" : "Complete Transaction";
             }
         }
 
-        public bool ShowFullEditSection => !CollectingPayment && !WashMode;
-        public bool ShowWashSection => WashMode;
-        public bool ShowMainActionButtons => !IsViewMode && !WashMode;
-
         private void RefreshModeVisibility()
         {
+            OnPropertyChanged(nameof(IsEditingExisting));
+            OnPropertyChanged(nameof(CanEditOrderTerms));
+            OnPropertyChanged(nameof(CanEditServices));
             OnPropertyChanged(nameof(ShowFullEditSection));
             OnPropertyChanged(nameof(ShowWashSection));
             OnPropertyChanged(nameof(ShowMainActionButtons));
+            OnPropertyChanged(nameof(ShowPaymentSummary));
+            OnPropertyChanged(nameof(PaymentSummaryText));
+            OnPropertyChanged(nameof(SaveButtonText));
         }
 
         public TransactionDetailViewModel(WashTrackContext context)
         {
             _context = context;
 
+            // Fires when a customer is created/edited from inside this flow.
             WeakReferenceMessenger.Default.Register<CustomerCreatedMessage>(this, (recipient, message) =>
             {
                 var vm = (TransactionDetailViewModel)recipient;
@@ -90,6 +125,8 @@ namespace WashTrack.MVVM.ViewModels
             });
         }
 
+        // ===== NAVIGATION PARAMETERS =====
+
         partial void OnTransactionChanged(Transaction value)
         {
             if (value != null && value.TransactionId != 0)
@@ -98,32 +135,31 @@ namespace WashTrack.MVVM.ViewModels
                 IsViewMode = value.Status == "Completed";
                 Title = IsViewMode ? "Receipt" : "Edit Transaction";
                 Status = value.Status;
-                OnPropertyChanged(nameof(SaveButtonText));
                 RefreshModeVisibility();
             }
         }
 
-        partial void OnCollectingPaymentChanged(bool value)
-        {
-            OnPropertyChanged(nameof(SaveButtonText));
-            RefreshModeVisibility();
-        }
+        partial void OnCollectingPaymentChanged(bool value) => RefreshModeVisibility();
 
-        partial void OnWashModeChanged(bool value)
-        {
-            RefreshModeVisibility();
-        }
+        partial void OnWashModeChanged(bool value) => RefreshModeVisibility();
 
+        // ===== DATA LOADING =====
+
+        // Populates the customer and service pickers, then loads the
+        // transaction itself if we're editing an existing one.
         [RelayCommand]
         public async Task LoadDataAsync()
         {
+            // AsNoTracking: these two lists are only used to fill pickers.
             var customerList = await _context.Customers
+                .AsNoTracking()
                 .Where(c => c.IsActive)
                 .OrderBy(c => c.Name)
                 .ToListAsync();
             Customers = new ObservableCollection<Customer>(customerList);
 
             var serviceList = await _context.Services
+                .AsNoTracking()
                 .Where(s => s.IsActive)
                 .OrderBy(s => s.ServiceName)
                 .ToListAsync();
@@ -135,6 +171,8 @@ namespace WashTrack.MVVM.ViewModels
             }
         }
 
+        // Loads one existing transaction. Stays TRACKED on purpose —
+        // CompleteTransactionAsync modifies this same entity later.
         private async Task LoadExistingTransactionAsync(int transactionId)
         {
             try
@@ -153,7 +191,11 @@ namespace WashTrack.MVVM.ViewModels
                 SelectedFulfillmentType = full.FulfillmentType;
                 SelectedPaymentType = full.PaymentType;
                 AmountPaid = full.AmountPaid ?? 0;
+                CreatedAt = full.CreatedAt;
+
+                _currentWashStatus = full.WashStatus;
                 SelectedWashStatus = full.WashStatus;
+                BuildWashStatusOptions();
 
                 if (full.Customer != null)
                 {
@@ -174,12 +216,59 @@ namespace WashTrack.MVVM.ViewModels
                 {
                     Title = "Update Wash Status";
                 }
+
+                RefreshModeVisibility();
             }
             catch (Exception ex)
             {
                 await Shell.Current.DisplayAlert("Error", $"Couldn't load this transaction: {ex.Message}", "OK");
             }
         }
+
+        // ===== WASH STATUS =====
+
+        // Wash status only moves forward: To Be Washed → Washing → Washed.
+        // Only the options at or ahead of the current stage are offered.
+        private void BuildWashStatusOptions()
+        {
+            var all = new List<string> { "To Be Washed", "Washing", "Washed" };
+            int currentIndex = all.IndexOf(_currentWashStatus);
+            if (currentIndex < 0) currentIndex = 0;
+
+            WashStatusOptions = new ObservableCollection<string>(all.Skip(currentIndex));
+            SelectedWashStatus = _currentWashStatus;
+        }
+
+        // Saves the new wash status. Confirms first, because this is one-way.
+        [RelayCommand]
+        public async Task ConfirmWashStatusAsync()
+        {
+            if (_existingTransactionId == 0) return;
+
+            // Nothing chosen / unchanged — just leave.
+            if (SelectedWashStatus == _currentWashStatus)
+            {
+                await Shell.Current.GoToAsync("..");
+                return;
+            }
+
+            string message = SelectedWashStatus == "Washed"
+                ? "Mark as washed? This can't be undone."
+                : "Start washing this order?";
+
+            bool confirm = await Shell.Current.DisplayAlert(
+                "Confirm Wash Status", message, "Yes", "No");
+            if (!confirm) return;
+
+            var existing = await _context.Transactions.FindAsync(_existingTransactionId);
+            if (existing == null) return;
+
+            existing.WashStatus = SelectedWashStatus;
+            await _context.SaveChangesAsync();
+            await Shell.Current.GoToAsync("..");
+        }
+
+        // ===== CUSTOMER SEARCH =====
 
         partial void OnCustomerSearchChanged(string value)
         {
@@ -202,48 +291,7 @@ namespace WashTrack.MVVM.ViewModels
             ShowAddCustomerOption = filtered.Count == 0 && value.Trim().Length >= 2;
         }
 
-        partial void OnSelectedServiceChanged(Service? value)
-        {
-            OnPropertyChanged(nameof(QuantityLabel));
-        }
-
-        partial void OnSelectedFulfillmentTypeChanged(string value) => RecalculateAddressPrompt();
-
-        partial void OnSelectedCustomerChanged(Customer? value) => RecalculateAddressPrompt();
-
-        partial void OnSelectedPaymentTypeChanged(string value)
-        {
-            OnPropertyChanged(nameof(IsPayNow));
-            OnPropertyChanged(nameof(IsPayLater));
-            CashReceived = string.Empty;
-            Change = 0;
-        }
-
-        partial void OnCashReceivedChanged(string value) => RecalculateChange();
-
-        partial void OnCartTotalChanged(decimal value) => RecalculateChange();
-
-        public bool IsPayNow => SelectedPaymentType == "Pay Now";
-        public bool IsPayLater => SelectedPaymentType == "Pay Later";
-
-        private void RecalculateChange()
-        {
-            if (!decimal.TryParse(CashReceived, out decimal received))
-            {
-                Change = 0;
-                return;
-            }
-            Change = received - CartTotal;
-        }
-
-        public void RecalculateAddressPrompt()
-        {
-            ShowAddAddressOption = !IsViewMode
-                && SelectedFulfillmentType == "Delivery"
-                && SelectedCustomer != null
-                && string.IsNullOrWhiteSpace(SelectedCustomer.Address);
-        }
-
+        // Picks a customer from the suggestion list.
         [RelayCommand]
         public void SelectCustomer(Customer customer)
         {
@@ -258,6 +306,7 @@ namespace WashTrack.MVVM.ViewModels
             ShowAddCustomerOption = false;
         }
 
+        // Opens the customer page to create a new customer mid-transaction.
         [RelayCommand]
         public async Task GoToAddCustomerAsync()
         {
@@ -269,6 +318,8 @@ namespace WashTrack.MVVM.ViewModels
             await Shell.Current.GoToAsync(nameof(CustomerDetailPage), parameters);
         }
 
+        // Safety valve: lets the owner fill in a missing address for a
+        // delivery order without unlocking anything else.
         [RelayCommand]
         public async Task GoToAddAddressAsync()
         {
@@ -282,10 +333,65 @@ namespace WashTrack.MVVM.ViewModels
             await Shell.Current.GoToAsync(nameof(CustomerDetailPage), parameters);
         }
 
+        // Shows the "no address on file" warning for delivery orders.
+        public void RecalculateAddressPrompt()
+        {
+            ShowAddAddressOption = !IsViewMode
+                && SelectedFulfillmentType == "Delivery"
+                && SelectedCustomer != null
+                && string.IsNullOrWhiteSpace(SelectedCustomer.Address);
+        }
+
+        partial void OnSelectedFulfillmentTypeChanged(string value) => RecalculateAddressPrompt();
+
+        partial void OnSelectedCustomerChanged(Customer? value) => RecalculateAddressPrompt();
+
+        // ===== PAYMENT =====
+
+        public bool IsPayNow => SelectedPaymentType == "Pay Now";
+        public bool IsPayLater => SelectedPaymentType == "Pay Later";
+
+        partial void OnSelectedPaymentTypeChanged(string value)
+        {
+            OnPropertyChanged(nameof(IsPayNow));
+            OnPropertyChanged(nameof(IsPayLater));
+            OnPropertyChanged(nameof(PaymentSummaryText));
+            CashReceived = string.Empty;
+            Change = 0;
+        }
+
+        partial void OnCashReceivedChanged(string value) => RecalculateChange();
+
+        partial void OnCartTotalChanged(decimal value)
+        {
+            RecalculateChange();
+            OnPropertyChanged(nameof(PaymentSummaryText));
+        }
+
+        partial void OnAmountPaidChanged(decimal value) => OnPropertyChanged(nameof(PaymentSummaryText));
+
+        private void RecalculateChange()
+        {
+            if (!decimal.TryParse(CashReceived, out decimal received))
+            {
+                Change = 0;
+                return;
+            }
+            Change = received - CartTotal;
+        }
+
+        // ===== CART =====
+
         public string QuantityLabel => SelectedService?.FlatRate.HasValue == true
             ? "Quantity (pieces)"
             : "Weight (kg)";
 
+        partial void OnSelectedServiceChanged(Service? value)
+        {
+            OnPropertyChanged(nameof(QuantityLabel));
+        }
+
+        // Works out the cost of one line based on the service's pricing mode.
         private decimal CalculateLineCost(Service service, decimal enteredValue)
         {
             if (service.FlatRate.HasValue)
@@ -303,6 +409,7 @@ namespace WashTrack.MVVM.ViewModels
             return (service.PricePerKilo ?? 0) * enteredValue;
         }
 
+        // Adds the chosen service to the cart, merging with an existing line.
         [RelayCommand]
         public void AddServiceToCart()
         {
@@ -354,6 +461,7 @@ namespace WashTrack.MVVM.ViewModels
             WeightKg = string.Empty;
         }
 
+        // Removes one line from the cart.
         [RelayCommand]
         public void RemoveCartItem(TransactionItem item)
         {
@@ -367,19 +475,10 @@ namespace WashTrack.MVVM.ViewModels
             CartTotal = CartItems.Sum(i => i.LineCost);
         }
 
-        [RelayCommand]
-        public async Task ConfirmWashStatusAsync()
-        {
-            if (_existingTransactionId == 0) return;
+        // ===== SAVING =====
 
-            var existing = await _context.Transactions.FindAsync(_existingTransactionId);
-            if (existing == null) return;
-
-            existing.WashStatus = SelectedWashStatus;
-            await _context.SaveChangesAsync();
-            await Shell.Current.GoToAsync("..");
-        }
-
+        // Handles three cases: creating a new transaction, saving edits to
+        // an existing one, and confirming payment.
         [RelayCommand]
         public async Task CompleteTransactionAsync()
         {
@@ -404,6 +503,7 @@ namespace WashTrack.MVVM.ViewModels
 
             decimal finalAmountPaid;
 
+            // Cash validation only applies when money is being taken now.
             if (SelectedPaymentType == "Pay Now")
             {
                 if (!decimal.TryParse(CashReceived, out decimal receivedValue) || receivedValue < CartTotal)
@@ -415,7 +515,7 @@ namespace WashTrack.MVVM.ViewModels
             }
             else
             {
-                finalAmountPaid = 0;
+                finalAmountPaid = AmountPaid;
             }
 
             var itemsSummary = string.Join("\n",
@@ -429,6 +529,7 @@ namespace WashTrack.MVVM.ViewModels
             bool confirmed = await Shell.Current.DisplayAlert("Confirm Transaction", confirmMessage, "Confirm", "Cancel");
             if (!confirmed) return;
 
+            // --- Existing transaction: update items and payment only ---
             if (_existingTransactionId != 0)
             {
                 var existing = await _context.Transactions
@@ -437,10 +538,10 @@ namespace WashTrack.MVVM.ViewModels
 
                 if (existing == null) return;
 
-                existing.CustomerId = SelectedCustomer.CustomerId;
-                existing.FulfillmentType = SelectedFulfillmentType;
-                existing.PaymentType = SelectedPaymentType;
                 existing.AmountPaid = finalAmountPaid;
+                if (CollectingPayment)
+                    existing.PaymentType = SelectedPaymentType;
+
                 _context.TransactionItems.RemoveRange(existing.Items);
                 existing.Items.Clear();
 
@@ -455,11 +556,14 @@ namespace WashTrack.MVVM.ViewModels
                 }
                 existing.TotalCost = CartItems.Sum(i => i.LineCost);
 
+                // Note: Status is NOT changed here. Only the Complete button
+                // on the list page can finalise a transaction.
                 await _context.SaveChangesAsync();
                 await Shell.Current.GoToAsync("..");
                 return;
             }
 
+            // --- Brand new transaction ---
             var newTransaction = new Transaction
             {
                 CustomerId = SelectedCustomer.CustomerId,
@@ -483,20 +587,16 @@ namespace WashTrack.MVVM.ViewModels
 
             await _context.Transactions.AddAsync(newTransaction);
 
+            // Update the customer's last-transaction date on the tracked copy.
             var trackedCustomer = await _context.Customers.FindAsync(SelectedCustomer.CustomerId);
             if (trackedCustomer != null)
-            {
                 trackedCustomer.LastTransaction = DateTime.Now;
-            }
-            else
-            {
-                SelectedCustomer.LastTransaction = DateTime.Now;
-                _context.Customers.Update(SelectedCustomer);
-            }
 
             await _context.SaveChangesAsync();
             await Shell.Current.GoToAsync("..");
         }
+
+        // ===== OTHER NAVIGATION =====
 
         [RelayCommand]
         public async Task GoToServicesAsync()

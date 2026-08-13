@@ -34,6 +34,7 @@ namespace WashTrack.MVVM.ViewModels
         {
             IsLoading = true;
             var list = await _context.Services
+                .AsNoTracking()
                 .Where(s => s.IsActive != ShowingInactive)
                 .OrderBy(s => s.ServiceName)
                 .ToListAsync();
@@ -69,6 +70,7 @@ namespace WashTrack.MVVM.ViewModels
         public async Task DeleteServiceAsync(Service service)
         {
             var hasPending = await _context.Transactions
+               .AsNoTracking()
                .Where(t => t.Status == "Pending")
                .AnyAsync(t => t.Items.Any(i => i.ServiceId == service.ServiceId));
 
@@ -107,6 +109,7 @@ namespace WashTrack.MVVM.ViewModels
         public async Task PermanentDeleteServiceAsync(Service service)
         {
             var hasAnyTransactions = await _context.TransactionItems
+               .AsNoTracking()
                .AnyAsync(i => i.ServiceId == service.ServiceId);
 
             if (hasAnyTransactions)
