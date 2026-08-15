@@ -300,6 +300,20 @@
                 <!-- ===== SERVICES (editable on any pending order) ===== -->
                 <VerticalStackLayout IsVisible="{Binding CanEditServices}">
 
+                    <!-- Explains why editing is closed, instead of controls
+                     just silently disappearing -->
+                    <Border IsVisible="{Binding ShowEditLockNotice}"
+                        BackgroundColor="#FFF3CD"
+                        Stroke="{StaticResource WarningColor}"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 8"
+                        Padding="12,10"
+                        Margin="0,8,0,4">
+                        <Label Text="{Binding EditLockReason}"
+                           FontSize="13"
+                           TextColor="#856404" />
+                    </Border>
+
                     <Label Text="Service"
                            Style="{StaticResource FieldLabelStyle}" />
 

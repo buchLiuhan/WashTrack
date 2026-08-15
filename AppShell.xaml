@@ -28,12 +28,12 @@
         ContentTemplate="{DataTemplate views:CustomersPage}"
         Route="CustomersPage" />
     
-   <!--
+   
     <ShellContent
         Title="Inventory"
         ContentTemplate="{DataTemplate views:InventoryPage}"
         Route="InventoryPage" />
-
+ <!--
     <ShellContent
         Title="Reports"
         ContentTemplate="{DataTemplate views:ReportsPage}"

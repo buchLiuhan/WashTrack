@@ -66,11 +66,34 @@ namespace WashTrack.MVVM.ViewModels
         // customer, fulfillment and payment type can be chosen.
         public bool CanEditOrderTerms => !IsEditingExisting && !CollectingPayment && !WashMode && !IsViewMode;
 
-        // Services can be added/removed on any pending transaction.
-        public bool CanEditServices => !CollectingPayment && !WashMode && !IsViewMode;
+        // Services can only be changed while nothing irreversible has happened:
+        // no money taken yet, and the clothes haven't gone into the machine.
+        // Once either is true the weight can't be re-verified, so we lock it.
+        public bool CanEditServices =>
+            !CollectingPayment
+            && !WashMode
+            && !IsViewMode
+            && AmountPaid < CartTotal
+            && _currentWashStatus == "To Be Washed";
+
+        // Shows the explanation when service editing has been locked out.
+        public bool ShowEditLockNotice => IsEditingExisting && !CanEditServices && !CollectingPayment && !WashMode && !IsViewMode;
+
+        // Tells the owner WHY editing is closed instead of just hiding controls.
+        public string EditLockReason
+        {
+            get
+            {
+                if (AmountPaid >= CartTotal && CartTotal > 0)
+                    return "This order is already paid and can no longer be edited.";
+                if (_currentWashStatus != "To Be Washed")
+                    return "This order is being washed and can no longer be edited.";
+                return string.Empty;
+            }
+        }
 
         // Whole normal section (everything that isn't wash mode).
-        public bool ShowFullEditSection => !CollectingPayment && !WashMode;
+        public bool ShowFullEditSection => !WashMode;
 
         public bool ShowWashSection => WashMode;
         public bool ShowMainActionButtons => !IsViewMode && !WashMode;
@@ -97,6 +120,8 @@ namespace WashTrack.MVVM.ViewModels
             OnPropertyChanged(nameof(IsEditingExisting));
             OnPropertyChanged(nameof(CanEditOrderTerms));
             OnPropertyChanged(nameof(CanEditServices));
+            OnPropertyChanged(nameof(ShowEditLockNotice));
+            OnPropertyChanged(nameof(EditLockReason));
             OnPropertyChanged(nameof(ShowFullEditSection));
             OnPropertyChanged(nameof(ShowWashSection));
             OnPropertyChanged(nameof(ShowMainActionButtons));
@@ -365,10 +390,10 @@ namespace WashTrack.MVVM.ViewModels
         partial void OnCartTotalChanged(decimal value)
         {
             RecalculateChange();
-            OnPropertyChanged(nameof(PaymentSummaryText));
+            RefreshModeVisibility();
         }
 
-        partial void OnAmountPaidChanged(decimal value) => OnPropertyChanged(nameof(PaymentSummaryText));
+        partial void OnAmountPaidChanged(decimal value) => RefreshModeVisibility();
 
         private void RecalculateChange()
         {
@@ -382,8 +407,10 @@ namespace WashTrack.MVVM.ViewModels
 
         // ===== CART =====
 
+        // Flat-rate services are counted in whole pieces or machine loads.
+        // Weight-based services are measured in kilos and allow decimals.
         public string QuantityLabel => SelectedService?.FlatRate.HasValue == true
-            ? "Quantity (pieces)"
+            ? "Quantity (Pieces/Load)"
             : "Weight (kg)";
 
         partial void OnSelectedServiceChanged(Service? value)
@@ -423,6 +450,15 @@ namespace WashTrack.MVVM.ViewModels
             {
                 string label = SelectedService.FlatRate.HasValue ? "quantity" : "weight";
                 Shell.Current.DisplayAlert("Error", $"Please enter a valid {label}.", "OK");
+                return;
+            }
+
+            // Pieces and machine loads can't be fractional — 3.5 comforters
+            // or 2.5 machine loads don't exist. Kilos still allow decimals.
+            if (SelectedService.FlatRate.HasValue && enteredValue != Math.Floor(enteredValue))
+            {
+                Shell.Current.DisplayAlert("Error",
+                    "Please enter a whole number of pieces or loads.", "OK");
                 return;
             }
 
