@@ -38,6 +38,7 @@ namespace WashTrack.MVVM.ViewModels
             _context = context;
         }
 
+        // Fills the form when an existing item is passed in.
         partial void OnInventoryItemChanged(Inventory value)
         {
             if (value != null && value.InventoryId != 0)
@@ -51,6 +52,8 @@ namespace WashTrack.MVVM.ViewModels
                 ReorderQuantity = value.ReorderQuantity?.ToString() ?? string.Empty;
             }
         }
+
+        // ===== SAVING =====
 
         [RelayCommand]
         public async Task SaveAsync()
@@ -83,17 +86,24 @@ namespace WashTrack.MVVM.ViewModels
 
             if (_isEditing)
             {
-                InventoryItem.ItemName = ItemName;
-                InventoryItem.CurrentStock = stock;
-                InventoryItem.Unit = Unit;
-                InventoryItem.MinimumThreshold = threshold;
-                InventoryItem.ReorderQuantity = reorder > 0 ? reorder : null;
-                InventoryItem.UpdatedAt = DateTime.Now;
+                // Fetch tracked so the update actually saves.
+                var tracked = await _context.Inventories.FindAsync(InventoryItem.InventoryId);
+                if (tracked == null) return;
 
-                if (stock > InventoryItem.CurrentStock)
-                    InventoryItem.LastRestockedAt = DateTime.Now;
+                // Capture the old stock BEFORE overwriting it, otherwise the
+                // restock comparison below always fails.
+                decimal previousStock = tracked.CurrentStock;
 
-                _context.Inventories.Update(InventoryItem);
+                tracked.ItemName = ItemName;
+                tracked.CurrentStock = stock;
+                tracked.Unit = Unit;
+                tracked.MinimumThreshold = threshold;
+                tracked.ReorderQuantity = reorder > 0 ? reorder : null;
+                tracked.UpdatedAt = DateTime.Now;
+
+                // Stock going up means the owner restocked.
+                if (stock > previousStock)
+                    tracked.LastRestockedAt = DateTime.Now;
             }
             else
             {
@@ -104,7 +114,9 @@ namespace WashTrack.MVVM.ViewModels
                     Unit = Unit,
                     MinimumThreshold = threshold,
                     ReorderQuantity = reorder > 0 ? reorder : null,
-                    UpdatedAt = DateTime.Now
+                    IsActive = true,
+                    UpdatedAt = DateTime.Now,
+                    LastRestockedAt = DateTime.Now
                 };
                 await _context.Inventories.AddAsync(newItem);
             }

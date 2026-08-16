@@ -6,7 +6,7 @@
              x:DataType="vm:ServiceDetailViewModel"
              Title="{Binding Title}">
     <ScrollView>
-        <StackLayout Padding="24" Spacing="4">
+        <VerticalStackLayout Padding="24" Spacing="4">
 
             <Label Text="SERVICE DETAILS"
                    Style="{StaticResource SectionHeaderLabel}" />
@@ -36,17 +36,17 @@
             </Grid>
 
             <!-- Mode A: Per Kilo -->
-            <StackLayout IsVisible="{Binding IsPerKiloMode}">
+            <VerticalStackLayout IsVisible="{Binding IsPerKiloMode}">
                 <BoxView HeightRequest="1" BackgroundColor="{StaticResource BorderColor}" Margin="0,16,0,8" />
                 <Label Text="PER KILO" Style="{StaticResource SectionHeaderLabel}" />
                 <Label Text="Price per Kilo (₱)" Style="{StaticResource FieldLabelStyle}" />
                 <Entry Placeholder="e.g. 30"
                        Text="{Binding PricePerKilo}"
                        Keyboard="Numeric" />
-            </StackLayout>
+            </VerticalStackLayout>
 
             <!-- Mode B: Minimum Charge -->
-            <StackLayout IsVisible="{Binding IsMinChargeMode}">
+            <VerticalStackLayout IsVisible="{Binding IsMinChargeMode}">
                 <BoxView HeightRequest="1" BackgroundColor="{StaticResource BorderColor}" Margin="0,16,0,8" />
                 <Label Text="MINIMUM CHARGE" Style="{StaticResource SectionHeaderLabel}" />
                 <Label Text="Minimum Weight (kg)" Style="{StaticResource FieldLabelStyle}" />
@@ -61,17 +61,195 @@
                 <Entry Placeholder="e.g. 50 (leave blank if none)"
                        Text="{Binding ExcessPerKilo}"
                        Keyboard="Numeric" />
-            </StackLayout>
+            </VerticalStackLayout>
 
             <!-- Mode C: Flat Rate -->
-            <StackLayout IsVisible="{Binding IsFlatRateMode}">
+            <VerticalStackLayout IsVisible="{Binding IsFlatRateMode}">
                 <BoxView HeightRequest="1" BackgroundColor="{StaticResource BorderColor}" Margin="0,16,0,8" />
-                <Label Text="FLAT RATE (PER PIECE)" Style="{StaticResource SectionHeaderLabel}" />
-                <Label Text="Price per Piece (₱)" Style="{StaticResource FieldLabelStyle}" />
+                <Label Text="FLAT RATE (PER PIECE / LOAD)" Style="{StaticResource SectionHeaderLabel}" />
+                <Label Text="Price per Piece/Load (₱)" Style="{StaticResource FieldLabelStyle}" />
                 <Entry Placeholder="e.g. 300"
                        Text="{Binding FlatRate}"
                        Keyboard="Numeric" />
-            </StackLayout>
+            </VerticalStackLayout>
+
+            <!-- ===== SUPPLY USAGE ===== -->
+            <BoxView HeightRequest="1" BackgroundColor="{StaticResource BorderColor}" Margin="0,16,0,8" />
+            <Label Text="SUPPLY USAGE" Style="{StaticResource SectionHeaderLabel}" />
+            <Label Text="{Binding UsageHelpText}"
+                   Style="{StaticResource MutedLabelStyle}"
+                   FontSize="12" />
+            <Label Text="Leave a slot empty if this service doesn't use it."
+                   Style="{StaticResource MutedLabelStyle}"
+                   FontSize="12"
+                   Margin="0,0,0,8" />
+
+            <!-- No inventory yet -->
+            <Border IsVisible="{Binding HasInventoryItems, Converter={StaticResource InverseBoolConverter}}"
+                    BackgroundColor="{StaticResource InputBackgroundColor}"
+                    Stroke="{StaticResource BorderColor}"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 8"
+                    Padding="12,10"
+                    Margin="0,0,0,8">
+                <Grid RowDefinitions="Auto,Auto">
+                    <Label Grid.Row="0"
+                           Text="No inventory items yet."
+                           FontSize="13"
+                           TextColor="{StaticResource TextMutedColor}" />
+                    <Label Grid.Row="1"
+                           Text="Add one in Inventory →"
+                           TextColor="{StaticResource AccentColor}"
+                           FontAttributes="Bold"
+                           FontSize="13">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GoToInventoryCommand}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </Grid>
+            </Border>
+
+            <VerticalStackLayout IsVisible="{Binding HasInventoryItems}">
+
+                <!-- Detergent slot -->
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Grid.Column="0"
+                           Text="Detergent"
+                           Style="{StaticResource FieldLabelStyle}" />
+                    <Label Grid.Column="1"
+                           Text="✕ Clear"
+                           TextColor="{StaticResource DangerColor}"
+                           FontSize="12"
+                           VerticalOptions="Center"
+                           IsVisible="{Binding HasDetergentSelection}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ClearDetergentCommand}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </Grid>
+                <Label Text="The soap used for washing."
+                       Style="{StaticResource MutedLabelStyle}"
+                       FontSize="12" />
+                <Grid ColumnDefinitions="*,Auto"
+                      BackgroundColor="{StaticResource InputBackgroundColor}">
+                    <Picker Grid.Column="0"
+                            ItemsSource="{Binding AvailableItems}"
+                            SelectedItem="{Binding SelectedDetergentItem}"
+                            ItemDisplayBinding="{Binding ItemName}"
+                            Title="Select item"
+                            TextColor="{StaticResource TextPrimaryColor}"
+                            BackgroundColor="Transparent"
+                            TitleColor="{StaticResource TextMutedColor}" />
+                    <Label Grid.Column="1"
+                           Text="▼"
+                           TextColor="{StaticResource TextMutedColor}"
+                           VerticalOptions="Center"
+                           Margin="0,0,12,0" />
+                </Grid>
+                <Entry Placeholder="e.g. 20"
+                       Text="{Binding DetergentUsage}"
+                       Keyboard="Numeric"
+                       IsVisible="{Binding HasDetergentSelection}"
+                       Margin="0,4,0,0" />
+                <Label Text="{Binding UsageUnitLabel}"
+                       Style="{StaticResource MutedLabelStyle}"
+                       FontSize="12"
+                       IsVisible="{Binding HasDetergentSelection}"
+                       Margin="0,2,0,8" />
+
+                <!-- Fabric Conditioner slot -->
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Grid.Column="0"
+                           Text="Fabric Conditioner"
+                           Style="{StaticResource FieldLabelStyle}" />
+                    <Label Grid.Column="1"
+                           Text="✕ Clear"
+                           TextColor="{StaticResource DangerColor}"
+                           FontSize="12"
+                           VerticalOptions="Center"
+                           IsVisible="{Binding HasConditionerSelection}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ClearConditionerCommand}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </Grid>
+                <Label Text="The softener used per wash."
+                       Style="{StaticResource MutedLabelStyle}"
+                       FontSize="12" />
+                <Grid ColumnDefinitions="*,Auto"
+                      BackgroundColor="{StaticResource InputBackgroundColor}">
+                    <Picker Grid.Column="0"
+                            ItemsSource="{Binding AvailableItems}"
+                            SelectedItem="{Binding SelectedConditionerItem}"
+                            ItemDisplayBinding="{Binding ItemName}"
+                            Title="Select item"
+                            TextColor="{StaticResource TextPrimaryColor}"
+                            BackgroundColor="Transparent"
+                            TitleColor="{StaticResource TextMutedColor}" />
+                    <Label Grid.Column="1"
+                           Text="▼"
+                           TextColor="{StaticResource TextMutedColor}"
+                           VerticalOptions="Center"
+                           Margin="0,0,12,0" />
+                </Grid>
+                <Entry Placeholder="e.g. 20"
+                       Text="{Binding ConditionerUsage}"
+                       Keyboard="Numeric"
+                       IsVisible="{Binding HasConditionerSelection}"
+                       Margin="0,4,0,0" />
+                <Label Text="{Binding UsageUnitLabel}"
+                       Style="{StaticResource MutedLabelStyle}"
+                       FontSize="12"
+                       IsVisible="{Binding HasConditionerSelection}"
+                       Margin="0,2,0,8" />
+
+                <!-- Other supply slot -->
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Grid.Column="0"
+                           Text="Other Supply"
+                           Style="{StaticResource FieldLabelStyle}" />
+                    <Label Grid.Column="1"
+                           Text="✕ Clear"
+                           TextColor="{StaticResource DangerColor}"
+                           FontSize="12"
+                           VerticalOptions="Center"
+                           IsVisible="{Binding HasOtherSelection}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ClearOtherCommand}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </Grid>
+                <Label Text="Any other consumable, e.g. bleach or stain remover."
+                       Style="{StaticResource MutedLabelStyle}"
+                       FontSize="12" />
+                <Grid ColumnDefinitions="*,Auto"
+                      BackgroundColor="{StaticResource InputBackgroundColor}">
+                    <Picker Grid.Column="0"
+                            ItemsSource="{Binding AvailableItems}"
+                            SelectedItem="{Binding SelectedOtherItem}"
+                            ItemDisplayBinding="{Binding ItemName}"
+                            Title="Select item"
+                            TextColor="{StaticResource TextPrimaryColor}"
+                            BackgroundColor="Transparent"
+                            TitleColor="{StaticResource TextMutedColor}" />
+                    <Label Grid.Column="1"
+                           Text="▼"
+                           TextColor="{StaticResource TextMutedColor}"
+                           VerticalOptions="Center"
+                           Margin="0,0,12,0" />
+                </Grid>
+                <Entry Placeholder="e.g. 5"
+                       Text="{Binding OtherUsage}"
+                       Keyboard="Numeric"
+                       IsVisible="{Binding HasOtherSelection}"
+                       Margin="0,4,0,0" />
+                <Label Text="{Binding UsageUnitLabel}"
+                       Style="{StaticResource MutedLabelStyle}"
+                       FontSize="12"
+                       IsVisible="{Binding HasOtherSelection}"
+                       Margin="0,2,0,8" />
+
+            </VerticalStackLayout>
 
             <Button Text="Save Service"
                     Style="{StaticResource PrimaryButton}"
@@ -80,6 +258,6 @@
             <Button Text="Cancel"
                     Style="{StaticResource SecondaryButton}"
                     Command="{Binding CancelCommand}" />
-        </StackLayout>
+        </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

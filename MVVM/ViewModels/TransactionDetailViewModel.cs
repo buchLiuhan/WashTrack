@@ -265,6 +265,8 @@ namespace WashTrack.MVVM.ViewModels
         }
 
         // Saves the new wash status. Confirms first, because this is one-way.
+        // Moving to "Washing" is also the moment supplies are physically
+        // consumed, so that's when stock is deducted.
         [RelayCommand]
         public async Task ConfirmWashStatusAsync()
         {
@@ -288,9 +290,73 @@ namespace WashTrack.MVVM.ViewModels
             var existing = await _context.Transactions.FindAsync(_existingTransactionId);
             if (existing == null) return;
 
+            bool startingWash = _currentWashStatus == "To Be Washed"
+                                && SelectedWashStatus == "Washing";
+
             existing.WashStatus = SelectedWashStatus;
+
+            // Deduct supplies exactly once, when the wash actually starts.
+            if (startingWash)
+                await DeductSuppliesAsync(_existingTransactionId);
+
             await _context.SaveChangesAsync();
             await Shell.Current.GoToAsync("..");
+        }
+
+        // ===== SUPPLY DEDUCTION =====
+
+        // Works out how much of each linked supply this order consumes and
+        // subtracts it from stock, logging a usage row for the reports.
+        // Stock is allowed to go negative: the clothes are being washed
+        // regardless, and a negative figure makes the shortage visible.
+        private async Task DeductSuppliesAsync(int transactionId)
+        {
+            var items = await _context.TransactionItems
+                .AsNoTracking()
+                .Include(i => i.Service)
+                .Where(i => i.TransactionId == transactionId)
+                .ToListAsync();
+
+            foreach (var item in items)
+            {
+                var service = item.Service;
+                if (service == null) continue;
+
+                // WeightKg holds kilos for weight-based services, or a
+                // piece/load count for flat-rate ones. Either way the rate
+                // is "per unit", so the multiplication is the same.
+                decimal quantity = item.WeightKg;
+
+                await ApplyUsageAsync(service.DetergentItemId, service.DetergentUsage, quantity, transactionId, "Detergent");
+                await ApplyUsageAsync(service.ConditionerItemId, service.ConditionerUsage, quantity, transactionId, "Conditioner");
+                await ApplyUsageAsync(service.OtherItemId, service.OtherUsage, quantity, transactionId, "Other supply");
+            }
+        }
+
+        // Subtracts one supply's usage and records it in the history table.
+        private async Task ApplyUsageAsync(int? inventoryId, decimal? ratePerUnit, decimal quantity, int transactionId, string slotName)
+        {
+            // Slot unused, or no rate set — nothing to deduct.
+            if (!inventoryId.HasValue || !ratePerUnit.HasValue) return;
+
+            var inventoryItem = await _context.Inventories.FindAsync(inventoryId.Value);
+            if (inventoryItem == null) return;
+
+            decimal amountUsed = ratePerUnit.Value * quantity;
+            if (amountUsed <= 0) return;
+
+            inventoryItem.CurrentStock -= amountUsed;
+            inventoryItem.UpdatedAt = DateTime.Now;
+
+            // History feeds the usage estimate and the inventory reports.
+            await _context.InventoryUsageHistories.AddAsync(new InventoryUsageHistory
+            {
+                InventoryId = inventoryId.Value,
+                QuantityUsed = amountUsed,
+                UsageDate = DateTime.Now,
+                TransactionId = transactionId,
+                Notes = $"{slotName} used for order #{transactionId:D4}"
+            });
         }
 
         // ===== CUSTOMER SEARCH =====

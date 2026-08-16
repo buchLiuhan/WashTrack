@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WashTrack.Models;
-
 namespace WashTrack.Data
 {
     public class WashTrackContext : DbContext
@@ -57,6 +56,27 @@ namespace WashTrack.Data
                 .WithMany()
                 .HasForeignKey(i => i.TransactionId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // ===== SUPPLY LINKS =====
+            // SetNull: if an inventory item is ever permanently deleted,
+            // the service simply loses the link instead of breaking.
+            modelBuilder.Entity<Service>()
+                .HasOne(s => s.DetergentItem)
+                .WithMany()
+                .HasForeignKey(s => s.DetergentItemId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Service>()
+                .HasOne(s => s.ConditionerItem)
+                .WithMany()
+                .HasForeignKey(s => s.ConditionerItemId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Service>()
+                .HasOne(s => s.OtherItem)
+                .WithMany()
+                .HasForeignKey(s => s.OtherItemId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

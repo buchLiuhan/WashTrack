@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-
 namespace WashTrack.Models
 {
     public class Inventory
@@ -23,8 +22,17 @@ namespace WashTrack.Models
 
         public decimal? UnitCost { get; set; }
 
+        // Soft delete: deactivated items keep their usage history so past
+        // inventory reports stay accurate.
+        public bool IsActive { get; set; } = true;
+
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
         public DateTime? LastRestockedAt { get; set; }
+
+        // True when stock has fallen to or below the alert threshold.
+        // NotMapped: calculated, not stored.
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+        public bool IsLowStock => CurrentStock <= MinimumThreshold;
     }
 }
