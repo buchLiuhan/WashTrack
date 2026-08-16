@@ -8,12 +8,57 @@ using WashTrack.MVVM.Views;
 
 namespace WashTrack.MVVM.ViewModels
 {
+    // Display wrapper: pairs an inventory item with its usage forecast.
+    // The forecast can't live on the model itself because it depends on
+    // a separate table (InventoryUsageHistory).
+    public partial class InventoryWithUsage : ObservableObject
+    {
+        public Inventory Item { get; set; } = new();
+
+        // Average consumed per day over the last 30 days. Zero means the
+        // item has never been used yet.
+        public decimal AverageDailyUsage { get; set; }
+
+        public bool HasUsageData => AverageDailyUsage > 0;
+
+        // Days until stock reaches the owner's own low-stock threshold —
+        // not zero. That way the forecast and the Low Stock pill agree,
+        // and she gets warning time for the 1-day supply lead time.
+        public int DaysUntilThreshold
+        {
+            get
+            {
+                if (!HasUsageData) return 0;
+                decimal usable = Item.CurrentStock - Item.MinimumThreshold;
+                if (usable <= 0) return 0;
+                return (int)(usable / AverageDailyUsage);
+            }
+        }
+
+        public DateTime ReorderDate => DateTime.Today.AddDays(DaysUntilThreshold);
+
+        // What the card actually shows under the item name.
+        public string ForecastText
+        {
+            get
+            {
+                if (!HasUsageData)
+                    return "No usage data yet";
+
+                if (Item.IsLowStock)
+                    return "Restock now";
+
+                return $"~{DaysUntilThreshold} days left · reorder by {ReorderDate:MMM dd}";
+            }
+        }
+    }
+
     public partial class InventoryViewModel : ObservableObject
     {
         private readonly WashTrackContext _context;
 
         [ObservableProperty]
-        private ObservableCollection<Inventory> inventoryItems = new();
+        private ObservableCollection<InventoryWithUsage> inventoryItems = new();
 
         [ObservableProperty]
         private bool isLoading;
@@ -40,9 +85,8 @@ namespace WashTrack.MVVM.ViewModels
 
         // ===== LOADING =====
 
-        // Loads active or inactive items depending on the toggle.
-        // AsNoTracking keeps EF from handing back stale cached objects,
-        // which would leave the card values frozen after an edit.
+        // Loads items plus their 30-day usage totals in two queries,
+        // then pairs them in memory. Avoids one query per item.
         [RelayCommand]
         public async Task LoadInventoryAsync()
         {
@@ -54,9 +98,27 @@ namespace WashTrack.MVVM.ViewModels
                 .OrderBy(i => i.ItemName)
                 .ToListAsync();
 
-            InventoryItems = new ObservableCollection<Inventory>(items);
+            // Single query for all usage in the window, grouped by item.
+            var windowStart = DateTime.Today.AddDays(-30);
+            var usageTotals = await _context.InventoryUsageHistories
+                .AsNoTracking()
+                .Where(h => h.UsageDate >= windowStart)
+                .GroupBy(h => h.InventoryId)
+                .Select(g => new { InventoryId = g.Key, Total = g.Sum(h => h.QuantityUsed) })
+                .ToListAsync();
 
-            // Low stock stats only make sense for items still in use.
+            var wrapped = items.Select(i =>
+            {
+                var total = usageTotals.FirstOrDefault(u => u.InventoryId == i.InventoryId)?.Total ?? 0m;
+                return new InventoryWithUsage
+                {
+                    Item = i,
+                    AverageDailyUsage = total / 30m
+                };
+            }).ToList();
+
+            InventoryItems = new ObservableCollection<InventoryWithUsage>(wrapped);
+
             var lowStock = items.Where(i => i.IsLowStock).ToList();
             HasLowStock = lowStock.Count > 0 && !ShowingInactive;
             TotalItems = items.Count;
@@ -83,11 +145,11 @@ namespace WashTrack.MVVM.ViewModels
         }
 
         [RelayCommand]
-        public async Task EditItemAsync(Inventory item)
+        public async Task EditItemAsync(InventoryWithUsage row)
         {
             var parameters = new Dictionary<string, object>
             {
-                { "InventoryItem", item }
+                { "InventoryItem", row.Item }
             };
             await Shell.Current.GoToAsync(nameof(InventoryDetailPage), parameters);
         }
@@ -97,8 +159,10 @@ namespace WashTrack.MVVM.ViewModels
         // Soft delete. Blocked while an active service still depends on this
         // item, otherwise that service would silently stop deducting stock.
         [RelayCommand]
-        public async Task DeactivateItemAsync(Inventory item)
+        public async Task DeactivateItemAsync(InventoryWithUsage row)
         {
+            var item = row.Item;
+
             var linkedService = await _context.Services
                 .AsNoTracking()
                 .FirstOrDefaultAsync(s => s.IsActive &&
@@ -132,9 +196,9 @@ namespace WashTrack.MVVM.ViewModels
         }
 
         [RelayCommand]
-        public async Task RestoreItemAsync(Inventory item)
+        public async Task RestoreItemAsync(InventoryWithUsage row)
         {
-            var tracked = await _context.Inventories.FindAsync(item.InventoryId);
+            var tracked = await _context.Inventories.FindAsync(row.Item.InventoryId);
             if (tracked == null) return;
 
             tracked.IsActive = true;
@@ -147,10 +211,12 @@ namespace WashTrack.MVVM.ViewModels
 
         // Only allowed when nothing depends on this item. Usage history
         // feeds inventory reports, so an item with history can never be
-        // permanently removed without corrupting past figures.
+        // permanently removed without changing past figures.
         [RelayCommand]
-        public async Task PermanentDeleteItemAsync(Inventory item)
+        public async Task PermanentDeleteItemAsync(InventoryWithUsage row)
         {
+            var item = row.Item;
+
             var hasHistory = await _context.InventoryUsageHistories
                 .AsNoTracking()
                 .AnyAsync(h => h.InventoryId == item.InventoryId);
