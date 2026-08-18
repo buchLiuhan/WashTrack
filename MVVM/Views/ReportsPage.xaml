@@ -51,6 +51,7 @@
             <Button Text="{Binding ReportToggleText}"
                     Style="{StaticResource SecondaryButton}"
                     HeightRequest="36"
+                    Padding="12,0"
                     FontSize="12"
                     Margin="0,0,0,16"
                     Command="{Binding ToggleReportViewCommand}" />

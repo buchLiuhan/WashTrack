@@ -134,8 +134,8 @@
                     <DataTemplate x:DataType="vm:InventoryWithUsage">
                         <Border Style="{StaticResource CardStyle}"
                                 Margin="0,4">
-                            <Grid RowDefinitions="Auto,Auto,Auto,Auto"
-                                  ColumnDefinitions="*,Auto,Auto">
+                            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                                  ColumnDefinitions="*,Auto">
 
                                 <!-- Name -->
                                 <Label Grid.Row="0" Grid.Column="0"
@@ -145,23 +145,18 @@
                                        TextColor="{StaticResource TextPrimaryColor}"
                                        VerticalOptions="Center" />
 
-                                <!-- Stock + unit -->
+                                <!-- Stock + unit, one line -->
                                 <Label Grid.Row="0" Grid.Column="1"
-                                       Grid.ColumnSpan="2"
-                                       Text="{Binding Item.CurrentStock, StringFormat='{0:F0}'}"
-                                       FontSize="20"
+                                       Text="{Binding StockText}"
+                                       FontSize="18"
                                        FontAttributes="Bold"
                                        TextColor="{StaticResource AccentColor}"
-                                       HorizontalOptions="End" />
-
-                                <Label Grid.Row="1" Grid.Column="1"
-                                       Grid.ColumnSpan="2"
-                                       Text="{Binding Item.Unit}"
-                                       Style="{StaticResource MutedLabelStyle}"
-                                       HorizontalOptions="End" />
+                                       HorizontalOptions="End"
+                                       VerticalOptions="Center" />
 
                                 <!-- Low stock pill -->
                                 <Border Grid.Row="1" Grid.Column="0"
+                                        Grid.ColumnSpan="2"
                                         Style="{StaticResource PillDanger}"
                                         HorizontalOptions="Start"
                                         Margin="0,4,0,0"
@@ -176,74 +171,72 @@
                                 </Border>
 
                                 <!-- Usage forecast -->
-                                <Label Grid.Row="2" Grid.ColumnSpan="3"
+                                <Label Grid.Row="2" Grid.ColumnSpan="2"
                                        Text="{Binding ForecastText}"
                                        Style="{StaticResource MutedLabelStyle}"
                                        FontSize="12"
                                        Margin="0,6,0,0" />
 
-                                <!-- Last updated -->
-                                <Label Grid.Row="3" Grid.Column="0"
+                                <!-- Last updated: own full-width row so it never
+                                     has to share space with the buttons below. -->
+                                <Label Grid.Row="3" Grid.ColumnSpan="2"
                                        Text="{Binding Item.UpdatedAt, StringFormat='Updated: {0:MMM dd, yyyy}'}"
                                        Style="{StaticResource MutedLabelStyle}"
-                                       Margin="0,8,0,0"
-                                       VerticalOptions="Center" />
+                                       Margin="0,8,0,0" />
 
-                                <!-- Active: Edit -->
-                                <Button Grid.Row="3" Grid.Column="1"
-                                        Text="Edit"
-                                        ImageSource="{StaticResource EditIcon}"
-                                        ContentLayout="Left,4"
-                                        Style="{StaticResource AccentButton}"
-                                        HeightRequest="32"
-                                        Padding="10,0"
-                                        FontSize="12"
-                                        Margin="0,8,8,0"
-                                        IsVisible="{Binding Item.IsActive}"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:InventoryViewModel}}, Path=EditItemCommand}"
-                                        CommandParameter="{Binding .}" />
+                                <!-- Active: Edit + Deactivate -->
+                                <Grid Grid.Row="4" Grid.ColumnSpan="2"
+                                      ColumnDefinitions="*,*"
+                                      ColumnSpacing="8"
+                                      Margin="0,8,0,0"
+                                      IsVisible="{Binding Item.IsActive}">
+                                    <Button Grid.Column="0"
+                                            Text="Edit"
+                                            Style="{StaticResource AccentButton}"
+                                            HeightRequest="36"
+                                            Padding="10,0"
+                                            FontSize="12"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:InventoryViewModel}}, Path=EditItemCommand}"
+                                            CommandParameter="{Binding .}" />
 
-                                <!-- Active: Deactivate -->
-                                <Button Grid.Row="3" Grid.Column="2"
-                                        Text="Deactivate"
-                                        ImageSource="{StaticResource DangerIcon}"
-                                        ContentLayout="Left,4"
-                                        Style="{StaticResource DangerButton}"
-                                        HeightRequest="32"
-                                        Padding="10,0"
-                                        FontSize="12"
-                                        Margin="0,8,0,0"
-                                        IsVisible="{Binding Item.IsActive}"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:InventoryViewModel}}, Path=DeactivateItemCommand}"
-                                        CommandParameter="{Binding .}" />
+                                    <Button Grid.Column="1"
+                                            Text="Deactivate"
+                                            Style="{StaticResource DangerButton}"
+                                            HeightRequest="36"
+                                            Padding="10,0"
+                                            FontSize="12"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:InventoryViewModel}}, Path=DeactivateItemCommand}"
+                                            CommandParameter="{Binding .}" />
+                                </Grid>
 
-                                <!-- Inactive: Restore -->
-                                <Button Grid.Row="3" Grid.Column="1"
-                                        Text="Restore"
-                                        ImageSource="{StaticResource RestoreIcon}"
-                                        ContentLayout="Left,4"
-                                        Style="{StaticResource AccentButton}"
-                                        HeightRequest="32"
-                                        Padding="10,0"
-                                        FontSize="12"
-                                        Margin="0,8,8,0"
-                                        IsVisible="{Binding Item.IsActive, Converter={StaticResource InverseBoolConverter}}"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:InventoryViewModel}}, Path=RestoreItemCommand}"
-                                        CommandParameter="{Binding .}" />
+                                <!-- Inactive: Restore + Delete -->
+                                <Grid Grid.Row="4" Grid.ColumnSpan="2"
+                                      ColumnDefinitions="*,*"
+                                      ColumnSpacing="8"
+                                      Margin="0,8,0,0"
+                                      IsVisible="{Binding Item.IsActive, Converter={StaticResource InverseBoolConverter}}">
+                                    <Button Grid.Column="0"
+                                            Text="Restore"
+                                            ImageSource="{StaticResource RestoreIcon}"
+                                            ContentLayout="Left,4"
+                                            Style="{StaticResource AccentButton}"
+                                            HeightRequest="36"
+                                            Padding="10,0"
+                                            FontSize="12"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:InventoryViewModel}}, Path=RestoreItemCommand}"
+                                            CommandParameter="{Binding .}" />
 
-                                <!-- Inactive: Permanent delete -->
-                                <Button Grid.Row="3" Grid.Column="2"
-                                        Text="Delete"
-                                        ImageSource="{StaticResource TrashIcon}"
-                                        ContentLayout="Left,4"
-                                        Style="{StaticResource DangerButton}"
-                                        HeightRequest="32"
-                                        Padding="10,0"
-                                        FontSize="12"
-                                        Margin="0,8,0,0"
-                                        IsVisible="{Binding Item.IsActive, Converter={StaticResource InverseBoolConverter}}"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:InventoryViewModel}}, Path=PermanentDeleteItemCommand}"
-                                        CommandParameter="{Binding .}" />
+                                    <Button Grid.Column="1"
+                                            Text="Delete"
+                                            ImageSource="{StaticResource TrashIcon}"
+                                            ContentLayout="Left,4"
+                                            Style="{StaticResource DangerButton}"
+                                            HeightRequest="36"
+                                            Padding="10,0"
+                                            FontSize="12"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:InventoryViewModel}}, Path=PermanentDeleteItemCommand}"
+                                            CommandParameter="{Binding .}" />
+                                </Grid>
 
                             </Grid>
                         </Border>

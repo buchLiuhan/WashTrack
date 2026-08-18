@@ -15,6 +15,10 @@ namespace WashTrack.MVVM.ViewModels
     {
         public Inventory Item { get; set; } = new();
 
+        // "5000 grams" on one line instead of stacked number/unit rows —
+        // keeps the card compact and stops it looking disjointed.
+        public string StockText => $"{Item.CurrentStock:F0} {Item.Unit}";
+
         // Average consumed per day over the last 30 days. Zero means the
         // item has never been used yet.
         public decimal AverageDailyUsage { get; set; }

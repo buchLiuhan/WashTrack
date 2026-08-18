@@ -78,8 +78,10 @@
                             Margin="0,4">
                         <StackLayout Spacing="8">
 
-                            <!-- Customer Header -->
-                            <Grid ColumnDefinitions="Auto,*,Auto">
+                            <!-- Customer Header: avatar + name/contact only.
+                                 Buttons live in their own full-width row below,
+                                 so a long name never gets squeezed by them. -->
+                            <Grid ColumnDefinitions="Auto,*">
 
                                 <Border Grid.Column="0"
                                         BackgroundColor="{StaticResource AccentColor}"
@@ -117,64 +119,60 @@
                                     </Border>
                                 </StackLayout>
 
-                                <!-- Active Customer Buttons -->
-                                <StackLayout Grid.Column="2"
-                                             Orientation="Horizontal"
-                                             Spacing="8"
-                                             VerticalOptions="Center"
-                                             IsVisible="{Binding Customer.IsActive}">
+                            </Grid>
 
-                                    <Button Text="Edit"
-                                            ImageSource="{StaticResource EditIcon}"
-                                            ContentLayout="Left,4"
-                                            Style="{StaticResource AccentButton}"
-                                            HeightRequest="32"
-                                            Padding="10,0"
-                                            FontSize="12"
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CustomersViewModel}}, Path=EditCustomerCommand}"
-                                            CommandParameter="{Binding Customer}" />
+                            <!-- Active Customer Buttons -->
+                            <Grid ColumnDefinitions="*,*"
+                                  ColumnSpacing="8"
+                                  IsVisible="{Binding Customer.IsActive}">
 
-                                    <Button Text="Deactivate"
-                                            ImageSource="{StaticResource DangerIcon}"
-                                            ContentLayout="Left,4"
-                                            Style="{StaticResource DangerButton}"
-                                            HeightRequest="32"
-                                            Padding="10,0"
-                                            FontSize="12"
-                                            IsVisible="{Binding CanDelete}"
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CustomersViewModel}}, Path=DeactivateCustomerCommand}"
-                                            CommandParameter="{Binding .}" />
-                                </StackLayout>
+                                <Button Grid.Column="0"
+                                        Text="Edit"
+                                        Style="{StaticResource AccentButton}"
+                                        HeightRequest="36"
+                                        Padding="10,0"
+                                        FontSize="12"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CustomersViewModel}}, Path=EditCustomerCommand}"
+                                        CommandParameter="{Binding Customer}" />
 
-                                <!-- Inactive Customer Buttons -->
-                                <StackLayout Grid.Column="2"
-                                             Orientation="Horizontal"
-                                             Spacing="8"
-                                             VerticalOptions="Center"
-                                             IsVisible="{Binding Customer.IsActive,
-                                                 Converter={StaticResource InverseBoolConverter}}">
+                                <Button Grid.Column="1"
+                                        Text="Deactivate"
+                                        Style="{StaticResource DangerButton}"
+                                        HeightRequest="36"
+                                        Padding="10,0"
+                                        FontSize="12"
+                                        IsVisible="{Binding CanDelete}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CustomersViewModel}}, Path=DeactivateCustomerCommand}"
+                                        CommandParameter="{Binding .}" />
+                            </Grid>
 
-                                    <Button Text="Restore"
-                                            ImageSource="{StaticResource RestoreIcon}"
-                                            ContentLayout="Left,4"
-                                            Style="{StaticResource AccentButton}"
-                                            HeightRequest="32"
-                                            Padding="10,0"
-                                            FontSize="12"
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CustomersViewModel}}, Path=RestoreCustomerCommand}"
-                                            CommandParameter="{Binding .}" />
+                            <!-- Inactive Customer Buttons -->
+                            <Grid ColumnDefinitions="*,*"
+                                  ColumnSpacing="8"
+                                  IsVisible="{Binding Customer.IsActive,
+                                      Converter={StaticResource InverseBoolConverter}}">
 
-                                    <Button Text="Delete"
-                                            ImageSource="{StaticResource TrashIcon}"
-                                            ContentLayout="Left,4"
-                                            Style="{StaticResource DangerButton}"
-                                            HeightRequest="32"
-                                            Padding="10,0"
-                                            FontSize="12"
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CustomersViewModel}}, Path=PermanentDeleteCommand}"
-                                            CommandParameter="{Binding .}" />
-                                </StackLayout>
+                                <Button Grid.Column="0"
+                                        Text="Restore"
+                                        ImageSource="{StaticResource RestoreIcon}"
+                                        ContentLayout="Left,4"
+                                        Style="{StaticResource AccentButton}"
+                                        HeightRequest="36"
+                                        Padding="10,0"
+                                        FontSize="12"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CustomersViewModel}}, Path=RestoreCustomerCommand}"
+                                        CommandParameter="{Binding .}" />
 
+                                <Button Grid.Column="1"
+                                        Text="Delete"
+                                        ImageSource="{StaticResource TrashIcon}"
+                                        ContentLayout="Left,4"
+                                        Style="{StaticResource DangerButton}"
+                                        HeightRequest="36"
+                                        Padding="10,0"
+                                        FontSize="12"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CustomersViewModel}}, Path=PermanentDeleteCommand}"
+                                        CommandParameter="{Binding .}" />
                             </Grid>
 
                             <!-- Active orders: read-only count only. Payment and

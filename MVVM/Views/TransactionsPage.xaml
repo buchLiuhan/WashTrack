@@ -76,35 +76,61 @@
                                    VerticalOptions="Start"
                                    Margin="0,0,4,0" />
 
-                            <Button Grid.Row="0" Grid.Column="2"
-                                    Text="Edit"
-                                    ImageSource="{StaticResource EditIcon}"
-                                    ContentLayout="Left,4"
-                                    Style="{StaticResource SecondaryButton}"
-                                    BackgroundColor="Transparent"
-                                    BorderWidth="0"
-                                    FontSize="12"
-                                    Padding="6,2"
+                            <!-- Custom small button: MAUI Button.ImageSource has no
+                                 per-instance size control, and at this compact 30px
+                                 height the icon rendered too large. Composing it by
+                                 hand lets the icon stay 12x12, matching pill sizing. -->
+                            <Border Grid.Row="0" Grid.Column="2"
+                                    WidthRequest="100"
                                     HeightRequest="30"
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="{StaticResource PrimaryColor}"
+                                    StrokeThickness="1"
+                                    BackgroundColor="Transparent"
                                     VerticalOptions="Start"
-                                    IsVisible="{Binding Status, Converter={StaticResource IsPendingConverter}}"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionsViewModel}}, Path=ViewTransactionCommand}"
-                                    CommandParameter="{Binding .}" />
+                                    IsVisible="{Binding Status, Converter={StaticResource IsPendingConverter}}">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionsViewModel}}, Path=ViewTransactionCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+                                <HorizontalStackLayout Spacing="4" HorizontalOptions="Center" VerticalOptions="Center">
+                                    <Image Source="{StaticResource EditIcon}"
+                                           WidthRequest="12" HeightRequest="12"
+                                           VerticalOptions="Center" />
+                                    <Label Text="Edit"
+                                           FontSize="12"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource PrimaryColor}"
+                                           VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                            </Border>
 
-                            <Button Grid.Row="0" Grid.Column="2"
-                                    Text="View Details"
-                                    ImageSource="{StaticResource EyeIcon}"
-                                    ContentLayout="Left,4"
-                                    Style="{StaticResource SecondaryButton}"
-                                    BackgroundColor="Transparent"
-                                    BorderWidth="0"
-                                    FontSize="12"
-                                    Padding="6,2"
+                            <Border Grid.Row="0" Grid.Column="2"
+                                    WidthRequest="100"
                                     HeightRequest="30"
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="{StaticResource PrimaryColor}"
+                                    StrokeThickness="1"
+                                    BackgroundColor="Transparent"
                                     VerticalOptions="Start"
-                                    IsVisible="{Binding Status, Converter={StaticResource IsCompletedConverter}}"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionsViewModel}}, Path=ViewTransactionCommand}"
-                                    CommandParameter="{Binding .}" />
+                                    IsVisible="{Binding Status, Converter={StaticResource IsCompletedConverter}}">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionsViewModel}}, Path=ViewTransactionCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+                                <HorizontalStackLayout Spacing="4" HorizontalOptions="Center" VerticalOptions="Center">
+                                    <Image Source="{StaticResource EyeIcon}"
+                                           WidthRequest="12" HeightRequest="12"
+                                           VerticalOptions="Center" />
+                                    <Label Text="View Details"
+                                           FontSize="12"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource PrimaryColor}"
+                                           VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                            </Border>
 
                             <!-- Row 1: date + completed pill -->
                             <Label Grid.Row="1" Grid.Column="0"
