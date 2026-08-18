@@ -23,6 +23,12 @@ namespace WashTrack.MVVM.ViewModels
         private string currentStock = string.Empty;
 
         [ObservableProperty]
+        private string currentStockDisplay = string.Empty;
+
+        [ObservableProperty]
+        private bool isNewItem = true;
+
+        [ObservableProperty]
         private string unit = "ml";
 
         [ObservableProperty]
@@ -44,9 +50,10 @@ namespace WashTrack.MVVM.ViewModels
             if (value != null && value.InventoryId != 0)
             {
                 _isEditing = true;
+                IsNewItem = false;
                 Title = "Edit Item";
                 ItemName = value.ItemName;
-                CurrentStock = value.CurrentStock.ToString();
+                CurrentStockDisplay = $"{value.CurrentStock:F0} {value.Unit}";
                 Unit = value.Unit;
                 MinimumThreshold = value.MinimumThreshold.ToString();
                 ReorderQuantity = value.ReorderQuantity?.ToString() ?? string.Empty;
@@ -64,7 +71,8 @@ namespace WashTrack.MVVM.ViewModels
                 return;
             }
 
-            if (!decimal.TryParse(CurrentStock, out decimal stock) || stock < 0)
+            decimal stock = 0;
+            if (IsNewItem && (!decimal.TryParse(CurrentStock, out stock) || stock < 0))
             {
                 await Shell.Current.DisplayAlert("Error", "Please enter a valid stock quantity.", "OK");
                 return;
@@ -87,7 +95,7 @@ namespace WashTrack.MVVM.ViewModels
             string reorderText = reorder > 0 ? $"{reorder:F0} {Unit}" : "Not set";
             string summary =
                 $"Item: {ItemName}\n" +
-                $"Current Stock: {stock:F0} {Unit}\n" +
+                (IsNewItem ? $"Current Stock: {stock:F0} {Unit}\n" : string.Empty) +
                 $"Low Stock Alert: {threshold:F0} {Unit}\n" +
                 $"Reorder Quantity: {reorderText}";
 
@@ -110,20 +118,12 @@ namespace WashTrack.MVVM.ViewModels
                 var tracked = await _context.Inventories.FindAsync(InventoryItem.InventoryId);
                 if (tracked == null) return;
 
-                // Capture the old stock BEFORE overwriting it, otherwise the
-                // restock comparison below always fails.
-                decimal previousStock = tracked.CurrentStock;
-
+                // Stock is changed only via Restock, not here.
                 tracked.ItemName = ItemName;
-                tracked.CurrentStock = stock;
                 tracked.Unit = Unit;
                 tracked.MinimumThreshold = threshold;
                 tracked.ReorderQuantity = reorder > 0 ? reorder : null;
                 tracked.UpdatedAt = DateTime.Now;
-
-                // Stock going up means the owner restocked.
-                if (stock > previousStock)
-                    tracked.LastRestockedAt = DateTime.Now;
             }
             else
             {

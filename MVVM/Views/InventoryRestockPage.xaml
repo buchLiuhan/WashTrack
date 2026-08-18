@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:WashTrack.MVVM.ViewModels"
+             x:Class="WashTrack.MVVM.Views.InventoryRestockPage"
+             x:DataType="vm:InventoryRestockViewModel"
+             Title="Restock Item">
+
+    <ScrollView>
+        <StackLayout Padding="24" Spacing="4">
+
+            <Label Text="{Binding ItemName}"
+                   Style="{StaticResource SectionHeaderLabel}" />
+
+            <Label Text="{Binding CurrentStockText, StringFormat='Current stock: {0}'}"
+                   Style="{StaticResource MutedLabelStyle}"
+                   Margin="0,0,0,16" />
+
+            <Label Text="Quantity"
+                   Style="{StaticResource FieldLabelStyle}" />
+            <Entry Placeholder="e.g. 5000 for new supply, -200 for a correction"
+                   Text="{Binding QuantityChange}"
+                   Keyboard="Numeric" />
+            <Label Text="Use a positive number for supply received, negative for spillage, spoilage, or a miscount."
+                   Style="{StaticResource MutedLabelStyle}"
+                   FontSize="12"
+                   Margin="0,4,0,0" />
+
+            <Label Text="Notes (required for corrections)"
+                   Style="{StaticResource FieldLabelStyle}"
+                   Margin="0,16,0,0" />
+            <Entry Placeholder="e.g. Spilled during use, recount"
+                   Text="{Binding Notes}" />
+
+            <Button Text="Save"
+                    Style="{StaticResource PrimaryButton}"
+                    Command="{Binding SaveCommand}"
+                    Margin="0,24,0,8" />
+
+            <Button Text="Cancel"
+                    Style="{StaticResource SecondaryButton}"
+                    Command="{Binding CancelCommand}" />
+
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

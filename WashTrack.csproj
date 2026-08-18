@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net9.0-android</TargetFrameworks>
-		<!-- Windows/iOS/MacCatalyst intentionally excluded: this app ships Android-only. -->
+		<TargetFrameworks>net9.0-android;net9.0-windows10.0.19041.0</TargetFrameworks>
+		<!-- Windows kept alongside Android for quick local testing and EF Core migrations; Android remains the shipping target. -->
+		<!-- iOS/MacCatalyst intentionally excluded: this app ships Android-only. -->
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net9.0-tizen</TargetFrameworks> -->
 

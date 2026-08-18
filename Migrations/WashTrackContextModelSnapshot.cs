@@ -48,7 +48,7 @@ namespace WashTrack.Migrations
 
                     b.HasKey("CustomerId");
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customers", (string)null);
                 });
 
             modelBuilder.Entity("WashTrack.Models.Inventory", b =>
@@ -85,7 +85,7 @@ namespace WashTrack.Migrations
 
                     b.HasKey("InventoryId");
 
-                    b.ToTable("Inventories");
+                    b.ToTable("Inventories", (string)null);
                 });
 
             modelBuilder.Entity("WashTrack.Models.InventoryUsageHistory", b =>
@@ -115,7 +115,7 @@ namespace WashTrack.Migrations
 
                     b.HasIndex("TransactionId");
 
-                    b.ToTable("InventoryUsageHistories");
+                    b.ToTable("InventoryUsageHistories", (string)null);
                 });
 
             modelBuilder.Entity("WashTrack.Models.Service", b =>
@@ -148,7 +148,7 @@ namespace WashTrack.Migrations
 
                     b.HasKey("ServiceId");
 
-                    b.ToTable("Services");
+                    b.ToTable("Services", (string)null);
                 });
 
             modelBuilder.Entity("WashTrack.Models.Transaction", b =>
@@ -188,7 +188,7 @@ namespace WashTrack.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("Transactions");
+                    b.ToTable("Transactions", (string)null);
                 });
 
             modelBuilder.Entity("WashTrack.Models.User", b =>
@@ -210,7 +210,7 @@ namespace WashTrack.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("WashTrack.Models.InventoryUsageHistory", b =>

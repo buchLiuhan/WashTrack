@@ -13,6 +13,7 @@ namespace WashTrack.Data
         public DbSet<TransactionItem> TransactionItems { get; set; }
         public DbSet<Inventory> Inventories { get; set; }
         public DbSet<InventoryUsageHistory> InventoryUsageHistories { get; set; }
+        public DbSet<InventoryRestockHistory> InventoryRestockHistories { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -55,6 +56,12 @@ namespace WashTrack.Data
                 .HasOne(i => i.Transaction)
                 .WithMany()
                 .HasForeignKey(i => i.TransactionId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<InventoryRestockHistory>()
+                .HasOne(r => r.Inventory)
+                .WithMany()
+                .HasForeignKey(r => r.InventoryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // ===== SUPPLY LINKS =====

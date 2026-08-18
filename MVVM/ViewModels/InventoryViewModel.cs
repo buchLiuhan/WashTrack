@@ -214,6 +214,16 @@ namespace WashTrack.MVVM.ViewModels
             await Shell.Current.GoToAsync(nameof(InventoryDetailPage), parameters);
         }
 
+        [RelayCommand]
+        public async Task RestockItemAsync(InventoryWithUsage row)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "InventoryItem", row.Item }
+            };
+            await Shell.Current.GoToAsync(nameof(InventoryRestockPage), parameters);
+        }
+
         // ===== DEACTIVATE / RESTORE =====
 
         // Soft delete. Blocked while an active service still depends on this

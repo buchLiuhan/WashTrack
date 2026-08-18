@@ -17,11 +17,22 @@
             <Entry Placeholder="e.g. Detergent, Fabric Conditioner"
                    Text="{Binding ItemName}" />
 
-            <Label Text="Current Stock"
-                   Style="{StaticResource FieldLabelStyle}" />
+            <Label Text="Starting Stock"
+                   Style="{StaticResource FieldLabelStyle}"
+                   IsVisible="{Binding IsNewItem}" />
             <Entry Placeholder="e.g. 5000"
                    Text="{Binding CurrentStock}"
-                   Keyboard="Numeric" />
+                   Keyboard="Numeric"
+                   IsVisible="{Binding IsNewItem}" />
+
+            <Label Text="{Binding CurrentStockDisplay, StringFormat='Current stock: {0}'}"
+                   Style="{StaticResource MutedLabelStyle}"
+                   IsVisible="{Binding IsNewItem, Converter={StaticResource InverseBoolConverter}}" />
+            <Label Text="Use the Restock button to change stock."
+                   Style="{StaticResource MutedLabelStyle}"
+                   FontSize="12"
+                   Margin="0,2,0,0"
+                   IsVisible="{Binding IsNewItem, Converter={StaticResource InverseBoolConverter}}" />
 
             <Label Text="Unit"
                    Style="{StaticResource FieldLabelStyle}" />

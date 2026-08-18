@@ -134,7 +134,7 @@
                     <DataTemplate x:DataType="vm:InventoryWithUsage">
                         <Border Style="{StaticResource CardStyle}"
                                 Margin="0,4">
-                            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
                                   ColumnDefinitions="*,Auto">
 
                                 <!-- Name -->
@@ -145,8 +145,37 @@
                                        TextColor="{StaticResource TextPrimaryColor}"
                                        VerticalOptions="Center" />
 
-                                <!-- Stock + unit, one line -->
-                                <Label Grid.Row="0" Grid.Column="1"
+                                <!-- Small Edit pill, top-right — occasional
+                                     action (fix name/threshold), matches the
+                                     Edit pill pattern on TransactionsPage. -->
+                                <Border Grid.Row="0" Grid.Column="1"
+                                        WidthRequest="70"
+                                        HeightRequest="26"
+                                        StrokeShape="RoundRectangle 8"
+                                        Stroke="{StaticResource PrimaryColor}"
+                                        StrokeThickness="1"
+                                        BackgroundColor="Transparent"
+                                        VerticalOptions="Start"
+                                        IsVisible="{Binding Item.IsActive}">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:InventoryViewModel}}, Path=EditItemCommand}"
+                                            CommandParameter="{Binding .}" />
+                                    </Border.GestureRecognizers>
+                                    <HorizontalStackLayout Spacing="4" HorizontalOptions="Center" VerticalOptions="Center">
+                                        <Image Source="{StaticResource EditIcon}"
+                                               WidthRequest="12" HeightRequest="12"
+                                               VerticalOptions="Center" />
+                                        <Label Text="Edit"
+                                               FontSize="12"
+                                               FontAttributes="Bold"
+                                               TextColor="{StaticResource PrimaryColor}"
+                                               VerticalOptions="Center" />
+                                    </HorizontalStackLayout>
+                                </Border>
+
+                                <!-- Stock + unit, own row -->
+                                <Label Grid.Row="1" Grid.ColumnSpan="2"
                                        Text="{Binding StockText}"
                                        FontSize="18"
                                        FontAttributes="Bold"
@@ -155,7 +184,7 @@
                                        VerticalOptions="Center" />
 
                                 <!-- Low stock pill -->
-                                <Border Grid.Row="1" Grid.Column="0"
+                                <Border Grid.Row="2" Grid.Column="0"
                                         Grid.ColumnSpan="2"
                                         Style="{StaticResource PillDanger}"
                                         HorizontalOptions="Start"
@@ -171,7 +200,7 @@
                                 </Border>
 
                                 <!-- Usage forecast -->
-                                <Label Grid.Row="2" Grid.ColumnSpan="2"
+                                <Label Grid.Row="3" Grid.ColumnSpan="2"
                                        Text="{Binding ForecastText}"
                                        Style="{StaticResource MutedLabelStyle}"
                                        FontSize="12"
@@ -179,24 +208,24 @@
 
                                 <!-- Last updated: own full-width row so it never
                                      has to share space with the buttons below. -->
-                                <Label Grid.Row="3" Grid.ColumnSpan="2"
+                                <Label Grid.Row="4" Grid.ColumnSpan="2"
                                        Text="{Binding Item.UpdatedAt, StringFormat='Updated: {0:MMM dd, yyyy}'}"
                                        Style="{StaticResource MutedLabelStyle}"
                                        Margin="0,8,0,0" />
 
-                                <!-- Active: Edit + Deactivate -->
-                                <Grid Grid.Row="4" Grid.ColumnSpan="2"
+                                <!-- Active: Restock + Deactivate -->
+                                <Grid Grid.Row="5" Grid.ColumnSpan="2"
                                       ColumnDefinitions="*,*"
                                       ColumnSpacing="8"
                                       Margin="0,8,0,0"
                                       IsVisible="{Binding Item.IsActive}">
                                     <Button Grid.Column="0"
-                                            Text="Edit"
+                                            Text="Restock"
                                             Style="{StaticResource AccentButton}"
                                             HeightRequest="36"
                                             Padding="10,0"
                                             FontSize="12"
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:InventoryViewModel}}, Path=EditItemCommand}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:InventoryViewModel}}, Path=RestockItemCommand}"
                                             CommandParameter="{Binding .}" />
 
                                     <Button Grid.Column="1"
@@ -210,7 +239,7 @@
                                 </Grid>
 
                                 <!-- Inactive: Restore + Delete -->
-                                <Grid Grid.Row="4" Grid.ColumnSpan="2"
+                                <Grid Grid.Row="5" Grid.ColumnSpan="2"
                                       ColumnDefinitions="*,*"
                                       ColumnSpacing="8"
                                       Margin="0,8,0,0"

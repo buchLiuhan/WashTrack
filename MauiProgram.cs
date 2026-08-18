@@ -50,6 +50,8 @@ namespace WashTrack
             builder.Services.AddTransient<InventoryViewModel>();
             builder.Services.AddTransient<InventoryDetailPage>();
             builder.Services.AddTransient<InventoryDetailViewModel>();
+            builder.Services.AddTransient<InventoryRestockPage>();
+            builder.Services.AddTransient<InventoryRestockViewModel>();
 
             // Dashboard
             builder.Services.AddTransient<DashboardPage>();
