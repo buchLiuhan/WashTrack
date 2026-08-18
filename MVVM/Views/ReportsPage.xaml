@@ -45,7 +45,18 @@
             <Button Text="Generate Report"
                     Style="{StaticResource AccentButton}"
                     Command="{Binding FilterCommand}"
-                    Margin="0,8,0,16" />
+                    Margin="0,8,0,8" />
+
+            <!-- Sales/Inventory segmented toggle -->
+            <Button Text="{Binding ReportToggleText}"
+                    Style="{StaticResource SecondaryButton}"
+                    HeightRequest="36"
+                    FontSize="12"
+                    Margin="0,0,0,16"
+                    Command="{Binding ToggleReportViewCommand}" />
+
+            <!-- ===== SALES REPORT ===== -->
+            <StackLayout IsVisible="{Binding ShowingInventoryReport, Converter={StaticResource InverseBoolConverter}}">
 
             <!-- Summary Cards -->
             <Label Text="SUMMARY"
@@ -137,7 +148,7 @@
                                        TextColor="{StaticResource TextPrimaryColor}" />
 
                                 <Label Grid.Column="0" Grid.Row="1"
-                                       Text="{Binding Service.ServiceName}"
+                                       Text="{Binding Items.Count, StringFormat='{0} item(s)'}"
                                        Style="{StaticResource MutedLabelStyle}" />
 
                                 <StackLayout Grid.Column="1"
@@ -158,6 +169,117 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+
+            </StackLayout>
+
+            <!-- ===== INVENTORY REPORT ===== -->
+            <StackLayout IsVisible="{Binding ShowingInventoryReport}">
+
+                <!-- Summary Cards -->
+                <Label Text="SUMMARY"
+                       Style="{StaticResource SectionHeaderLabel}"
+                       IsVisible="{Binding IsLoading,
+                           Converter={StaticResource InverseBoolConverter}}" />
+
+                <Grid ColumnDefinitions="*,*"
+                      ColumnSpacing="8"
+                      Margin="0,0,0,16"
+                      IsVisible="{Binding IsLoading,
+                          Converter={StaticResource InverseBoolConverter}}">
+
+                    <Border Grid.Column="0"
+                            Style="{StaticResource DarkCardStyle}">
+                        <StackLayout Spacing="4" HorizontalOptions="Center">
+                            <Label Text="{Binding InventoryUsage.Count}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource TextLightColor}"
+                                   HorizontalOptions="Center" />
+                            <Label Text="Items Tracked"
+                                   FontSize="11"
+                                   TextColor="{StaticResource TextLightColor}"
+                                   Opacity="0.8"
+                                   HorizontalOptions="Center" />
+                        </StackLayout>
+                    </Border>
+
+                    <Border Grid.Column="1"
+                            Style="{StaticResource DarkCardStyle}">
+                        <StackLayout Spacing="4" HorizontalOptions="Center">
+                            <Label Text="{Binding LowStockCount}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource TextLightColor}"
+                                   HorizontalOptions="Center" />
+                            <Label Text="Low Stock Now"
+                                   FontSize="11"
+                                   TextColor="{StaticResource TextLightColor}"
+                                   Opacity="0.8"
+                                   HorizontalOptions="Center" />
+                        </StackLayout>
+                    </Border>
+                </Grid>
+
+                <!-- Usage List -->
+                <Label Text="SUPPLY USAGE"
+                       Style="{StaticResource SectionHeaderLabel}"
+                       IsVisible="{Binding IsLoading,
+                           Converter={StaticResource InverseBoolConverter}}" />
+
+                <CollectionView ItemsSource="{Binding InventoryUsage}"
+                                IsVisible="{Binding IsLoading,
+                                    Converter={StaticResource InverseBoolConverter}}">
+
+                    <CollectionView.EmptyView>
+                        <Label Text="No inventory items to report on."
+                               Style="{StaticResource EmptyStateLabel}"
+                               Margin="0,24,0,0" />
+                    </CollectionView.EmptyView>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="vm:InventoryUsageReportRow">
+                            <Border Style="{StaticResource CardStyle}"
+                                    Margin="0,4">
+                                <Grid ColumnDefinitions="*,Auto"
+                                      RowDefinitions="Auto,Auto">
+
+                                    <Label Grid.Column="0" Grid.Row="0"
+                                           Text="{Binding ItemName}"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimaryColor}" />
+
+                                    <Label Grid.Column="0" Grid.Row="1"
+                                           Text="{Binding UsedText}"
+                                           Style="{StaticResource MutedLabelStyle}" />
+
+                                    <StackLayout Grid.Column="1"
+                                                 Grid.RowSpan="2"
+                                                 VerticalOptions="Center"
+                                                 HorizontalOptions="End"
+                                                 Spacing="4">
+                                        <Label Text="{Binding StockText}"
+                                               Style="{StaticResource AccentLabelStyle}"
+                                               HorizontalOptions="End" />
+                                        <Border Style="{StaticResource PillDanger}"
+                                                HorizontalOptions="End"
+                                                IsVisible="{Binding IsLowStock}">
+                                            <HorizontalStackLayout Spacing="4">
+                                                <Image Source="{StaticResource RedWarningIcon}"
+                                                       WidthRequest="12" HeightRequest="12"
+                                                       VerticalOptions="Center" />
+                                                <Label Text="Low Stock"
+                                                       Style="{StaticResource PillLabelStyle}" />
+                                            </HorizontalStackLayout>
+                                        </Border>
+                                    </StackLayout>
+
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </StackLayout>
 
         </StackLayout>
     </ScrollView>

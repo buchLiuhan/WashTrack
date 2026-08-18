@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.ObjectModel;
 using WashTrack.Data;
+using WashTrack.Models;
 using WashTrack.MVVM.Views;
 
 namespace WashTrack.MVVM.ViewModels
@@ -33,6 +35,12 @@ namespace WashTrack.MVVM.ViewModels
 
         [ObservableProperty]
         private bool isLoading;
+
+        [ObservableProperty]
+        private ObservableCollection<Transaction> pendingTransactions = new();
+
+        [ObservableProperty]
+        private bool hasPendingTransactions;
 
         public DashboardViewModel(WashTrackContext context)
         {
@@ -76,6 +84,16 @@ namespace WashTrack.MVVM.ViewModels
             LowStockCount = lowStock;
             HasLowStock = lowStock > 0;
 
+            var pending = await _context.Transactions
+                .Include(t => t.Customer)
+                .Include(t => t.Items)
+                .Where(t => t.Status == "Pending")
+                .OrderBy(t => t.CreatedAt)
+                .ToListAsync();
+
+            PendingTransactions = new ObservableCollection<Transaction>(pending);
+            HasPendingTransactions = pending.Count > 0;
+
             IsLoading = false;
         }
 
@@ -86,15 +104,15 @@ namespace WashTrack.MVVM.ViewModels
         }
 
         [RelayCommand]
-        public async Task GoToCustomersAsync()
-        {
-            await Shell.Current.GoToAsync("///CustomersPage");
-        }
-
-        [RelayCommand]
         public async Task GoToInventoryAsync()
         {
             await Shell.Current.GoToAsync("///InventoryPage");
+        }
+
+        [RelayCommand]
+        public async Task GoToServicesAsync()
+        {
+            await Shell.Current.GoToAsync("///ServicesPage");
         }
 
         [RelayCommand]

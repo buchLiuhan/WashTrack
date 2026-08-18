@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using WashTrack.Data;
 using WashTrack.Messages;
 using WashTrack.Models;
+using WashTrack.MVVM.Views;
 
 namespace WashTrack.MVVM.ViewModels
 {
@@ -146,6 +147,18 @@ namespace WashTrack.MVVM.ViewModels
         public async Task CancelAsync()
         {
             await Shell.Current.GoToAsync("..");
+        }
+
+        // Opens a completed order's permanent receipt (read-only, since
+        // Status == "Completed" puts TransactionDetailPage in view mode).
+        [RelayCommand]
+        public async Task ViewReceiptAsync(Transaction transaction)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "Transaction", transaction }
+            };
+            await Shell.Current.GoToAsync(nameof(TransactionDetailPage), parameters);
         }
     }
 }

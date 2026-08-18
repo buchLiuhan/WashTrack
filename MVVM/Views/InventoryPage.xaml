@@ -36,6 +36,17 @@
                         Command="{Binding ToggleInactiveCommand}" />
             </Grid>
 
+            <!-- Low stock filter toggle: one button, two states -->
+            <Button Text="{Binding LowStockToggleText}"
+                    Style="{StaticResource SecondaryButton}"
+                    HeightRequest="36"
+                    Padding="12,0"
+                    FontSize="12"
+                    HorizontalOptions="End"
+                    Margin="0,8,0,0"
+                    IsVisible="{Binding HasLowStock}"
+                    Command="{Binding ToggleLowStockOnlyCommand}" />
+
             <!-- Stats (active view only) -->
             <Grid ColumnDefinitions="*,*"
                   ColumnSpacing="8"
@@ -82,9 +93,15 @@
                     StrokeShape="RoundRectangle 8"
                     Padding="12,8"
                     Margin="0,12,0,0">
-                <Label Text="⚠️ Some items are running low. Please restock soon."
-                       FontSize="13"
-                       TextColor="#856404" />
+                <HorizontalStackLayout Spacing="6">
+                    <Image Source="{StaticResource WarningIcon}"
+                           WidthRequest="14" HeightRequest="14"
+                           VerticalOptions="Center" />
+                    <Label Text="{Binding LowStockBannerText}"
+                           FontSize="13"
+                           TextColor="#856404"
+                           VerticalOptions="Center" />
+                </HorizontalStackLayout>
             </Border>
 
             <!-- Inactive banner -->
@@ -149,8 +166,13 @@
                                         HorizontalOptions="Start"
                                         Margin="0,4,0,0"
                                         IsVisible="{Binding Item.IsLowStock}">
-                                    <Label Text="Low Stock"
-                                           Style="{StaticResource PillLabelStyle}" />
+                                    <HorizontalStackLayout Spacing="4">
+                                        <Image Source="{StaticResource RedWarningIcon}"
+                                               WidthRequest="12" HeightRequest="12"
+                                               VerticalOptions="Center" />
+                                        <Label Text="Low Stock"
+                                               Style="{StaticResource PillLabelStyle}" />
+                                    </HorizontalStackLayout>
                                 </Border>
 
                                 <!-- Usage forecast -->
@@ -170,6 +192,8 @@
                                 <!-- Active: Edit -->
                                 <Button Grid.Row="3" Grid.Column="1"
                                         Text="Edit"
+                                        ImageSource="{StaticResource EditIcon}"
+                                        ContentLayout="Left,4"
                                         Style="{StaticResource AccentButton}"
                                         HeightRequest="32"
                                         Padding="10,0"
@@ -182,6 +206,8 @@
                                 <!-- Active: Deactivate -->
                                 <Button Grid.Row="3" Grid.Column="2"
                                         Text="Deactivate"
+                                        ImageSource="{StaticResource DangerIcon}"
+                                        ContentLayout="Left,4"
                                         Style="{StaticResource DangerButton}"
                                         HeightRequest="32"
                                         Padding="10,0"
@@ -194,6 +220,8 @@
                                 <!-- Inactive: Restore -->
                                 <Button Grid.Row="3" Grid.Column="1"
                                         Text="Restore"
+                                        ImageSource="{StaticResource RestoreIcon}"
+                                        ContentLayout="Left,4"
                                         Style="{StaticResource AccentButton}"
                                         HeightRequest="32"
                                         Padding="10,0"
@@ -206,6 +234,8 @@
                                 <!-- Inactive: Permanent delete -->
                                 <Button Grid.Row="3" Grid.Column="2"
                                         Text="Delete"
+                                        ImageSource="{StaticResource TrashIcon}"
+                                        ContentLayout="Left,4"
                                         Style="{StaticResource DangerButton}"
                                         HeightRequest="32"
                                         Padding="10,0"

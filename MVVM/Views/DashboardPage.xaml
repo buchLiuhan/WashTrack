@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:WashTrack.MVVM.ViewModels"
+             xmlns:models="clr-namespace:WashTrack.Models"
              x:Class="WashTrack.MVVM.Views.DashboardPage"
              x:DataType="vm:DashboardViewModel"
              Title="WashTrack"
@@ -34,13 +35,18 @@
                     StrokeShape="RoundRectangle 8"
                     Padding="12,10"
                     Margin="0,0,0,12">
-                <Grid ColumnDefinitions="*,Auto">
-                    <Label Grid.Column="0"
-                           Text="{Binding LowStockCount, StringFormat='⚠️ {0} item(s) are running low on stock.'}"
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Image Grid.Column="0"
+                           Source="{StaticResource WarningIcon}"
+                           WidthRequest="14" HeightRequest="14"
+                           VerticalOptions="Center"
+                           Margin="0,0,6,0" />
+                    <Label Grid.Column="1"
+                           Text="{Binding LowStockCount, StringFormat='{0} item(s) are running low on stock.'}"
                            FontSize="13"
                            TextColor="#856404"
                            VerticalOptions="Center" />
-                    <Label Grid.Column="1"
+                    <Label Grid.Column="2"
                            Text="View →"
                            TextColor="{StaticResource AccentColor}"
                            FontAttributes="Bold"
@@ -151,8 +157,8 @@
                 </Border>
             </Grid>
 
-            <!-- Quick Actions -->
-            <Label Text="QUICK ACTIONS"
+            <!-- Pages -->
+            <Label Text="PAGES"
                    Style="{StaticResource SectionHeaderLabel}" />
 
             <Grid ColumnDefinitions="*,*"
@@ -161,26 +167,114 @@
                   RowSpacing="8"
                   Margin="0,0,0,16">
 
-                <Button Grid.Row="0" Grid.Column="0"
-                        Text="+ New Transaction"
-                        Style="{StaticResource PrimaryButton}"
-                        Command="{Binding GoToTransactionsCommand}" />
+                <Border Grid.Row="0" Grid.Column="0"
+                        Style="{StaticResource CardStyle}">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToTransactionsCommand}" />
+                    </Border.GestureRecognizers>
+                    <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
+                        <!-- No dedicated icon yet for Transactions -->
+                        <Label Text="+"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource PrimaryColor}"
+                               HorizontalOptions="Center" />
+                        <Label Text="Transactions"
+                               FontSize="13"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource TextPrimaryColor}"
+                               HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </Border>
 
-                <Button Grid.Row="0" Grid.Column="1"
-                        Text="Customers"
-                        Style="{StaticResource SecondaryButton}"
-                        Command="{Binding GoToCustomersCommand}" />
+                <Border Grid.Row="0" Grid.Column="1"
+                        Style="{StaticResource CardStyle}">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToInventoryCommand}" />
+                    </Border.GestureRecognizers>
+                    <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
+                        <Image Source="{StaticResource InventoryIcon}"
+                               WidthRequest="22" HeightRequest="22"
+                               HorizontalOptions="Center" />
+                        <Label Text="Inventory"
+                               FontSize="13"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource TextPrimaryColor}"
+                               HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </Border>
 
-                <Button Grid.Row="1" Grid.Column="0"
-                        Text="Inventory"
-                        Style="{StaticResource SecondaryButton}"
-                        Command="{Binding GoToInventoryCommand}" />
+                <Border Grid.Row="1" Grid.Column="0"
+                        Style="{StaticResource CardStyle}">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToServicesCommand}" />
+                    </Border.GestureRecognizers>
+                    <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
+                        <Image Source="{StaticResource ServiceIcon}"
+                               WidthRequest="22" HeightRequest="22"
+                               HorizontalOptions="Center" />
+                        <Label Text="Services"
+                               FontSize="13"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource TextPrimaryColor}"
+                               HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </Border>
 
-                <Button Grid.Row="1" Grid.Column="1"
-                        Text="Reports"
-                        Style="{StaticResource SecondaryButton}"
-                        Command="{Binding GoToReportsCommand}" />
+                <Border Grid.Row="1" Grid.Column="1"
+                        Style="{StaticResource CardStyle}">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToReportsCommand}" />
+                    </Border.GestureRecognizers>
+                    <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
+                        <Image Source="{StaticResource ReportsIcon}"
+                               WidthRequest="22" HeightRequest="22"
+                               HorizontalOptions="Center" />
+                        <Label Text="Reports"
+                               FontSize="13"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource TextPrimaryColor}"
+                               HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </Border>
             </Grid>
+
+            <!-- Pending Transactions -->
+            <Label Text="PENDING TRANSACTIONS"
+                   Style="{StaticResource SectionHeaderLabel}" />
+
+            <CollectionView ItemsSource="{Binding PendingTransactions}">
+                <CollectionView.EmptyView>
+                    <Label Text="No ongoing transactions."
+                           Style="{StaticResource EmptyStateLabel}"
+                           Margin="0,16,0,16" />
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Transaction">
+                        <Border Style="{StaticResource CardStyle}"
+                                Margin="0,4">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:DashboardViewModel}}, Path=GoToTransactionsCommand}" />
+                            </Border.GestureRecognizers>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <VerticalStackLayout Grid.Column="0">
+                                    <Label Text="{Binding Customer.Name}"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimaryColor}" />
+                                    <Label Text="{Binding Items.Count, StringFormat='{0} item(s)'}"
+                                           Style="{StaticResource MutedLabelStyle}" />
+                                </VerticalStackLayout>
+                                <Label Grid.Column="1"
+                                       Text="{Binding TotalCost, StringFormat='₱{0:F2}'}"
+                                       Style="{StaticResource AccentLabelStyle}"
+                                       VerticalOptions="Center" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
         </StackLayout>
     </ScrollView>

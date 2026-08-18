@@ -145,9 +145,27 @@ namespace WashTrack.MVVM.ViewModels
 
         // Only reachable for Pending transactions — the XAML hides this
         // button once completed, since finalised records must stay intact.
+        // "Pending" and "washing already started" aren't mutually exclusive
+        // though: once washing starts, supplies are deducted and logged
+        // against this transaction (InventoryUsageHistory), and that link
+        // is DeleteBehavior.Restrict — deleting would otherwise throw a
+        // raw DbUpdateException instead of telling the owner why.
         [RelayCommand]
         public async Task DeleteTransactionAsync(Transaction transaction)
         {
+            bool hasSupplyHistory = await _context.InventoryUsageHistories
+                .AsNoTracking()
+                .AnyAsync(h => h.TransactionId == transaction.TransactionId);
+
+            if (hasSupplyHistory)
+            {
+                await Shell.Current.DisplayAlert(
+                    "Cannot Delete",
+                    "Supplies have already been deducted for this order (washing has started), so it can no longer be deleted. Complete it instead once it's paid and washed.",
+                    "OK");
+                return;
+            }
+
             bool confirm = await Shell.Current.DisplayAlert(
                 "Delete Transaction",
                 "Are you sure you want to delete this transaction?",

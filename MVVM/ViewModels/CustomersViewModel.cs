@@ -36,6 +36,12 @@ namespace WashTrack.MVVM.ViewModels
         [ObservableProperty]
         private string toggleButtonText = "Show Inactive";
 
+        [ObservableProperty]
+        private bool showingActiveOrdersOnly = false;
+
+        [ObservableProperty]
+        private string ordersToggleButtonText = "Active Orders Only";
+
         private List<CustomerWithOrders> _allCustomerOrders = new();
 
         public CustomersViewModel(WashTrackContext context)
@@ -73,8 +79,26 @@ namespace WashTrack.MVVM.ViewModels
             }
 
             _allCustomerOrders = result;
-            CustomerOrders = new ObservableCollection<CustomerWithOrders>(result);
+            ApplyFilters();
             IsLoading = false;
+        }
+
+        // Search and the active-orders filter both narrow the same loaded
+        // list, so they need to combine rather than each overwriting the
+        // other's result.
+        private void ApplyFilters()
+        {
+            IEnumerable<CustomerWithOrders> filtered = _allCustomerOrders;
+
+            if (ShowingActiveOrdersOnly)
+                filtered = filtered.Where(c => c.HasActiveOrders);
+
+            if (!string.IsNullOrWhiteSpace(SearchText))
+                filtered = filtered.Where(c =>
+                    c.Customer.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+                    c.Customer.ContactNumber.Contains(SearchText));
+
+            CustomerOrders = new ObservableCollection<CustomerWithOrders>(filtered);
         }
 
         [RelayCommand]
@@ -83,24 +107,25 @@ namespace WashTrack.MVVM.ViewModels
             ShowingInactive = !ShowingInactive;
             ToggleButtonText = ShowingInactive ? "Show Active" : "Show Inactive";
             SearchText = string.Empty;
+
+            // The active-orders filter only makes sense on the active list.
+            ShowingActiveOrdersOnly = false;
+            OrdersToggleButtonText = "Active Orders Only";
+
             await LoadCustomersAsync();
         }
 
-        partial void OnSearchTextChanged(string value)
+        // One button, two states: narrows the loaded list to customers with
+        // an open order, without hitting the database again.
+        [RelayCommand]
+        public void ToggleActiveOrdersOnly()
         {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                CustomerOrders = new ObservableCollection<CustomerWithOrders>(_allCustomerOrders);
-                return;
-            }
-
-            var filtered = _allCustomerOrders
-                .Where(c => c.Customer.Name.Contains(value, StringComparison.OrdinalIgnoreCase) ||
-                            c.Customer.ContactNumber.Contains(value))
-                .ToList();
-
-            CustomerOrders = new ObservableCollection<CustomerWithOrders>(filtered);
+            ShowingActiveOrdersOnly = !ShowingActiveOrdersOnly;
+            OrdersToggleButtonText = ShowingActiveOrdersOnly ? "All Customers" : "Active Orders Only";
+            ApplyFilters();
         }
+
+        partial void OnSearchTextChanged(string value) => ApplyFilters();
 
         [RelayCommand]
         public async Task EditCustomerAsync(Customer customer)
@@ -110,23 +135,6 @@ namespace WashTrack.MVVM.ViewModels
                 { "Customer", customer }
             };
             await Shell.Current.GoToAsync(nameof(CustomerDetailPage), parameters);
-        }
-
-        [RelayCommand]
-        public async Task MarkOrderDoneAsync(Transaction transaction)
-        {
-            bool confirm = await Shell.Current.DisplayAlert(
-                "Mark as Done",
-                "Mark this order as completed?",
-                "Yes", "No");
-
-            if (!confirm) return;
-
-            transaction.Status = "Completed";
-            transaction.CompletedAt = DateTime.Now;
-            _context.Transactions.Update(transaction);
-            await _context.SaveChangesAsync();
-            await LoadCustomersAsync();
         }
 
         [RelayCommand]

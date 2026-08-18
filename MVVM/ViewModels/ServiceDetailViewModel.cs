@@ -207,15 +207,6 @@ namespace WashTrack.MVVM.ViewModels
                 return false;
             }
 
-            // Flat-rate services count whole pieces or loads, so a rate
-            // expressed per piece must itself be a whole number.
-            if (IsFlatRateMode && val != Math.Floor(val))
-            {
-                Shell.Current.DisplayAlert("Error",
-                    $"{slotName} usage must be a whole number for per piece/load services.", "OK");
-                return false;
-            }
-
             result = val;
             return true;
         }

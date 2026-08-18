@@ -6,11 +6,10 @@
     xmlns:views="clr-namespace:WashTrack.MVVM.Views"
     >
 
-    <!-- <ShellContent
-    Title="Dashboard"
-    ContentTemplate="{DataTemplate views:DashboardPage}"
-    Route="DashboardPage" /> -->
-
+    <ShellContent
+        Title="Dashboard"
+        ContentTemplate="{DataTemplate views:DashboardPage}"
+        Route="DashboardPage" />
 
     <ShellContent
         Title="Services"
@@ -33,12 +32,10 @@
         Title="Inventory"
         ContentTemplate="{DataTemplate views:InventoryPage}"
         Route="InventoryPage" />
- <!--
+
     <ShellContent
         Title="Reports"
         ContentTemplate="{DataTemplate views:ReportsPage}"
         Route="ReportsPage" />
-    
-    -->
 
 </Shell>

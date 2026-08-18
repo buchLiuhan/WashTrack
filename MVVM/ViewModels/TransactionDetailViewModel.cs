@@ -68,12 +68,13 @@ namespace WashTrack.MVVM.ViewModels
 
         // Services can only be changed while nothing irreversible has happened:
         // no money taken yet, and the clothes haven't gone into the machine.
-        // Once either is true the weight can't be re-verified, so we lock it.
+        // The paid check only counts once there's actually a bill — a brand
+        // new transaction starts at 0 and 0, which must not read as "paid".
         public bool CanEditServices =>
             !CollectingPayment
             && !WashMode
             && !IsViewMode
-            && AmountPaid < CartTotal
+            && !(CartTotal > 0 && AmountPaid >= CartTotal)
             && _currentWashStatus == "To Be Washed";
 
         // Shows the explanation when service editing has been locked out.
@@ -84,7 +85,7 @@ namespace WashTrack.MVVM.ViewModels
         {
             get
             {
-                if (AmountPaid >= CartTotal && CartTotal > 0)
+                if (CartTotal > 0 && AmountPaid >= CartTotal)
                     return "This order is already paid and can no longer be edited.";
                 if (_currentWashStatus != "To Be Washed")
                     return "This order is being washed and can no longer be edited.";
@@ -128,6 +129,8 @@ namespace WashTrack.MVVM.ViewModels
             OnPropertyChanged(nameof(ShowPaymentSummary));
             OnPropertyChanged(nameof(PaymentSummaryText));
             OnPropertyChanged(nameof(SaveButtonText));
+            OnPropertyChanged(nameof(ShowCashEntry));
+            OnPropertyChanged(nameof(ShowAmountDue));
         }
 
         public TransactionDetailViewModel(WashTrackContext context)
@@ -442,10 +445,19 @@ namespace WashTrack.MVVM.ViewModels
         public bool IsPayNow => SelectedPaymentType == "Pay Now";
         public bool IsPayLater => SelectedPaymentType == "Pay Later";
 
+        // Money entry only belongs on a brand-new order (CanEditOrderTerms)
+        // or the dedicated Collect Payment flow. Plain "edit an existing
+        // pending order" mode must never show or touch payment — that's
+        // the Pending payment pill's job only.
+        public bool ShowCashEntry => IsPayNow && (CanEditOrderTerms || CollectingPayment);
+        public bool ShowAmountDue => IsPayLater && (CanEditOrderTerms || CollectingPayment);
+
         partial void OnSelectedPaymentTypeChanged(string value)
         {
             OnPropertyChanged(nameof(IsPayNow));
             OnPropertyChanged(nameof(IsPayLater));
+            OnPropertyChanged(nameof(ShowCashEntry));
+            OnPropertyChanged(nameof(ShowAmountDue));
             OnPropertyChanged(nameof(PaymentSummaryText));
             CashReceived = string.Empty;
             Change = 0;

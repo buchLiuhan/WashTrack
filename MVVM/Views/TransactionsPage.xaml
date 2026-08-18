@@ -55,16 +55,13 @@
                     <!-- Flattened card: one Grid, no nested StackLayouts -->
                     <Border Style="{StaticResource CardStyle}"
                             Margin="0,4">
-                        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto"
-                              ColumnDefinitions="*,Auto">
+                        <Grid RowDefinitions="Auto,Auto,Auto,Auto"
+                              ColumnDefinitions="*,Auto,Auto">
 
-                            <!-- Row 0: customer name + total (tap to open) -->
+                            <!-- Row 0: customer name + total + Edit/View Details button.
+                                 Card is no longer tappable — this button is the only
+                                 way in, so the affordance is explicit. -->
                             <VerticalStackLayout Grid.Row="0" Grid.Column="0">
-                                <VerticalStackLayout.GestureRecognizers>
-                                    <TapGestureRecognizer
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionsViewModel}}, Path=ViewTransactionCommand}"
-                                        CommandParameter="{Binding .}" />
-                                </VerticalStackLayout.GestureRecognizers>
                                 <Label Text="{Binding Customer.Name}"
                                        FontSize="16"
                                        FontAttributes="Bold"
@@ -76,55 +73,67 @@
                             <Label Grid.Row="0" Grid.Column="1"
                                    Text="{Binding TotalCost, StringFormat='₱{0:F2}'}"
                                    Style="{StaticResource AccentLabelStyle}"
-                                   VerticalOptions="Start" />
+                                   VerticalOptions="Start"
+                                   Margin="0,0,4,0" />
+
+                            <Button Grid.Row="0" Grid.Column="2"
+                                    Text="Edit"
+                                    ImageSource="{StaticResource EditIcon}"
+                                    ContentLayout="Left,4"
+                                    Style="{StaticResource SecondaryButton}"
+                                    BackgroundColor="Transparent"
+                                    BorderWidth="0"
+                                    FontSize="12"
+                                    Padding="6,2"
+                                    HeightRequest="30"
+                                    VerticalOptions="Start"
+                                    IsVisible="{Binding Status, Converter={StaticResource IsPendingConverter}}"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionsViewModel}}, Path=ViewTransactionCommand}"
+                                    CommandParameter="{Binding .}" />
+
+                            <Button Grid.Row="0" Grid.Column="2"
+                                    Text="View Details"
+                                    ImageSource="{StaticResource EyeIcon}"
+                                    ContentLayout="Left,4"
+                                    Style="{StaticResource SecondaryButton}"
+                                    BackgroundColor="Transparent"
+                                    BorderWidth="0"
+                                    FontSize="12"
+                                    Padding="6,2"
+                                    HeightRequest="30"
+                                    VerticalOptions="Start"
+                                    IsVisible="{Binding Status, Converter={StaticResource IsCompletedConverter}}"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionsViewModel}}, Path=ViewTransactionCommand}"
+                                    CommandParameter="{Binding .}" />
 
                             <!-- Row 1: date + completed pill -->
                             <Label Grid.Row="1" Grid.Column="0"
                                    Text="{Binding CreatedAt, StringFormat='{0:MMM dd, yyyy}'}"
                                    Style="{StaticResource MutedLabelStyle}"
-                                   Margin="0,4,0,0">
-                                <Label.GestureRecognizers>
-                                    <TapGestureRecognizer
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionsViewModel}}, Path=ViewTransactionCommand}"
-                                        CommandParameter="{Binding .}" />
-                                </Label.GestureRecognizers>
-                            </Label>
+                                   Margin="0,4,0,0" />
 
-                            <Border Grid.Row="1" Grid.Column="1"
+                            <Border Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
                                     HorizontalOptions="End"
                                     Style="{StaticResource PillSuccess}"
                                     Margin="0,4,0,0"
                                     IsVisible="{Binding Status, Converter={StaticResource IsCompletedConverter}}">
-                                <Label Text="Completed"
-                                       Style="{StaticResource PillLabelStyle}" />
+                                <HorizontalStackLayout Spacing="4">
+                                    <Image Source="{StaticResource CheckmarkIcon}"
+                                           WidthRequest="12" HeightRequest="12"
+                                           VerticalOptions="Center" />
+                                    <Label Text="Completed"
+                                           Style="{StaticResource PillLabelStyle}" />
+                                </HorizontalStackLayout>
                             </Border>
 
-                            <!-- Row 2: tap hint -->
-                            <Label Grid.Row="2" Grid.ColumnSpan="2"
-                                   Style="{StaticResource MutedLabelStyle}"
-                                   FontSize="11"
-                                   FontAttributes="Italic"
-                                   Margin="0,4,0,0"
-                                   Text="Tap to view receipt">
-                                <Label.GestureRecognizers>
-                                    <TapGestureRecognizer
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionsViewModel}}, Path=ViewTransactionCommand}"
-                                        CommandParameter="{Binding .}" />
-                                </Label.GestureRecognizers>
-                                <Label.Triggers>
-                                    <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="Pending">
-                                        <Setter Property="Text" Value="Tap to edit" />
-                                    </DataTrigger>
-                                </Label.Triggers>
-                            </Label>
-
-                            <!-- Row 3: payment + wash pills (pending only) -->
-                            <HorizontalStackLayout Grid.Row="3" Grid.ColumnSpan="2"
+                            <!-- Row 2: payment + wash pills (pending only) -->
+                            <HorizontalStackLayout Grid.Row="2" Grid.ColumnSpan="3"
                                                    Spacing="8"
                                                    Margin="0,8,0,0"
                                                    IsVisible="{Binding Status, Converter={StaticResource IsPendingConverter}}">
 
-                                <!-- Not paid yet: tappable, opens collect payment -->
+                                <!-- Not paid yet: tappable, opens collect payment.
+                                     Only this pill can ever take payment. -->
                                 <Border Style="{StaticResource PillWarning}"
                                         IsVisible="{Binding IsPaid, Converter={StaticResource InverseBoolConverter}}">
                                     <Border.GestureRecognizers>
@@ -132,13 +141,23 @@
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionsViewModel}}, Path=CollectPaymentCommand}"
                                             CommandParameter="{Binding .}" />
                                     </Border.GestureRecognizers>
-                                    <Label Text="Pending payment" Style="{StaticResource PillLabelStyle}" />
+                                    <HorizontalStackLayout Spacing="4">
+                                        <Image Source="{StaticResource PendingIcon}"
+                                               WidthRequest="12" HeightRequest="12"
+                                               VerticalOptions="Center" />
+                                        <Label Text="Pending payment" Style="{StaticResource PillLabelStyle}" />
+                                    </HorizontalStackLayout>
                                 </Border>
 
                                 <!-- Paid: display only, no longer tappable -->
                                 <Border Style="{StaticResource PillSuccess}"
                                         IsVisible="{Binding IsPaid}">
-                                    <Label Text="Paid" Style="{StaticResource PillLabelStyle}" />
+                                    <HorizontalStackLayout Spacing="4">
+                                        <Image Source="{StaticResource CheckmarkIcon}"
+                                               WidthRequest="12" HeightRequest="12"
+                                               VerticalOptions="Center" />
+                                        <Label Text="Paid" Style="{StaticResource PillLabelStyle}" />
+                                    </HorizontalStackLayout>
                                 </Border>
 
                                 <!-- Wash status: tappable, moves forward only -->
@@ -159,14 +178,19 @@
                                             <Setter Property="BackgroundColor" Value="{StaticResource SuccessColor}" />
                                         </DataTrigger>
                                     </Border.Triggers>
-                                    <Label Text="{Binding WashStatus, StringFormat='{0} ›'}"
-                                           Style="{StaticResource PillLabelStyle}" />
+                                    <HorizontalStackLayout Spacing="4">
+                                        <Image Source="{StaticResource WashingIcon}"
+                                               WidthRequest="12" HeightRequest="12"
+                                               VerticalOptions="Center" />
+                                        <Label Text="{Binding WashStatus, StringFormat='{0} ›'}"
+                                               Style="{StaticResource PillLabelStyle}" />
+                                    </HorizontalStackLayout>
                                 </Border>
 
                             </HorizontalStackLayout>
 
-                            <!-- Row 4: Complete + Delete (pending only) -->
-                            <Grid Grid.Row="4" Grid.ColumnSpan="2"
+                            <!-- Row 3: Complete + Delete (pending only) -->
+                            <Grid Grid.Row="3" Grid.ColumnSpan="3"
                                   ColumnDefinitions="*,*"
                                   ColumnSpacing="8"
                                   Margin="0,8,0,0"
@@ -196,6 +220,8 @@
 
                                 <Button Grid.Column="1"
                                         Text="Delete"
+                                        ImageSource="{StaticResource TrashIcon}"
+                                        ContentLayout="Left,4"
                                         Style="{StaticResource DangerButton}"
                                         HeightRequest="38"
                                         FontSize="13"

@@ -297,22 +297,23 @@
                     </Grid>
                 </Border>
 
-                <!-- ===== SERVICES (editable on any pending order) ===== -->
-                <VerticalStackLayout IsVisible="{Binding CanEditServices}">
-
-                    <!-- Explains why editing is closed, instead of controls
-                     just silently disappearing -->
-                    <Border IsVisible="{Binding ShowEditLockNotice}"
+                <!-- Explains why editing is closed, instead of controls
+                     just silently disappearing. Sits OUTSIDE the services
+                     block because it shows exactly when that block hides. -->
+                <Border IsVisible="{Binding ShowEditLockNotice}"
                         BackgroundColor="#FFF3CD"
                         Stroke="{StaticResource WarningColor}"
                         StrokeThickness="1"
                         StrokeShape="RoundRectangle 8"
                         Padding="12,10"
                         Margin="0,8,0,4">
-                        <Label Text="{Binding EditLockReason}"
+                    <Label Text="{Binding EditLockReason}"
                            FontSize="13"
                            TextColor="#856404" />
-                    </Border>
+                </Border>
+
+                <!-- ===== SERVICES (editable on any pending order) ===== -->
+                <VerticalStackLayout IsVisible="{Binding CanEditServices}">
 
                     <Label Text="Service"
                            Style="{StaticResource FieldLabelStyle}" />
@@ -450,8 +451,10 @@
                            Margin="0,0,12,0" />
                 </Grid>
 
-                <!-- Cash entry: new Pay Now orders, and collect-payment mode -->
-                <VerticalStackLayout IsVisible="{Binding IsPayNow}">
+                <!-- Cash entry: new Pay Now orders, and collect-payment mode.
+                     Never shown when just editing services on an existing
+                     pending order — payment is the Pending payment pill's job. -->
+                <VerticalStackLayout IsVisible="{Binding ShowCashEntry}">
                     <Label Text="Cash Received"
                            Style="{StaticResource FieldLabelStyle}" />
                     <Entry Placeholder="e.g. 500"
@@ -474,7 +477,7 @@
                 <!-- Amount due for new Pay Later orders -->
                 <Border Style="{StaticResource CardStyle}"
                         Margin="0,4"
-                        IsVisible="{Binding IsPayLater}">
+                        IsVisible="{Binding ShowAmountDue}">
                     <Grid ColumnDefinitions="*,Auto">
                         <Label Grid.Column="0"
                                Text="Amount Due Later"

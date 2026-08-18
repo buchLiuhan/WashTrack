@@ -84,6 +84,26 @@ namespace WashTrack.MVVM.ViewModels
 
             decimal.TryParse(ReorderQuantity, out decimal reorder);
 
+            string reorderText = reorder > 0 ? $"{reorder:F0} {Unit}" : "Not set";
+            string summary =
+                $"Item: {ItemName}\n" +
+                $"Current Stock: {stock:F0} {Unit}\n" +
+                $"Low Stock Alert: {threshold:F0} {Unit}\n" +
+                $"Reorder Quantity: {reorderText}";
+
+            // Soft warning only — reorder quantity is informational and
+            // nothing downstream enforces it, so this never blocks saving.
+            if (reorder > 0 && reorder <= threshold)
+            {
+                summary += "\n\n⚠️ This reorder quantity won't clear the low-stock warning after one restock — you may want to increase it.";
+            }
+
+            bool confirmed = await Shell.Current.DisplayAlert(
+                _isEditing ? "Confirm Changes" : "Confirm New Item",
+                summary,
+                "Confirm", "Cancel");
+            if (!confirmed) return;
+
             if (_isEditing)
             {
                 // Fetch tracked so the update actually saves.

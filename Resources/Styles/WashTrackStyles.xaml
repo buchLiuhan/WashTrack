@@ -25,6 +25,30 @@
     <Color x:Key="BorderColor">#E0E0E0</Color>
 
     <!-- ═══════════════════════════════════════ -->
+    <!--                 ICONS                   -->
+    <!-- ═══════════════════════════════════════ -->
+    <!-- File names only — resolved against Resources/Icons via the
+         MauiImage include in WashTrack.csproj. Referencing them by key
+         here means swapping an icon file later only touches one line. -->
+
+    <x:String x:Key="EditIcon">editicon.svg</x:String>
+    <x:String x:Key="PendingIcon">pendingicon.svg</x:String>
+    <x:String x:Key="CheckmarkIcon">checkmarkicon.svg</x:String>
+    <x:String x:Key="WashingIcon">washingwatericon.svg</x:String>
+    <x:String x:Key="WarningIcon">warningicon.svg</x:String>
+    <x:String x:Key="RedWarningIcon">redwarningicon.svg</x:String>
+    <x:String x:Key="TrashIcon">trashicon.svg</x:String>
+    <x:String x:Key="RestoreIcon">restoreicon.svg</x:String>
+    <x:String x:Key="EyeIcon">eyeicon.svg</x:String>
+    <x:String x:Key="PersonIcon">personicon.svg</x:String>
+    <x:String x:Key="DangerIcon">dangericon.svg</x:String>
+    <x:String x:Key="HomeIcon">homeicon.svg</x:String>
+    <x:String x:Key="InventoryIcon">inventoryicon.svg</x:String>
+    <x:String x:Key="ServiceIcon">serviceicon.svg</x:String>
+    <x:String x:Key="ReportsIcon">reportsicon.svg</x:String>
+    <x:String x:Key="CustomerIcon">customericon.svg</x:String>
+
+    <!-- ═══════════════════════════════════════ -->
     <!--                 PAGE                    -->
     <!-- ═══════════════════════════════════════ -->
 

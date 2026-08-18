@@ -78,6 +78,20 @@ namespace WashTrack.MVVM.ViewModels
         [ObservableProperty]
         private string toggleButtonText = "Show Inactive";
 
+        [ObservableProperty]
+        private bool showingLowStockOnly = false;
+
+        [ObservableProperty]
+        private string lowStockToggleText = "⚠ View Low Stock";
+
+        [ObservableProperty]
+        private string lowStockBannerText = string.Empty;
+
+        // Full active/inactive list from the last load, before the low-stock
+        // filter is applied. Lets the toggle re-filter in memory instead of
+        // hitting the database again.
+        private List<InventoryWithUsage> _loadedItems = new();
+
         public InventoryViewModel(WashTrackContext context)
         {
             _context = context;
@@ -107,7 +121,7 @@ namespace WashTrack.MVVM.ViewModels
                 .Select(g => new { InventoryId = g.Key, Total = g.Sum(h => h.QuantityUsed) })
                 .ToListAsync();
 
-            var wrapped = items.Select(i =>
+            _loadedItems = items.Select(i =>
             {
                 var total = usageTotals.FirstOrDefault(u => u.InventoryId == i.InventoryId)?.Total ?? 0m;
                 return new InventoryWithUsage
@@ -117,14 +131,41 @@ namespace WashTrack.MVVM.ViewModels
                 };
             }).ToList();
 
-            InventoryItems = new ObservableCollection<InventoryWithUsage>(wrapped);
+            ApplyLowStockFilter();
 
             var lowStock = items.Where(i => i.IsLowStock).ToList();
             HasLowStock = lowStock.Count > 0 && !ShowingInactive;
             TotalItems = items.Count;
             LowStockCount = lowStock.Count;
+            LowStockBannerText = BuildLowStockBannerText(lowStock);
 
             IsLoading = false;
+        }
+
+        // Re-slices the already-loaded list instead of re-querying —
+        // the toggle just changes what's shown, not what's loaded.
+        private void ApplyLowStockFilter()
+        {
+            var source = ShowingLowStockOnly
+                ? _loadedItems.Where(w => w.Item.IsLowStock)
+                : _loadedItems;
+            InventoryItems = new ObservableCollection<InventoryWithUsage>(source);
+        }
+
+        // Names the single most urgent item so the banner isn't just a
+        // generic notice. "Most urgent" = furthest past its own threshold
+        // (CurrentStock - MinimumThreshold, most negative wins) since raw
+        // stock numbers aren't comparable across items with different units.
+        private static string BuildLowStockBannerText(List<Inventory> lowStock)
+        {
+            if (lowStock.Count == 0) return string.Empty;
+
+            var worst = lowStock
+                .OrderBy(i => i.CurrentStock - i.MinimumThreshold)
+                .First();
+
+            string suffix = lowStock.Count > 1 ? $" (+{lowStock.Count - 1} more)" : string.Empty;
+            return $"⚠️ {worst.ItemName} is critically low — {worst.CurrentStock:F0}{worst.Unit} left (min {worst.MinimumThreshold:F0}{worst.Unit}).{suffix}";
         }
 
         // Switches between the active and inactive lists.
@@ -133,7 +174,22 @@ namespace WashTrack.MVVM.ViewModels
         {
             ShowingInactive = !ShowingInactive;
             ToggleButtonText = ShowingInactive ? "Show Active" : "Show Inactive";
+
+            // Low-stock filter only makes sense on the active list.
+            ShowingLowStockOnly = false;
+            LowStockToggleText = "⚠ View Low Stock";
+
             await LoadInventoryAsync();
+        }
+
+        // One button, two states: switches the active list between the
+        // full alphabetical view and low-stock-only, without a reload.
+        [RelayCommand]
+        public void ToggleLowStockOnly()
+        {
+            ShowingLowStockOnly = !ShowingLowStockOnly;
+            LowStockToggleText = ShowingLowStockOnly ? "View All Items" : "⚠ View Low Stock";
+            ApplyLowStockFilter();
         }
 
         // ===== NAVIGATION =====
