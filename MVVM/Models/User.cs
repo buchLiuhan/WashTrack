@@ -13,6 +13,12 @@ namespace WashTrack.Models
         [Required]
         public string Password { get; set; } = string.Empty;
 
+        [Required]
+        public string SecurityQuestion { get; set; } = string.Empty;
+
+        [Required]
+        public string SecurityAnswer { get; set; } = string.Empty;
+
         public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 }

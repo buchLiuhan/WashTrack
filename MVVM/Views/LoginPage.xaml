@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:WashTrack.MVVM.ViewModels"
+             x:Class="WashTrack.MVVM.Views.LoginPage"
+             x:DataType="vm:LoginViewModel"
+             NavigationPage.HasNavigationBar="False">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="32"
+                              Spacing="4"
+                              VerticalOptions="Center">
+
+            <Label Text="WashTrack"
+                   Style="{StaticResource PageTitleLabel}"
+                   TextColor="{StaticResource PrimaryColor}"
+                   FontSize="28"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   Margin="0,0,0,4" />
+
+            <Label Text="{Binding TitleText}"
+                   Style="{StaticResource PageTitleLabel}"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center" />
+
+            <Label Text="Set up the owner account to get started."
+                   Style="{StaticResource MutedLabelStyle}"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   IsVisible="{Binding IsRegisterMode}"
+                   Margin="0,0,0,8" />
+
+            <Label Text="{Binding InfoMessage}"
+                   TextColor="{StaticResource SuccessColor}"
+                   FontSize="13"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   Margin="0,0,0,8"
+                   IsVisible="{Binding InfoMessage, Converter={StaticResource StringToBoolConverter}}" />
+
+            <!-- ═══════════ LOGIN / REGISTER ═══════════ -->
+            <VerticalStackLayout IsVisible="{Binding IsRecoveryMode, Converter={StaticResource InverseBoolConverter}}"
+                                  Spacing="4">
+
+                <Label Text="Username"
+                       Style="{StaticResource FieldLabelStyle}" />
+                <Entry Placeholder="e.g. owner"
+                       Text="{Binding Username}" />
+
+                <Label Text="Password"
+                       Style="{StaticResource FieldLabelStyle}" />
+                <Entry Placeholder="Enter password"
+                       Text="{Binding Password}"
+                       IsPassword="True" />
+
+                <Label Text="Confirm Password"
+                       Style="{StaticResource FieldLabelStyle}"
+                       IsVisible="{Binding IsRegisterMode}" />
+                <Entry Placeholder="Re-enter password"
+                       Text="{Binding ConfirmPassword}"
+                       IsPassword="True"
+                       IsVisible="{Binding IsRegisterMode}" />
+
+                <Label Text="Security Question (for password recovery)"
+                       Style="{StaticResource FieldLabelStyle}"
+                       IsVisible="{Binding IsRegisterMode}" />
+                <Picker ItemsSource="{Binding SecurityQuestions}"
+                        SelectedItem="{Binding SelectedSecurityQuestion}"
+                        Title="Choose a question"
+                        IsVisible="{Binding IsRegisterMode}" />
+
+                <Label Text="Your Answer"
+                       Style="{StaticResource FieldLabelStyle}"
+                       IsVisible="{Binding IsRegisterMode}" />
+                <Entry Placeholder="Answer"
+                       Text="{Binding SecurityAnswer}"
+                       IsVisible="{Binding IsRegisterMode}" />
+
+                <Label Text="{Binding ErrorMessage}"
+                       TextColor="{StaticResource DangerColor}"
+                       FontSize="13"
+                       Margin="0,8,0,0"
+                       IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}" />
+
+                <Button Text="{Binding SubmitButtonText}"
+                        Style="{StaticResource PrimaryButton}"
+                        Command="{Binding SubmitCommand}"
+                        IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
+                        Margin="0,24,0,0" />
+
+                <Label Text="Forgot password?"
+                       TextColor="{StaticResource AccentColor}"
+                       FontSize="13"
+                       HorizontalOptions="Center"
+                       Margin="0,16,0,0"
+                       IsVisible="{Binding IsRegisterMode, Converter={StaticResource InverseBoolConverter}}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ForgotPasswordCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
+
+            </VerticalStackLayout>
+
+            <!-- ═══════════ PASSWORD RECOVERY ═══════════ -->
+            <VerticalStackLayout IsVisible="{Binding IsRecoveryMode}"
+                                  Spacing="4">
+
+                <VerticalStackLayout IsVisible="{Binding RecoveryQuestionLoaded, Converter={StaticResource InverseBoolConverter}}"
+                                     Spacing="4">
+                    <Label Text="Username"
+                           Style="{StaticResource FieldLabelStyle}" />
+                    <Entry Placeholder="Enter your username"
+                           Text="{Binding RecoveryUsername}" />
+
+                    <Button Text="Find Account"
+                            Style="{StaticResource PrimaryButton}"
+                            Command="{Binding FindAccountCommand}"
+                            IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
+                            Margin="0,16,0,0" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout IsVisible="{Binding RecoveryQuestionLoaded}"
+                                     Spacing="4">
+                    <Label Text="Security Question"
+                           Style="{StaticResource FieldLabelStyle}" />
+                    <Label Text="{Binding RecoveryQuestion}"
+                           Style="{StaticResource MutedLabelStyle}" />
+
+                    <Label Text="Your Answer"
+                           Style="{StaticResource FieldLabelStyle}" />
+                    <Entry Placeholder="Answer"
+                           Text="{Binding RecoveryAnswer}" />
+
+                    <Label Text="New Password"
+                           Style="{StaticResource FieldLabelStyle}" />
+                    <Entry Placeholder="Enter new password"
+                           Text="{Binding NewPassword}"
+                           IsPassword="True" />
+
+                    <Label Text="Confirm New Password"
+                           Style="{StaticResource FieldLabelStyle}" />
+                    <Entry Placeholder="Re-enter new password"
+                           Text="{Binding ConfirmNewPassword}"
+                           IsPassword="True" />
+
+                    <Button Text="Reset Password"
+                            Style="{StaticResource PrimaryButton}"
+                            Command="{Binding ResetPasswordCommand}"
+                            IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
+                            Margin="0,16,0,0" />
+                </VerticalStackLayout>
+
+                <Label Text="{Binding ErrorMessage}"
+                       TextColor="{StaticResource DangerColor}"
+                       FontSize="13"
+                       Margin="0,8,0,0"
+                       IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}" />
+
+                <Label Text="Back to Login"
+                       TextColor="{StaticResource AccentColor}"
+                       FontSize="13"
+                       HorizontalOptions="Center"
+                       Margin="0,16,0,0">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding BackToLoginCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
+
+            </VerticalStackLayout>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                IsVisible="{Binding IsBusy}"
+                                Margin="0,12,0,0" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -59,6 +59,10 @@ namespace WashTrack
             builder.Services.AddTransient<ReportsPage>();
             builder.Services.AddTransient<ReportsViewModel>();
 
+            // Login / Owner Account
+            builder.Services.AddTransient<LoginPage>();
+            builder.Services.AddTransient<LoginViewModel>();
+
 
 
 #if DEBUG

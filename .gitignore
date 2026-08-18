@@ -361,3 +361,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Local dev database and build artifacts (not source)
+*.db
+*.apk
+*.aab
