@@ -366,3 +366,6 @@ FodyWeavers.xsd
 *.db
 *.apk
 *.aab
+# UI screenshots for documentation — regenerated from the running app,
+# large binaries that do not diff usefully
+washtrack-screenshots/

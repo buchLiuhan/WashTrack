@@ -41,10 +41,6 @@ namespace WashTrack.MVVM.ViewModels
         [ObservableProperty] private string errorMessage = string.Empty;
         [ObservableProperty] private string infoMessage = string.Empty;
 
-        public string TitleText => IsRecoveryMode
-            ? "Recover Password"
-            : IsRegisterMode ? "Create Owner Account" : "Login";
-
         public string SubmitButtonText => IsRegisterMode ? "Register" : "Login";
 
         public LoginViewModel(WashTrackContext context)
@@ -60,11 +56,8 @@ namespace WashTrack.MVVM.ViewModels
 
         partial void OnIsRegisterModeChanged(bool value)
         {
-            OnPropertyChanged(nameof(TitleText));
             OnPropertyChanged(nameof(SubmitButtonText));
         }
-
-        partial void OnIsRecoveryModeChanged(bool value) => OnPropertyChanged(nameof(TitleText));
 
         [RelayCommand]
         private async Task SubmitAsync()

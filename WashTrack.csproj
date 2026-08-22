@@ -28,8 +28,8 @@
 		<ApplicationId>com.washtrack.app</ApplicationId>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-		<ApplicationVersion>1</ApplicationVersion>
+		<ApplicationDisplayVersion>1.3</ApplicationDisplayVersion>
+		<ApplicationVersion>3</ApplicationVersion>
 
 		<!-- To develop, package, and publish an app to the Microsoft Store, see: https://aka.ms/MauiTemplateUnpackaged -->
 		<WindowsPackageType>None</WindowsPackageType>
@@ -52,7 +52,7 @@
 		<MauiSplashScreen Include="Resources\Images\logowashtrack.png" Color="#fefcfb" BaseSize="306,204" />
 
 		<!-- Images -->
-		<MauiImage Include="Resources\Images\*" Exclude="Resources\Images\washtrackicon.png;Resources\Images\logowashtrack.png" />
+		<MauiImage Include="Resources\Images\*" Exclude="Resources\Images\washtrackicon.png" />
 		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
 
 		<!-- Icons -->

@@ -41,6 +41,9 @@
     <x:String x:Key="RestoreIcon">restoreicon.svg</x:String>
     <x:String x:Key="EyeIcon">eyeicon.svg</x:String>
     <x:String x:Key="PersonIcon">personicon.svg</x:String>
+    <!-- Fill is baked as DangerColor (#e74c3c): MAUI cannot tint an
+         ImageSource, so the colour has to live in the file. -->
+    <x:String x:Key="LogoutIcon">logoutexit.svg</x:String>
     <x:String x:Key="DangerIcon">dangericon.svg</x:String>
     <x:String x:Key="HomeIcon">homeicon.svg</x:String>
     <x:String x:Key="InventoryIcon">inventoryicon.svg</x:String>

@@ -491,9 +491,17 @@ namespace WashTrack.MVVM.ViewModels
             ? "Quantity (Pieces/Load)"
             : "Weight (kg)";
 
+        // Must agree with the whole-number check in AddServiceToCart —
+        // hinting "3.5" for a flat-rate service suggests the one value
+        // the validation then rejects.
+        public string QuantityPlaceholder => SelectedService?.FlatRate.HasValue == true
+            ? "e.g. 3"
+            : "e.g. 3.5";
+
         partial void OnSelectedServiceChanged(Service? value)
         {
             OnPropertyChanged(nameof(QuantityLabel));
+            OnPropertyChanged(nameof(QuantityPlaceholder));
         }
 
         // Works out the cost of one line based on the service's pricing mode.
@@ -617,8 +625,15 @@ namespace WashTrack.MVVM.ViewModels
 
             decimal finalAmountPaid;
 
+            // Already settled? Then there is no cash to take and nothing to
+            // validate. CashReceived is a UI-only field that is never
+            // repopulated when an existing order is reopened, so a paid
+            // "Pay Now" order would otherwise fail this check on every save
+            // and demand cash the customer already handed over.
+            bool alreadyPaid = CartTotal > 0 && AmountPaid >= CartTotal;
+
             // Cash validation only applies when money is being taken now.
-            if (SelectedPaymentType == "Pay Now")
+            if (SelectedPaymentType == "Pay Now" && !alreadyPaid)
             {
                 if (!decimal.TryParse(CashReceived, out decimal receivedValue) || receivedValue < CartTotal)
                 {
@@ -633,10 +648,14 @@ namespace WashTrack.MVVM.ViewModels
             }
 
             var itemsSummary = string.Join("\n",
-                CartItems.Select(i => $"{i.Service?.ServiceName} — {i.WeightKg}kg — ₱{i.LineCost:F2}"));
-            var paymentLine = SelectedPaymentType == "Pay Now"
-                ? $"Payment: Pay Now (Change: ₱{Change:F2})"
-                : "Payment: Pay Later";
+                CartItems.Select(i => $"{i.Service?.ServiceName} — {i.QuantityText} — ₱{i.LineCost:F2}"));
+            // Change is derived from CashReceived, which is empty on a reopened
+            // order — so an already-paid one would report a negative change.
+            var paymentLine = alreadyPaid
+                ? $"Payment: Paid — ₱{AmountPaid:F2}"
+                : SelectedPaymentType == "Pay Now"
+                    ? $"Payment: Pay Now (Change: ₱{Change:F2})"
+                    : "Payment: Pay Later";
             var confirmMessage =
                 $"Customer: {SelectedCustomer.Name}\nFulfillment: {SelectedFulfillmentType}\n{paymentLine}\n\n{itemsSummary}\n\nTotal: ₱{CartTotal:F2}";
 

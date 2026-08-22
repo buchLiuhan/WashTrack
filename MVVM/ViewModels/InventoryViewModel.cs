@@ -52,7 +52,14 @@ namespace WashTrack.MVVM.ViewModels
                 if (Item.IsLowStock)
                     return "Restock now";
 
-                return $"~{DaysUntilThreshold} days left · reorder by {ReorderDate:MMM dd}";
+                // Include the year once the date leaves the current one:
+                // "MMM dd" alone rendered a 2027 reorder date as "Aug 27",
+                // which reads as days away instead of a year away.
+                string dateText = ReorderDate.Year == DateTime.Today.Year
+                    ? $"{ReorderDate:MMM dd}"
+                    : $"{ReorderDate:MMM dd, yyyy}";
+
+                return $"~{DaysUntilThreshold} days left · reorder by {dateText}";
             }
         }
     }
@@ -169,7 +176,9 @@ namespace WashTrack.MVVM.ViewModels
                 .First();
 
             string suffix = lowStock.Count > 1 ? $" (+{lowStock.Count - 1} more)" : string.Empty;
-            return $"⚠️ {worst.ItemName} is critically low — {worst.CurrentStock:F0}{worst.Unit} left (min {worst.MinimumThreshold:F0}{worst.Unit}).{suffix}";
+            // No emoji here — the banner already renders a warning icon
+            // beside this text, and the two together read as a stutter.
+            return $"{worst.ItemName} is critically low — {worst.CurrentStock:F0}{worst.Unit} left (min {worst.MinimumThreshold:F0}{worst.Unit}).{suffix}";
         }
 
         // Switches between the active and inactive lists.

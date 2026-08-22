@@ -11,18 +11,11 @@
                               Spacing="4"
                               VerticalOptions="Center">
 
-            <Label Text="WashTrack"
-                   Style="{StaticResource PageTitleLabel}"
-                   TextColor="{StaticResource PrimaryColor}"
-                   FontSize="28"
+            <Image Source="logowashtrack.png"
+                   HeightRequest="120"
+                   Aspect="AspectFit"
                    HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
                    Margin="0,0,0,4" />
-
-            <Label Text="{Binding TitleText}"
-                   Style="{StaticResource PageTitleLabel}"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center" />
 
             <Label Text="Set up the owner account to get started."
                    Style="{StaticResource MutedLabelStyle}"

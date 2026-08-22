@@ -85,23 +85,31 @@
                 </Border>
             </Grid>
 
-            <!-- Low stock banner -->
+            <!-- Low stock banner. Red, not yellow: this is the one banner on
+                 the page that needs acting on, and it sat in the same yellow
+                 as the purely informational "showing inactive" notice below.
+                 Grid, not HorizontalStackLayout — the latter leaves the label
+                 unbounded, so long text was clipped instead of wrapping. -->
             <Border IsVisible="{Binding HasLowStock}"
-                    BackgroundColor="#FFF3CD"
-                    Stroke="{StaticResource WarningColor}"
+                    BackgroundColor="#F8D7DA"
+                    Stroke="{StaticResource DangerColor}"
                     StrokeThickness="1"
                     StrokeShape="RoundRectangle 8"
                     Padding="12,8"
                     Margin="0,12,0,0">
-                <HorizontalStackLayout Spacing="6">
-                    <Image Source="{StaticResource WarningIcon}"
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="6">
+                    <Image Grid.Column="0"
+                           Source="{StaticResource WarningIcon}"
                            WidthRequest="14" HeightRequest="14"
-                           VerticalOptions="Center" />
-                    <Label Text="{Binding LowStockBannerText}"
+                           VerticalOptions="Start"
+                           Margin="0,2,0,0" />
+                    <Label Grid.Column="1"
+                           Text="{Binding LowStockBannerText}"
                            FontSize="13"
-                           TextColor="#856404"
+                           TextColor="#721C24"
+                           LineBreakMode="WordWrap"
                            VerticalOptions="Center" />
-                </HorizontalStackLayout>
+                </Grid>
             </Border>
 
             <!-- Inactive banner -->
@@ -145,34 +153,24 @@
                                        TextColor="{StaticResource TextPrimaryColor}"
                                        VerticalOptions="Center" />
 
-                                <!-- Small Edit pill, top-right — occasional
-                                     action (fix name/threshold), matches the
-                                     Edit pill pattern on TransactionsPage. -->
-                                <Border Grid.Row="0" Grid.Column="1"
-                                        WidthRequest="70"
-                                        HeightRequest="26"
-                                        StrokeShape="RoundRectangle 8"
-                                        Stroke="{StaticResource PrimaryColor}"
-                                        StrokeThickness="1"
-                                        BackgroundColor="Transparent"
-                                        VerticalOptions="Start"
-                                        IsVisible="{Binding Item.IsActive}">
-                                    <Border.GestureRecognizers>
-                                        <TapGestureRecognizer
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:InventoryViewModel}}, Path=EditItemCommand}"
-                                            CommandParameter="{Binding .}" />
-                                    </Border.GestureRecognizers>
-                                    <HorizontalStackLayout Spacing="4" HorizontalOptions="Center" VerticalOptions="Center">
-                                        <Image Source="{StaticResource EditIcon}"
-                                               WidthRequest="12" HeightRequest="12"
-                                               VerticalOptions="Center" />
-                                        <Label Text="Edit"
-                                               FontSize="12"
-                                               FontAttributes="Bold"
-                                               TextColor="{StaticResource PrimaryColor}"
-                                               VerticalOptions="Center" />
-                                    </HorizontalStackLayout>
-                                </Border>
+                                <!-- Icon-only edit, top-right — occasional action
+                                     (fix name/threshold). Matches the icon
+                                     buttons on TransactionsPage. -->
+                                <ImageButton Grid.Row="0" Grid.Column="1"
+                                             Source="{StaticResource EditIcon}"
+                                             Aspect="AspectFit"
+                                             WidthRequest="32"
+                                             HeightRequest="28"
+                                             MinimumWidthRequest="32"
+                                             MinimumHeightRequest="28"
+                                             Padding="6"
+                                             BorderWidth="0"
+                                             BackgroundColor="Transparent"
+                                             VerticalOptions="Start"
+                                             SemanticProperties.Description="Edit item"
+                                             Command="{Binding Source={RelativeSource AncestorType={x:Type vm:InventoryViewModel}}, Path=EditItemCommand}"
+                                             CommandParameter="{Binding .}"
+                                             IsVisible="{Binding Item.IsActive}" />
 
                                 <!-- Stock + unit, own row -->
                                 <Label Grid.Row="1" Grid.ColumnSpan="2"
@@ -190,13 +188,11 @@
                                         HorizontalOptions="Start"
                                         Margin="0,4,0,0"
                                         IsVisible="{Binding Item.IsLowStock}">
-                                    <HorizontalStackLayout Spacing="4">
-                                        <Image Source="{StaticResource RedWarningIcon}"
-                                               WidthRequest="12" HeightRequest="12"
-                                               VerticalOptions="Center" />
-                                        <Label Text="Low Stock"
-                                               Style="{StaticResource PillLabelStyle}" />
-                                    </HorizontalStackLayout>
+                                    <!-- No icon: the red warning SVG was invisible
+                                         against PillDanger's red background, and
+                                         the word "Low Stock" already carries it. -->
+                                    <Label Text="Low Stock"
+                                           Style="{StaticResource PillLabelStyle}" />
                                 </Border>
 
                                 <!-- Usage forecast -->

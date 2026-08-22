@@ -20,8 +20,12 @@
 
             <Label Text="Contact Number"
                    Style="{StaticResource FieldLabelStyle}" />
-            <Entry Placeholder="e.g. 09xxxxxxxxx"
+            <!-- 13, not 11: leaves room for a pasted +639xxxxxxxxx, which the
+                 ViewModel folds back to the 09 form. Capping at 11 would
+                 silently truncate that into an invalid number. -->
+            <Entry Placeholder="e.g. 09171234567"
                    Text="{Binding ContactNumber}"
+                   MaxLength="13"
                    Keyboard="Telephone" />
 
             <Label Text="Email (Optional)"

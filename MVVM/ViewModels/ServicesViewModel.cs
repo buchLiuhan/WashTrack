@@ -90,8 +90,15 @@ namespace WashTrack.MVVM.ViewModels
 
             if (!confirm) return;
 
-            service.IsActive = false;
-            _context.Services.Update(service);
+            // Re-fetch instead of Update(service): the list is loaded
+            // AsNoTracking, so `service` is detached, and attaching it would
+            // throw once this same row has already been tracked earlier in
+            // the page's lifetime. FindAsync returns the tracked instance
+            // when one exists, so no duplicate is ever attached.
+            var tracked = await _context.Services.FindAsync(service.ServiceId);
+            if (tracked == null) return;
+
+            tracked.IsActive = false;
             await _context.SaveChangesAsync();
             await LoadServicesAsync();
         }
@@ -99,8 +106,10 @@ namespace WashTrack.MVVM.ViewModels
         [RelayCommand]
         public async Task RestoreServiceAsync(Service service)
         {
-            service.IsActive = true;
-            _context.Services.Update(service);
+            var tracked = await _context.Services.FindAsync(service.ServiceId);
+            if (tracked == null) return;
+
+            tracked.IsActive = true;
             await _context.SaveChangesAsync();
             await LoadServicesAsync();
         }
@@ -128,7 +137,10 @@ namespace WashTrack.MVVM.ViewModels
 
             if (!confirm) return;
 
-            _context.Services.Remove(service);
+            var tracked = await _context.Services.FindAsync(service.ServiceId);
+            if (tracked == null) return;
+
+            _context.Services.Remove(tracked);
             await _context.SaveChangesAsync();
             await LoadServicesAsync();
         }

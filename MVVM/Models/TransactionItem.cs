@@ -25,5 +25,14 @@ namespace WashTrack.Models
 
         [ForeignKey("ServiceId")]
         public Service? Service { get; set; }
+
+        // WeightKg holds kilos for weight-based services but a plain count
+        // for flat-rate ones, so the unit belongs to the service, not to the
+        // field. Flat-rate lines get no suffix — the service name already
+        // says what's being counted ("Comforter — 3").
+        [NotMapped]
+        public string QuantityText => Service?.FlatRate.HasValue == true
+            ? $"{WeightKg:F0}"
+            : $"{WeightKg}kg";
     }
 }

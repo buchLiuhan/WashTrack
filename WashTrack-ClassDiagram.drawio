@@ -1,0 +1,660 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="WashTrack Class Diagram" id="washtrack-cd">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ===================== User ===================== -->
+        <mxCell id="cls_user" value="User" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="240" height="182" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_user_1" value="+ UserId: int [PK]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;fontStyle=4" vertex="1" parent="cls_user">
+          <mxGeometry y="26" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_user_2" value="+ Username: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_user">
+          <mxGeometry y="52" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_user_3" value="+ Password: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_user">
+          <mxGeometry y="78" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_user_4" value="+ SecurityQuestion: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_user">
+          <mxGeometry y="104" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_user_5" value="+ SecurityAnswer: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_user">
+          <mxGeometry y="130" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_user_6" value="+ CreatedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_user">
+          <mxGeometry y="156" width="240" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- ===================== Customer ===================== -->
+        <mxCell id="cls_customer" value="Customer" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="440" y="40" width="240" height="234" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_customer_1" value="+ CustomerId: int [PK]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;fontStyle=4" vertex="1" parent="cls_customer">
+          <mxGeometry y="26" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_customer_2" value="+ Name: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_customer">
+          <mxGeometry y="52" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_customer_3" value="+ ContactNumber: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_customer">
+          <mxGeometry y="78" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_customer_4" value="+ Email: string?" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_customer">
+          <mxGeometry y="104" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_customer_5" value="+ Address: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_customer">
+          <mxGeometry y="130" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_customer_6" value="+ IsActive: bool" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_customer">
+          <mxGeometry y="156" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_customer_7" value="+ CreatedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_customer">
+          <mxGeometry y="182" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_customer_8" value="+ LastTransaction: DateTime?" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_customer">
+          <mxGeometry y="208" width="240" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- ===================== Service ===================== -->
+        <mxCell id="cls_service" value="Service" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="840" y="40" width="260" height="416" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_service_1" value="+ ServiceId: int [PK]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;fontStyle=4" vertex="1" parent="cls_service">
+          <mxGeometry y="26" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_service_2" value="+ ServiceName: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_service">
+          <mxGeometry y="52" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_service_3" value="+ IsActive: bool" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_service">
+          <mxGeometry y="78" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_service_4" value="+ PricePerKilo: decimal?" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_service">
+          <mxGeometry y="104" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_service_5" value="+ MinKilo: decimal?" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_service">
+          <mxGeometry y="130" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_service_6" value="+ MinKiloCharge: decimal?" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_service">
+          <mxGeometry y="156" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_service_7" value="+ ExcessPerKilo: decimal?" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_service">
+          <mxGeometry y="182" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_service_8" value="+ FlatRate: decimal?" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_service">
+          <mxGeometry y="208" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_service_9" value="+ DetergentItemId: int? [FK]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_service">
+          <mxGeometry y="234" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_service_10" value="+ DetergentUsage: decimal?" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_service">
+          <mxGeometry y="260" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_service_11" value="+ ConditionerItemId: int? [FK]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_service">
+          <mxGeometry y="286" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_service_12" value="+ ConditionerUsage: decimal?" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_service">
+          <mxGeometry y="312" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_service_13" value="+ OtherItemId: int? [FK]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_service">
+          <mxGeometry y="338" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_service_14" value="+ OtherUsage: decimal?" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_service">
+          <mxGeometry y="364" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_service_15" value="+ CreatedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_service">
+          <mxGeometry y="390" width="260" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- ===================== Transaction ===================== -->
+        <mxCell id="cls_transaction" value="Transaction" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="40" width="260" height="312" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_transaction_1" value="+ TransactionId: int [PK]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;fontStyle=4" vertex="1" parent="cls_transaction">
+          <mxGeometry y="26" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_transaction_2" value="+ CustomerId: int [FK]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_transaction">
+          <mxGeometry y="52" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_transaction_3" value="+ TotalCost: decimal" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_transaction">
+          <mxGeometry y="78" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_transaction_4" value="+ Status: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_transaction">
+          <mxGeometry y="104" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_transaction_5" value="+ FulfillmentType: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_transaction">
+          <mxGeometry y="130" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_transaction_6" value="+ PaymentType: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_transaction">
+          <mxGeometry y="156" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_transaction_7" value="+ AmountPaid: decimal?" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_transaction">
+          <mxGeometry y="182" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_transaction_8" value="+ WashStatus: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_transaction">
+          <mxGeometry y="208" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_transaction_9" value="+ CreatedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_transaction">
+          <mxGeometry y="234" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_transaction_10" value="+ CompletedAt: DateTime?" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_transaction">
+          <mxGeometry y="260" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_transaction_11" value="+ IsPaid: bool {derived}" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;fontStyle=2" vertex="1" parent="cls_transaction">
+          <mxGeometry y="286" width="260" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- ===================== Inventory ===================== -->
+        <mxCell id="cls_inventory" value="Inventory" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1640" y="40" width="260" height="312" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_inventory_1" value="+ InventoryId: int [PK]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;fontStyle=4" vertex="1" parent="cls_inventory">
+          <mxGeometry y="26" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_inventory_2" value="+ ItemName: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_inventory">
+          <mxGeometry y="52" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_inventory_3" value="+ CurrentStock: decimal" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_inventory">
+          <mxGeometry y="78" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_inventory_4" value="+ Unit: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_inventory">
+          <mxGeometry y="104" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_inventory_5" value="+ MinimumThreshold: decimal" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_inventory">
+          <mxGeometry y="130" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_inventory_6" value="+ ReorderQuantity: decimal?" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_inventory">
+          <mxGeometry y="156" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_inventory_7" value="+ UnitCost: decimal?" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_inventory">
+          <mxGeometry y="182" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_inventory_8" value="+ IsActive: bool" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_inventory">
+          <mxGeometry y="208" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_inventory_9" value="+ UpdatedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_inventory">
+          <mxGeometry y="234" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_inventory_10" value="+ LastRestockedAt: DateTime?" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_inventory">
+          <mxGeometry y="260" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_inventory_11" value="+ IsLowStock: bool {derived}" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;fontStyle=2" vertex="1" parent="cls_inventory">
+          <mxGeometry y="286" width="260" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- ===================== TransactionItem ===================== -->
+        <mxCell id="cls_txitem" value="TransactionItem" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="392" width="260" height="156" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_txitem_1" value="+ TransactionItemId: int [PK]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;fontStyle=4" vertex="1" parent="cls_txitem">
+          <mxGeometry y="26" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_txitem_2" value="+ TransactionId: int [FK]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_txitem">
+          <mxGeometry y="52" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_txitem_3" value="+ ServiceId: int [FK]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_txitem">
+          <mxGeometry y="78" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_txitem_4" value="+ WeightKg: decimal" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_txitem">
+          <mxGeometry y="104" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_txitem_5" value="+ LineCost: decimal" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_txitem">
+          <mxGeometry y="130" width="260" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- ===================== InventoryUsageHistory ===================== -->
+        <mxCell id="cls_usage" value="InventoryUsageHistory" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1640" y="392" width="260" height="182" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_usage_1" value="+ UsageId: int [PK]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;fontStyle=4" vertex="1" parent="cls_usage">
+          <mxGeometry y="26" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_usage_2" value="+ InventoryId: int [FK]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_usage">
+          <mxGeometry y="52" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_usage_3" value="+ QuantityUsed: decimal" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_usage">
+          <mxGeometry y="78" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_usage_4" value="+ UsageDate: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_usage">
+          <mxGeometry y="104" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_usage_5" value="+ TransactionId: int? [FK]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_usage">
+          <mxGeometry y="130" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_usage_6" value="+ Notes: string?" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_usage">
+          <mxGeometry y="156" width="260" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- ===================== InventoryRestockHistory ===================== -->
+        <mxCell id="cls_restock" value="InventoryRestockHistory" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1640" y="614" width="260" height="156" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_restock_1" value="+ RestockId: int [PK]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;fontStyle=4" vertex="1" parent="cls_restock">
+          <mxGeometry y="26" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_restock_2" value="+ InventoryId: int [FK]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_restock">
+          <mxGeometry y="52" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_restock_3" value="+ QuantityChange: decimal" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_restock">
+          <mxGeometry y="78" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_restock_4" value="+ RestockDate: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_restock">
+          <mxGeometry y="104" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_restock_5" value="+ Notes: string?" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_restock">
+          <mxGeometry y="130" width="260" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- ===================== RELATIONSHIPS ===================== -->
+
+        <!-- Customer to Transaction: 1 to many -->
+        <mxCell id="edge1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;startArrow=none;strokeWidth=2;exitX=0.9;exitY=0;exitDx=0;exitDy=0;entryX=0.1;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="cls_customer" target="cls_transaction">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="656" y="20" />
+              <mxPoint x="1266" y="20" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge1_l1" value="1" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontStyle=1;" vertex="1" connectable="0" parent="edge1">
+          <mxGeometry x="-0.9" y="-8" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+        <mxCell id="edge1_l2" value="*" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontStyle=1;" vertex="1" connectable="0" parent="edge1">
+          <mxGeometry x="0.9" y="-8" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- Transaction to TransactionItem: 1 to many -->
+        <mxCell id="edge2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;startArrow=none;strokeWidth=2;" edge="1" parent="1" source="cls_transaction" target="cls_txitem">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge2_l1" value="1" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontStyle=1;" vertex="1" connectable="0" parent="edge2">
+          <mxGeometry x="-0.9" y="-8" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+        <mxCell id="edge2_l2" value="*" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontStyle=1;" vertex="1" connectable="0" parent="edge2">
+          <mxGeometry x="0.9" y="-8" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- Service to TransactionItem: 1 to many -->
+        <mxCell id="edge3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;startArrow=none;strokeWidth=2;exitX=1;exitY=0.9;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="cls_service" target="cls_txitem">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge3_l1" value="1" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontStyle=1;" vertex="1" connectable="0" parent="edge3">
+          <mxGeometry x="-0.9" y="-8" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+        <mxCell id="edge3_l2" value="*" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontStyle=1;" vertex="1" connectable="0" parent="edge3">
+          <mxGeometry x="0.9" y="-8" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- Inventory to InventoryUsageHistory: 1 to many -->
+        <mxCell id="edge4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;startArrow=none;strokeWidth=2;" edge="1" parent="1" source="cls_inventory" target="cls_usage">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge4_l1" value="1" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontStyle=1;" vertex="1" connectable="0" parent="edge4">
+          <mxGeometry x="-0.9" y="-8" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+        <mxCell id="edge4_l2" value="*" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontStyle=1;" vertex="1" connectable="0" parent="edge4">
+          <mxGeometry x="0.9" y="-8" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- Inventory to InventoryRestockHistory: 1 to many -->
+        <mxCell id="edge5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;startArrow=none;strokeWidth=2;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="cls_inventory" target="cls_restock">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge5_l1" value="1" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontStyle=1;" vertex="1" connectable="0" parent="edge5">
+          <mxGeometry x="-0.9" y="-8" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+        <mxCell id="edge5_l2" value="*" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontStyle=1;" vertex="1" connectable="0" parent="edge5">
+          <mxGeometry x="0.9" y="-8" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- Transaction to InventoryUsageHistory: 1 to 0..many (optional link, dashed = nullable FK) -->
+        <mxCell id="edge6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;startArrow=none;strokeWidth=2;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.7;entryDx=0;entryDy=0;" edge="1" parent="1" source="cls_transaction" target="cls_usage">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge6_l1" value="1" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontStyle=1;" vertex="1" connectable="0" parent="edge6">
+          <mxGeometry x="-0.9" y="-8" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+        <mxCell id="edge6_l2" value="0..*" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontStyle=1;" vertex="1" connectable="0" parent="edge6">
+          <mxGeometry x="0.9" y="-8" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- Service to Inventory (detergent link): optional to many -->
+        <mxCell id="edge7" value="detergent" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;startArrow=none;strokeWidth=2;fontSize=11;fontStyle=1;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="cls_service" target="cls_inventory">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="905" y="0" />
+              <mxPoint x="1705" y="0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Service to Inventory (conditioner link): optional to many -->
+        <mxCell id="edge8" value="conditioner" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;startArrow=none;strokeWidth=2;fontSize=11;fontStyle=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="cls_service" target="cls_inventory">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="970" y="-10" />
+              <mxPoint x="1770" y="-10" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Service to Inventory (other link): optional to many -->
+        <mxCell id="edge9" value="other" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;startArrow=none;strokeWidth=2;fontSize=11;fontStyle=1;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="cls_service" target="cls_inventory">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1035" y="-20" />
+              <mxPoint x="1835" y="-20" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Note about User -->
+        <mxCell id="note_user" value="Auth only — not linked to other domain entities" style="text;html=1;align=center;verticalAlign=top;fontSize=10;fontStyle=2;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="225" width="240" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- ===================== COLUMN HEADERS (domain groups) ===================== -->
+        <mxCell id="hdr_auth" value="AUTH" style="text;html=1;align=left;verticalAlign=middle;fontSize=14;fontStyle=1;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="-40" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="hdr_customer" value="CUSTOMER" style="text;html=1;align=left;verticalAlign=middle;fontSize=14;fontStyle=1;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="440" y="-40" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="hdr_service" value="SERVICE" style="text;html=1;align=left;verticalAlign=middle;fontSize=14;fontStyle=1;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="840" y="-40" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="hdr_transaction" value="TRANSACTION" style="text;html=1;align=left;verticalAlign=middle;fontSize=14;fontStyle=1;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="-40" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="hdr_inventory" value="INVENTORY" style="text;html=1;align=left;verticalAlign=middle;fontSize=14;fontStyle=1;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1640" y="-40" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="hdr_reports" value="REPORTS / DASHBOARD" style="text;html=1;align=left;verticalAlign=middle;fontSize=14;fontStyle=1;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="2040" y="-40" width="320" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- ===================== LoginViewModel ===================== -->
+        <mxCell id="vm_login" value="LoginViewModel" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="285" width="320" height="416" as="geometry" />
+        </mxCell>
+        <mxCell id="vm_login_1" value="+ Username: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_login"><mxGeometry y="26" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_login_2" value="+ Password: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_login"><mxGeometry y="52" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_login_3" value="+ ConfirmPassword: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_login"><mxGeometry y="78" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_login_4" value="+ SelectedSecurityQuestion: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_login"><mxGeometry y="104" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_login_5" value="+ SecurityAnswer: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_login"><mxGeometry y="130" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_login_6" value="+ RecoveryUsername: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_login"><mxGeometry y="156" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_login_7" value="+ RecoveryQuestion: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_login"><mxGeometry y="182" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_login_8" value="+ RecoveryAnswer: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_login"><mxGeometry y="208" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_login_9" value="+ NewPassword: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_login"><mxGeometry y="234" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_login_sep" value="— commands —" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=2;fontSize=10;fontColor=#666666;html=1;" vertex="1" parent="vm_login"><mxGeometry y="260" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_login_10" value="+ SubmitAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_login"><mxGeometry y="286" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_login_11" value="+ ForgotPassword(): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_login"><mxGeometry y="312" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_login_12" value="+ BackToLogin(): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_login"><mxGeometry y="338" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_login_13" value="+ FindAccountAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_login"><mxGeometry y="364" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_login_14" value="+ ResetPasswordAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_login"><mxGeometry y="390" width="320" height="26" as="geometry" /></mxCell>
+
+        <!-- ===================== DashboardViewModel ===================== -->
+        <mxCell id="vm_dashboard" value="DashboardViewModel" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="2040" y="40" width="320" height="364" as="geometry" />
+        </mxCell>
+        <mxCell id="vm_dash_1" value="+ TotalSalesToday: decimal" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_dashboard"><mxGeometry y="26" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_dash_2" value="+ TotalSalesThisMonth: decimal" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_dashboard"><mxGeometry y="52" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_dash_3" value="+ PendingJobs: int" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_dashboard"><mxGeometry y="78" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_dash_4" value="+ CompletedJobsToday: int" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_dashboard"><mxGeometry y="104" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_dash_5" value="+ TotalCustomers: int" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_dashboard"><mxGeometry y="130" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_dash_6" value="+ LowStockCount: int" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_dashboard"><mxGeometry y="156" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_dash_7" value="+ PendingTransactions: ObservableCollection&lt;Transaction&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_dashboard"><mxGeometry y="182" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_dash_sep" value="— commands —" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=2;fontSize=10;fontColor=#666666;html=1;" vertex="1" parent="vm_dashboard"><mxGeometry y="208" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_dash_8" value="+ LoadDashboardAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_dashboard"><mxGeometry y="234" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_dash_9" value="+ GoToTransactionsAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_dashboard"><mxGeometry y="260" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_dash_10" value="+ GoToInventoryAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_dashboard"><mxGeometry y="286" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_dash_11" value="+ GoToServicesAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_dashboard"><mxGeometry y="312" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_dash_12" value="+ GoToReportsAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_dashboard"><mxGeometry y="338" width="320" height="26" as="geometry" /></mxCell>
+
+        <!-- ===================== InventoryViewModel ===================== -->
+        <mxCell id="vm_inventory" value="InventoryViewModel" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="1640" y="1058" width="320" height="364" as="geometry" />
+        </mxCell>
+        <mxCell id="vm_inv_1" value="+ InventoryItems: ObservableCollection&lt;InventoryWithUsage&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_inventory"><mxGeometry y="26" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_inv_2" value="+ TotalItems: int" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_inventory"><mxGeometry y="52" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_inv_3" value="+ LowStockCount: int" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_inventory"><mxGeometry y="78" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_inv_sep" value="— commands —" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=2;fontSize=10;fontColor=#666666;html=1;" vertex="1" parent="vm_inventory"><mxGeometry y="104" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_inv_4" value="+ LoadInventoryAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_inventory"><mxGeometry y="130" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_inv_5" value="+ ToggleInactiveAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_inventory"><mxGeometry y="156" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_inv_6" value="+ ToggleLowStockOnly(): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_inventory"><mxGeometry y="182" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_inv_7" value="+ AddItemAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_inventory"><mxGeometry y="208" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_inv_8" value="+ EditItemAsync(row): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_inventory"><mxGeometry y="234" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_inv_9" value="+ RestockItemAsync(row): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_inventory"><mxGeometry y="260" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_inv_10" value="+ DeactivateItemAsync(row): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_inventory"><mxGeometry y="286" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_inv_11" value="+ RestoreItemAsync(row): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_inventory"><mxGeometry y="312" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_inv_12" value="+ PermanentDeleteItemAsync(row): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_inventory"><mxGeometry y="338" width="320" height="26" as="geometry" /></mxCell>
+
+        <!-- ===================== InventoryDetailViewModel ===================== -->
+        <mxCell id="vm_inventorydetail" value="InventoryDetailViewModel" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="1640" y="1462" width="320" height="260" as="geometry" />
+        </mxCell>
+        <mxCell id="vm_invd_1" value="+ InventoryItem: Inventory" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_inventorydetail"><mxGeometry y="26" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_invd_2" value="+ ItemName: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_inventorydetail"><mxGeometry y="52" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_invd_3" value="+ CurrentStock: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_inventorydetail"><mxGeometry y="78" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_invd_4" value="+ Unit: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_inventorydetail"><mxGeometry y="104" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_invd_5" value="+ MinimumThreshold: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_inventorydetail"><mxGeometry y="130" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_invd_6" value="+ ReorderQuantity: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_inventorydetail"><mxGeometry y="156" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_invd_sep" value="— commands —" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=2;fontSize=10;fontColor=#666666;html=1;" vertex="1" parent="vm_inventorydetail"><mxGeometry y="182" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_invd_7" value="+ SaveAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_inventorydetail"><mxGeometry y="208" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_invd_8" value="+ CancelAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_inventorydetail"><mxGeometry y="234" width="320" height="26" as="geometry" /></mxCell>
+
+        <!-- ===================== InventoryRestockViewModel ===================== -->
+        <mxCell id="vm_restock" value="InventoryRestockViewModel" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="1640" y="1762" width="320" height="182" as="geometry" />
+        </mxCell>
+        <mxCell id="vm_rst_1" value="+ InventoryItem: Inventory" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_restock"><mxGeometry y="26" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_rst_2" value="+ QuantityChange: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_restock"><mxGeometry y="52" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_rst_3" value="+ Notes: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_restock"><mxGeometry y="78" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_rst_sep" value="— commands —" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=2;fontSize=10;fontColor=#666666;html=1;" vertex="1" parent="vm_restock"><mxGeometry y="104" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_rst_4" value="+ SaveAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_restock"><mxGeometry y="130" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_rst_5" value="+ CancelAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_restock"><mxGeometry y="156" width="320" height="26" as="geometry" /></mxCell>
+
+        <!-- ===================== ServicesViewModel ===================== -->
+        <mxCell id="vm_services" value="ServicesViewModel" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="840" y="496" width="320" height="260" as="geometry" />
+        </mxCell>
+        <mxCell id="vm_svc_1" value="+ Services: ObservableCollection&lt;Service&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_services"><mxGeometry y="26" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svc_sep" value="— commands —" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=2;fontSize=10;fontColor=#666666;html=1;" vertex="1" parent="vm_services"><mxGeometry y="52" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svc_2" value="+ LoadServicesAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_services"><mxGeometry y="78" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svc_3" value="+ ToggleInactiveAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_services"><mxGeometry y="104" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svc_4" value="+ AddServiceAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_services"><mxGeometry y="130" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svc_5" value="+ EditServiceAsync(service): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_services"><mxGeometry y="156" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svc_6" value="+ DeleteServiceAsync(service): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_services"><mxGeometry y="182" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svc_7" value="+ RestoreServiceAsync(service): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_services"><mxGeometry y="208" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svc_8" value="+ PermanentDeleteServiceAsync(service): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_services"><mxGeometry y="234" width="320" height="26" as="geometry" /></mxCell>
+
+        <!-- ===================== ServiceDetailViewModel ===================== -->
+        <mxCell id="vm_servicedetail" value="ServiceDetailViewModel" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="840" y="796" width="320" height="598" as="geometry" />
+        </mxCell>
+        <mxCell id="vm_svcd_1" value="+ Service: Service" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_servicedetail"><mxGeometry y="26" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svcd_2" value="+ ServiceName: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_servicedetail"><mxGeometry y="52" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svcd_3" value="+ SelectedPricingMode: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_servicedetail"><mxGeometry y="78" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svcd_4" value="+ PricePerKilo: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_servicedetail"><mxGeometry y="104" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svcd_5" value="+ MinKilo: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_servicedetail"><mxGeometry y="130" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svcd_6" value="+ MinKiloCharge: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_servicedetail"><mxGeometry y="156" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svcd_7" value="+ ExcessPerKilo: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_servicedetail"><mxGeometry y="182" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svcd_8" value="+ FlatRate: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_servicedetail"><mxGeometry y="208" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svcd_9" value="+ SelectedDetergentItem: Inventory" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_servicedetail"><mxGeometry y="234" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svcd_10" value="+ DetergentUsage: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_servicedetail"><mxGeometry y="260" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svcd_11" value="+ SelectedConditionerItem: Inventory" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_servicedetail"><mxGeometry y="286" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svcd_12" value="+ ConditionerUsage: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_servicedetail"><mxGeometry y="312" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svcd_13" value="+ SelectedOtherItem: Inventory" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_servicedetail"><mxGeometry y="338" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svcd_14" value="+ OtherUsage: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_servicedetail"><mxGeometry y="364" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svcd_sep" value="— commands —" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=2;fontSize=10;fontColor=#666666;html=1;" vertex="1" parent="vm_servicedetail"><mxGeometry y="390" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svcd_15" value="+ LoadInventoryAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_servicedetail"><mxGeometry y="416" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svcd_16" value="+ ClearDetergent(): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_servicedetail"><mxGeometry y="442" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svcd_17" value="+ ClearConditioner(): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_servicedetail"><mxGeometry y="468" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svcd_18" value="+ ClearOther(): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_servicedetail"><mxGeometry y="494" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svcd_19" value="+ GoToInventoryAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_servicedetail"><mxGeometry y="520" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svcd_20" value="+ SaveAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_servicedetail"><mxGeometry y="546" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_svcd_21" value="+ CancelAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_servicedetail"><mxGeometry y="572" width="320" height="26" as="geometry" /></mxCell>
+
+        <!-- ===================== CustomersViewModel ===================== -->
+        <mxCell id="vm_customers" value="CustomersViewModel" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="440" y="510" width="320" height="286" as="geometry" />
+        </mxCell>
+        <mxCell id="vm_cust_1" value="+ CustomerOrders: ObservableCollection&lt;CustomerWithOrders&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_customers"><mxGeometry y="26" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_cust_2" value="+ SearchText: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_customers"><mxGeometry y="52" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_cust_sep" value="— commands —" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=2;fontSize=10;fontColor=#666666;html=1;" vertex="1" parent="vm_customers"><mxGeometry y="78" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_cust_3" value="+ LoadCustomersAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_customers"><mxGeometry y="104" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_cust_4" value="+ ToggleInactiveAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_customers"><mxGeometry y="130" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_cust_5" value="+ ToggleActiveOrdersOnly(): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_customers"><mxGeometry y="156" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_cust_6" value="+ EditCustomerAsync(customer): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_customers"><mxGeometry y="182" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_cust_7" value="+ DeactivateCustomerAsync(row): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_customers"><mxGeometry y="208" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_cust_8" value="+ RestoreCustomerAsync(row): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_customers"><mxGeometry y="234" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_cust_9" value="+ PermanentDeleteAsync(row): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_customers"><mxGeometry y="260" width="320" height="26" as="geometry" /></mxCell>
+
+        <!-- ===================== CustomerDetailViewModel ===================== -->
+        <mxCell id="vm_customerdetail" value="CustomerDetailViewModel" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="440" y="836" width="320" height="338" as="geometry" />
+        </mxCell>
+        <mxCell id="vm_custd_1" value="+ Customer: Customer" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_customerdetail"><mxGeometry y="26" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_custd_2" value="+ Name: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_customerdetail"><mxGeometry y="52" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_custd_3" value="+ ContactNumber: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_customerdetail"><mxGeometry y="78" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_custd_4" value="+ Email: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_customerdetail"><mxGeometry y="104" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_custd_5" value="+ Address: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_customerdetail"><mxGeometry y="130" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_custd_6" value="+ PendingTransactions: ObservableCollection&lt;Transaction&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_customerdetail"><mxGeometry y="156" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_custd_7" value="+ CompletedTransactions: ObservableCollection&lt;Transaction&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_customerdetail"><mxGeometry y="182" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_custd_8" value="+ TotalSpent: decimal" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_customerdetail"><mxGeometry y="208" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_custd_sep" value="— commands —" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=2;fontSize=10;fontColor=#666666;html=1;" vertex="1" parent="vm_customerdetail"><mxGeometry y="234" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_custd_9" value="+ SaveAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_customerdetail"><mxGeometry y="260" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_custd_10" value="+ CancelAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_customerdetail"><mxGeometry y="286" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_custd_11" value="+ ViewReceiptAsync(transaction): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_customerdetail"><mxGeometry y="312" width="320" height="26" as="geometry" /></mxCell>
+
+        <!-- ===================== TransactionsViewModel ===================== -->
+        <mxCell id="vm_transactions" value="TransactionsViewModel" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="588" width="320" height="286" as="geometry" />
+        </mxCell>
+        <mxCell id="vm_tx_1" value="+ Transactions: ObservableCollection&lt;Transaction&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactions"><mxGeometry y="26" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_tx_sep" value="— commands —" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=2;fontSize=10;fontColor=#666666;html=1;" vertex="1" parent="vm_transactions"><mxGeometry y="52" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_tx_2" value="+ LoadTransactionsAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactions"><mxGeometry y="78" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_tx_3" value="+ ToggleCompletedAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactions"><mxGeometry y="104" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_tx_4" value="+ AddTransactionAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactions"><mxGeometry y="130" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_tx_5" value="+ ViewTransactionAsync(tx): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactions"><mxGeometry y="156" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_tx_6" value="+ CollectPaymentAsync(tx): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactions"><mxGeometry y="182" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_tx_7" value="+ OpenWashStatusAsync(tx): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactions"><mxGeometry y="208" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_tx_8" value="+ CompleteOrderAsync(tx): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactions"><mxGeometry y="234" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_tx_9" value="+ DeleteTransactionAsync(tx): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactions"><mxGeometry y="260" width="320" height="26" as="geometry" /></mxCell>
+
+        <!-- ===================== TransactionDetailViewModel ===================== -->
+        <mxCell id="vm_transactiondetail" value="TransactionDetailViewModel" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="914" width="320" height="676" as="geometry" />
+        </mxCell>
+        <mxCell id="vm_txd_1" value="+ Transaction: Transaction" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactiondetail"><mxGeometry y="26" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_txd_2" value="+ Customers: ObservableCollection&lt;Customer&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactiondetail"><mxGeometry y="52" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_txd_3" value="+ Services: ObservableCollection&lt;Service&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactiondetail"><mxGeometry y="78" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_txd_4" value="+ CartItems: ObservableCollection&lt;TransactionItem&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactiondetail"><mxGeometry y="104" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_txd_5" value="+ SelectedCustomer: Customer" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactiondetail"><mxGeometry y="130" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_txd_6" value="+ SelectedService: Service" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactiondetail"><mxGeometry y="156" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_txd_7" value="+ WeightKg: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactiondetail"><mxGeometry y="182" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_txd_8" value="+ CartTotal: decimal" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactiondetail"><mxGeometry y="208" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_txd_9" value="+ SelectedFulfillmentType: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactiondetail"><mxGeometry y="234" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_txd_10" value="+ SelectedPaymentType: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactiondetail"><mxGeometry y="260" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_txd_11" value="+ CashReceived: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactiondetail"><mxGeometry y="286" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_txd_12" value="+ Change: decimal" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactiondetail"><mxGeometry y="312" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_txd_13" value="+ AmountPaid: decimal" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactiondetail"><mxGeometry y="338" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_txd_14" value="+ SelectedWashStatus: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactiondetail"><mxGeometry y="364" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_txd_sep" value="— commands —" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=2;fontSize=10;fontColor=#666666;html=1;" vertex="1" parent="vm_transactiondetail"><mxGeometry y="390" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_txd_15" value="+ LoadDataAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactiondetail"><mxGeometry y="416" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_txd_16" value="+ ConfirmWashStatusAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactiondetail"><mxGeometry y="442" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_txd_17" value="+ SelectCustomer(customer): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactiondetail"><mxGeometry y="468" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_txd_18" value="+ GoToAddCustomerAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactiondetail"><mxGeometry y="494" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_txd_19" value="+ GoToAddAddressAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactiondetail"><mxGeometry y="520" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_txd_20" value="+ AddServiceToCart(): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactiondetail"><mxGeometry y="546" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_txd_21" value="+ RemoveCartItem(item): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactiondetail"><mxGeometry y="572" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_txd_22" value="+ CompleteTransactionAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactiondetail"><mxGeometry y="598" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_txd_23" value="+ GoToServicesAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactiondetail"><mxGeometry y="624" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_txd_24" value="+ CancelAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_transactiondetail"><mxGeometry y="650" width="320" height="26" as="geometry" /></mxCell>
+
+        <!-- ===================== ReportsViewModel ===================== -->
+        <mxCell id="vm_reports" value="ReportsViewModel" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="2040" y="444" width="320" height="312" as="geometry" />
+        </mxCell>
+        <mxCell id="vm_rep_1" value="+ Transactions: ObservableCollection&lt;Transaction&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_reports"><mxGeometry y="26" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_rep_2" value="+ TotalRevenue: decimal" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_reports"><mxGeometry y="52" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_rep_3" value="+ TotalTransactions: int" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_reports"><mxGeometry y="78" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_rep_4" value="+ AverageTransactionValue: decimal" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_reports"><mxGeometry y="104" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_rep_5" value="+ StartDate: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_reports"><mxGeometry y="130" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_rep_6" value="+ EndDate: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_reports"><mxGeometry y="156" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_rep_7" value="+ InventoryUsage: ObservableCollection&lt;InventoryUsageReportRow&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_reports"><mxGeometry y="182" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_rep_sep" value="— commands —" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=2;fontSize=10;fontColor=#666666;html=1;" vertex="1" parent="vm_reports"><mxGeometry y="208" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_rep_8" value="+ LoadReportsAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_reports"><mxGeometry y="234" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_rep_9" value="+ FilterAsync(): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_reports"><mxGeometry y="260" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="vm_rep_10" value="+ ToggleReportView(): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="vm_reports"><mxGeometry y="286" width="320" height="26" as="geometry" /></mxCell>
+
+        <!-- ===================== InventoryWithUsage ===================== -->
+        <mxCell id="cls_invwithusage" value="InventoryWithUsage" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1640" y="810" width="320" height="208" as="geometry" />
+        </mxCell>
+        <mxCell id="wrap_iwu_1" value="+ Item: Inventory" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_invwithusage"><mxGeometry y="26" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="wrap_iwu_2" value="+ StockText: string {derived}" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;fontStyle=2" vertex="1" parent="cls_invwithusage"><mxGeometry y="52" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="wrap_iwu_3" value="+ AverageDailyUsage: decimal" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_invwithusage"><mxGeometry y="78" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="wrap_iwu_4" value="+ HasUsageData: bool {derived}" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;fontStyle=2" vertex="1" parent="cls_invwithusage"><mxGeometry y="104" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="wrap_iwu_5" value="+ DaysUntilThreshold: int {derived}" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;fontStyle=2" vertex="1" parent="cls_invwithusage"><mxGeometry y="130" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="wrap_iwu_6" value="+ ReorderDate: DateTime {derived}" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;fontStyle=2" vertex="1" parent="cls_invwithusage"><mxGeometry y="156" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="wrap_iwu_7" value="+ ForecastText: string {derived}" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;fontStyle=2" vertex="1" parent="cls_invwithusage"><mxGeometry y="182" width="320" height="26" as="geometry" /></mxCell>
+
+        <!-- ===================== CustomerWithOrders ===================== -->
+        <mxCell id="cls_customerwithorders" value="CustomerWithOrders" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="440" y="314" width="320" height="156" as="geometry" />
+        </mxCell>
+        <mxCell id="wrap_cwo_1" value="+ Customer: Customer" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_customerwithorders"><mxGeometry y="26" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="wrap_cwo_2" value="+ ActiveOrders: List&lt;Transaction&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_customerwithorders"><mxGeometry y="52" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="wrap_cwo_3" value="+ HasActiveOrders: bool {derived}" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;fontStyle=2" vertex="1" parent="cls_customerwithorders"><mxGeometry y="78" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="wrap_cwo_4" value="+ CanDelete: bool {derived}" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;fontStyle=2" vertex="1" parent="cls_customerwithorders"><mxGeometry y="104" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="wrap_cwo_5" value="+ HasPendingPayment: bool {derived}" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;fontStyle=2" vertex="1" parent="cls_customerwithorders"><mxGeometry y="130" width="320" height="26" as="geometry" /></mxCell>
+
+        <!-- ===================== InventoryUsageReportRow ===================== -->
+        <mxCell id="cls_usagereportrow" value="InventoryUsageReportRow" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="2040" y="796" width="320" height="208" as="geometry" />
+        </mxCell>
+        <mxCell id="wrap_urr_1" value="+ ItemName: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_usagereportrow"><mxGeometry y="26" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="wrap_urr_2" value="+ Unit: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_usagereportrow"><mxGeometry y="52" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="wrap_urr_3" value="+ QuantityUsed: decimal" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_usagereportrow"><mxGeometry y="78" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="wrap_urr_4" value="+ CurrentStock: decimal" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_usagereportrow"><mxGeometry y="104" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="wrap_urr_5" value="+ IsLowStock: bool" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;" vertex="1" parent="cls_usagereportrow"><mxGeometry y="130" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="wrap_urr_6" value="+ UsedText: string {derived}" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;fontStyle=2" vertex="1" parent="cls_usagereportrow"><mxGeometry y="156" width="320" height="26" as="geometry" /></mxCell>
+        <mxCell id="wrap_urr_7" value="+ StockText: string {derived}" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;whiteSpace=wrap;html=1;fontStyle=2" vertex="1" parent="cls_usagereportrow"><mxGeometry y="182" width="320" height="26" as="geometry" /></mxCell>
+
+        <!-- ===================== VIEWMODEL -&gt; MODEL DEPENDENCIES (dashed) ===================== -->
+        <mxCell id="dep1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 3;endArrow=open;endSize=10;startArrow=none;strokeColor=#4a4a4a;strokeWidth=1.5;" edge="1" parent="1" source="vm_login" target="cls_user"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <mxCell id="dep2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 3;endArrow=open;endSize=10;startArrow=none;strokeColor=#4a4a4a;strokeWidth=1.5;" edge="1" parent="1" source="cls_customerwithorders" target="cls_customer"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="dep3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 3;endArrow=open;endSize=10;startArrow=none;strokeColor=#4a4a4a;strokeWidth=1.5;exitX=1;exitY=0.5;entryX=0;entryY=0.3;" edge="1" parent="1" source="cls_customerwithorders" target="cls_transaction"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="dep4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 3;endArrow=open;endSize=10;startArrow=none;strokeColor=#4a4a4a;strokeWidth=1.5;" edge="1" parent="1" source="vm_customers" target="cls_customer"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="dep5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 3;endArrow=open;endSize=10;startArrow=none;strokeColor=#4a4a4a;strokeWidth=1.5;" edge="1" parent="1" source="vm_customerdetail" target="cls_customer"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="dep6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 3;endArrow=open;endSize=10;startArrow=none;strokeColor=#4a4a4a;strokeWidth=1.5;exitX=1;exitY=0.3;entryX=0;entryY=0.6;" edge="1" parent="1" source="vm_customerdetail" target="cls_transaction"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <mxCell id="dep7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 3;endArrow=open;endSize=10;startArrow=none;strokeColor=#4a4a4a;strokeWidth=1.5;" edge="1" parent="1" source="vm_services" target="cls_service"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="dep8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 3;endArrow=open;endSize=10;startArrow=none;strokeColor=#4a4a4a;strokeWidth=1.5;" edge="1" parent="1" source="vm_servicedetail" target="cls_service"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <mxCell id="dep9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 3;endArrow=open;endSize=10;startArrow=none;strokeColor=#4a4a4a;strokeWidth=1.5;" edge="1" parent="1" source="vm_transactions" target="cls_transaction"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="dep10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 3;endArrow=open;endSize=10;startArrow=none;strokeColor=#4a4a4a;strokeWidth=1.5;" edge="1" parent="1" source="vm_transactiondetail" target="cls_transaction"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="dep11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 3;endArrow=open;endSize=10;startArrow=none;strokeColor=#4a4a4a;strokeWidth=1.5;" edge="1" parent="1" source="vm_transactiondetail" target="cls_txitem"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="dep12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 3;endArrow=open;endSize=10;startArrow=none;strokeColor=#4a4a4a;strokeWidth=1.5;exitX=1;exitY=0.6;entryX=0;entryY=0.5;" edge="1" parent="1" source="vm_transactiondetail" target="cls_usage"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <mxCell id="dep13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 3;endArrow=open;endSize=10;startArrow=none;strokeColor=#4a4a4a;strokeWidth=1.5;" edge="1" parent="1" source="cls_invwithusage" target="cls_inventory"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="dep14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 3;endArrow=open;endSize=10;startArrow=none;strokeColor=#4a4a4a;strokeWidth=1.5;" edge="1" parent="1" source="vm_inventory" target="cls_inventory"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="dep15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 3;endArrow=open;endSize=10;startArrow=none;strokeColor=#4a4a4a;strokeWidth=1.5;" edge="1" parent="1" source="vm_inventorydetail" target="cls_inventory"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="dep16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 3;endArrow=open;endSize=10;startArrow=none;strokeColor=#4a4a4a;strokeWidth=1.5;" edge="1" parent="1" source="vm_restock" target="cls_inventory"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="dep17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 3;endArrow=open;endSize=10;startArrow=none;strokeColor=#4a4a4a;strokeWidth=1.5;" edge="1" parent="1" source="vm_restock" target="cls_restock"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <mxCell id="dep18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 3;endArrow=open;endSize=10;startArrow=none;strokeColor=#4a4a4a;strokeWidth=1.5;exitX=0;exitY=0.3;entryX=1;entryY=0.1;" edge="1" parent="1" source="vm_dashboard" target="cls_transaction"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="dep19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 3;endArrow=open;endSize=10;startArrow=none;strokeColor=#4a4a4a;strokeWidth=1.5;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="vm_dashboard" target="cls_customer"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="dep20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 3;endArrow=open;endSize=10;startArrow=none;strokeColor=#4a4a4a;strokeWidth=1.5;exitX=0;exitY=0.7;entryX=1;entryY=0.2;" edge="1" parent="1" source="vm_dashboard" target="cls_inventory"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <mxCell id="dep21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 3;endArrow=open;endSize=10;startArrow=none;strokeColor=#4a4a4a;strokeWidth=1.5;exitX=0;exitY=0.3;entryX=1;entryY=0.1;" edge="1" parent="1" source="vm_reports" target="cls_transaction"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="dep22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 3;endArrow=open;endSize=10;startArrow=none;strokeColor=#4a4a4a;strokeWidth=1.5;exitX=0;exitY=0.7;entryX=1;entryY=0.5;" edge="1" parent="1" source="vm_reports" target="cls_usage"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="dep23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 3;endArrow=open;endSize=10;startArrow=none;strokeColor=#4a4a4a;strokeWidth=1.5;" edge="1" parent="1" source="cls_usagereportrow" target="cls_inventory"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

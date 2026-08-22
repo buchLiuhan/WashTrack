@@ -147,8 +147,16 @@ namespace WashTrack.MVVM.ViewModels
 
             if (!confirm) return;
 
-            customerOrder.Customer.IsActive = false;
-            _context.Customers.Update(customerOrder.Customer);
+            // Re-fetch rather than Update(customerOrder.Customer): FindAsync
+            // returns the already-tracked instance when there is one, so a
+            // second instance of the same row can never be attached. This
+            // only works by luck today (LoadCustomersAsync happens to track
+            // its results) — adding AsNoTracking there would otherwise turn
+            // every second tap on the same row into a crash.
+            var tracked = await _context.Customers.FindAsync(customerOrder.Customer.CustomerId);
+            if (tracked == null) return;
+
+            tracked.IsActive = false;
             await _context.SaveChangesAsync();
             await LoadCustomersAsync();
         }
@@ -156,8 +164,10 @@ namespace WashTrack.MVVM.ViewModels
         [RelayCommand]
         public async Task RestoreCustomerAsync(CustomerWithOrders customerOrder)
         {
-            customerOrder.Customer.IsActive = true;
-            _context.Customers.Update(customerOrder.Customer);
+            var tracked = await _context.Customers.FindAsync(customerOrder.Customer.CustomerId);
+            if (tracked == null) return;
+
+            tracked.IsActive = true;
             await _context.SaveChangesAsync();
             await LoadCustomersAsync();
         }
@@ -176,8 +186,11 @@ namespace WashTrack.MVVM.ViewModels
                 .Where(t => t.CustomerId == customerOrder.Customer.CustomerId)
                 .ToListAsync();
 
+            var tracked = await _context.Customers.FindAsync(customerOrder.Customer.CustomerId);
+            if (tracked == null) return;
+
             _context.Transactions.RemoveRange(transactions);
-            _context.Customers.Remove(customerOrder.Customer);
+            _context.Customers.Remove(tracked);
             await _context.SaveChangesAsync();
             await LoadCustomersAsync();
         }

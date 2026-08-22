@@ -38,4 +38,27 @@
         ContentTemplate="{DataTemplate views:ReportsPage}"
         Route="ReportsPage" />
 
+    <!-- Logout lives in the flyout footer rather than on the Dashboard so it
+         is reachable from every page, which is where the owner will actually
+         be when she finishes for the day. Red on the flyout's light
+         background — the only red item here, so it reads as "different"
+         without competing with anything. -->
+    <Shell.FlyoutFooter>
+        <Grid Padding="20,16" ColumnDefinitions="Auto,*" ColumnSpacing="10">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnLogoutTapped" />
+            </Grid.GestureRecognizers>
+            <Image Grid.Column="0"
+                   Source="{StaticResource LogoutIcon}"
+                   WidthRequest="18" HeightRequest="18"
+                   VerticalOptions="Center" />
+            <Label Grid.Column="1"
+                   Text="Log out"
+                   FontSize="15"
+                   FontAttributes="Bold"
+                   TextColor="{StaticResource DangerColor}"
+                   VerticalOptions="Center" />
+        </Grid>
+    </Shell.FlyoutFooter>
+
 </Shell>

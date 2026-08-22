@@ -182,7 +182,7 @@
                        IsVisible="{Binding IsLoading,
                            Converter={StaticResource InverseBoolConverter}}" />
 
-                <Grid ColumnDefinitions="*,*"
+                <Grid ColumnDefinitions="*,*,*"
                       ColumnSpacing="8"
                       Margin="0,0,0,16"
                       IsVisible="{Binding IsLoading,
@@ -213,6 +213,22 @@
                                    TextColor="{StaticResource TextLightColor}"
                                    HorizontalOptions="Center" />
                             <Label Text="Low Stock Now"
+                                   FontSize="11"
+                                   TextColor="{StaticResource TextLightColor}"
+                                   Opacity="0.8"
+                                   HorizontalOptions="Center" />
+                        </StackLayout>
+                    </Border>
+
+                    <Border Grid.Column="2"
+                            Style="{StaticResource DarkCardStyle}">
+                        <StackLayout Spacing="4" HorizontalOptions="Center">
+                            <Label Text="{Binding CorrectionCount}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource TextLightColor}"
+                                   HorizontalOptions="Center" />
+                            <Label Text="Corrections"
                                    FontSize="11"
                                    TextColor="{StaticResource TextLightColor}"
                                    Opacity="0.8"
@@ -264,13 +280,72 @@
                                         <Border Style="{StaticResource PillDanger}"
                                                 HorizontalOptions="End"
                                                 IsVisible="{Binding IsLowStock}">
-                                            <HorizontalStackLayout Spacing="4">
-                                                <Image Source="{StaticResource RedWarningIcon}"
-                                                       WidthRequest="12" HeightRequest="12"
-                                                       VerticalOptions="Center" />
-                                                <Label Text="Low Stock"
-                                                       Style="{StaticResource PillLabelStyle}" />
-                                            </HorizontalStackLayout>
+                                            <!-- Icon dropped: red-on-red was invisible. -->
+                                            <Label Text="Low Stock"
+                                                   Style="{StaticResource PillLabelStyle}" />
+                                        </Border>
+                                    </StackLayout>
+
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- Stock Movements: restocks and corrections in this range -->
+                <Label Text="STOCK MOVEMENTS"
+                       Style="{StaticResource SectionHeaderLabel}"
+                       Margin="0,16,0,0"
+                       IsVisible="{Binding IsLoading,
+                           Converter={StaticResource InverseBoolConverter}}" />
+
+                <CollectionView ItemsSource="{Binding RestockHistory}"
+                                IsVisible="{Binding IsLoading,
+                                    Converter={StaticResource InverseBoolConverter}}">
+
+                    <CollectionView.EmptyView>
+                        <Label Text="No stock movements in this date range."
+                               Style="{StaticResource EmptyStateLabel}"
+                               Margin="0,24,0,0" />
+                    </CollectionView.EmptyView>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="vm:RestockReportRow">
+                            <Border Style="{StaticResource CardStyle}"
+                                    Margin="0,4">
+                                <Grid ColumnDefinitions="*,Auto"
+                                      RowDefinitions="Auto,Auto,Auto">
+
+                                    <Label Grid.Column="0" Grid.Row="0"
+                                           Text="{Binding ItemName}"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimaryColor}" />
+
+                                    <Label Grid.Column="0" Grid.Row="1"
+                                           Text="{Binding DateText}"
+                                           Style="{StaticResource MutedLabelStyle}" />
+
+                                    <Label Grid.Column="0" Grid.Row="2"
+                                           Grid.ColumnSpan="2"
+                                           Text="{Binding Notes}"
+                                           IsVisible="{Binding HasNotes}"
+                                           Style="{StaticResource MutedLabelStyle}"
+                                           Margin="0,4,0,0" />
+
+                                    <StackLayout Grid.Column="1"
+                                                 Grid.Row="0"
+                                                 Grid.RowSpan="2"
+                                                 VerticalOptions="Center"
+                                                 HorizontalOptions="End"
+                                                 Spacing="4">
+                                        <Label Text="{Binding ChangeText}"
+                                               Style="{StaticResource AccentLabelStyle}"
+                                               HorizontalOptions="End" />
+                                        <Border Style="{StaticResource PillWarning}"
+                                                HorizontalOptions="End"
+                                                IsVisible="{Binding IsCorrection}">
+                                            <Label Text="Correction"
+                                                   Style="{StaticResource PillLabelStyle}" />
                                         </Border>
                                     </StackLayout>
 

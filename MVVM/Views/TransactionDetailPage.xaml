@@ -79,8 +79,9 @@
                                        FontAttributes="Bold"
                                        TextColor="{StaticResource TextPrimaryColor}" />
                                 <Label Grid.Row="1" Grid.Column="0"
-                                       Text="{Binding WeightKg, StringFormat='{0}kg'}"
-                                       Style="{StaticResource MutedLabelStyle}" />
+                                       Text="{Binding QuantityText}"
+                                       Style="{StaticResource MutedLabelStyle}"
+                                       Margin="0,3,0,0" />
                                 <Label Grid.Row="0" Grid.Column="1"
                                        Grid.RowSpan="2"
                                        Text="{Binding LineCost, StringFormat='₱{0:F2}'}"
@@ -355,7 +356,7 @@
 
                     <Label Text="{Binding QuantityLabel}"
                            Style="{StaticResource FieldLabelStyle}" />
-                    <Entry Placeholder="e.g. 3.5"
+                    <Entry Placeholder="{Binding QuantityPlaceholder}"
                            Text="{Binding WeightKg}"
                            Keyboard="Numeric" />
 
@@ -386,8 +387,9 @@
                                        FontAttributes="Bold"
                                        TextColor="{StaticResource TextPrimaryColor}" />
                                 <Label Grid.Row="1" Grid.Column="0"
-                                       Text="{Binding WeightKg, StringFormat='{0}kg'}"
-                                       Style="{StaticResource MutedLabelStyle}" />
+                                       Text="{Binding QuantityText}"
+                                       Style="{StaticResource MutedLabelStyle}"
+                                       Margin="0,3,0,0" />
                                 <Label Grid.Row="0" Grid.Column="1"
                                        Grid.RowSpan="2"
                                        Text="{Binding LineCost, StringFormat='₱{0:F2}'}"

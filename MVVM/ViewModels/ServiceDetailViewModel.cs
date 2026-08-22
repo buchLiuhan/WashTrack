@@ -276,6 +276,39 @@ namespace WashTrack.MVVM.ViewModels
             if (!TryParseUsage(SelectedConditionerItem, ConditionerUsage, "conditioner", out decimal? cUsage)) return;
             if (!TryParseUsage(SelectedOtherItem, OtherUsage, "other supply", out decimal? oUsage)) return;
 
+            // Confirmation, matching the other detail pages. Worth more here
+            // than anywhere else: a wrong price silently misprices every future
+            // transaction, and a mis-linked supply deducts from the wrong item
+            // forever without ever raising an error. Reading both back in words
+            // is what catches a number typed into the wrong box.
+            string pricingSummary = SelectedPricingMode switch
+            {
+                "Per Kilo" => $"₱{finalPricePerKilo:F2} per kilo",
+                "Minimum Charge" => finalExcessPerKilo.HasValue
+                    ? $"Up to {finalMinKilo:F0}kg = ₱{finalMinKiloCharge:F2}, then ₱{finalExcessPerKilo:F2} per excess kilo"
+                    : $"Up to {finalMinKilo:F0}kg = ₱{finalMinKiloCharge:F2} (no excess charge set)",
+                _ => $"₱{finalFlatRate:F2} per piece/load"
+            };
+
+            var supplyLines = new List<string>();
+            if (SelectedDetergentItem != null)
+                supplyLines.Add($"Detergent: {SelectedDetergentItem.ItemName} ({dUsage} {SelectedDetergentItem.Unit} {UsageUnitLabel})");
+            if (SelectedConditionerItem != null)
+                supplyLines.Add($"Conditioner: {SelectedConditionerItem.ItemName} ({cUsage} {SelectedConditionerItem.Unit} {UsageUnitLabel})");
+            if (SelectedOtherItem != null)
+                supplyLines.Add($"Other: {SelectedOtherItem.ItemName} ({oUsage} {SelectedOtherItem.Unit} {UsageUnitLabel})");
+
+            string supplySummary = supplyLines.Count > 0
+                ? "\n\nSupplies used:\n" + string.Join("\n", supplyLines)
+                : "\n\nNo supplies linked — this service won't deduct any stock.";
+
+            bool confirmed = await Shell.Current.DisplayAlert(
+                _isEditing ? "Confirm Changes" : "Confirm Service",
+                $"{ServiceName}\n{SelectedPricingMode}: {pricingSummary}{supplySummary}",
+                "Confirm", "Cancel");
+
+            if (!confirmed) return;
+
             if (_isEditing)
             {
                 var tracked = await _context.Services.FindAsync(Service.ServiceId);

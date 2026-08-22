@@ -21,6 +21,22 @@ namespace WashTrack.MVVM.ViewModels
         public string StockText => $"{CurrentStock:F0}{Unit}";
     }
 
+    // One stock movement in the selected date range: positive is new supply
+    // received, negative is a correction (spillage, spoilage, miscount).
+    public partial class RestockReportRow : ObservableObject
+    {
+        public string ItemName { get; set; } = string.Empty;
+        public string Unit { get; set; } = string.Empty;
+        public decimal QuantityChange { get; set; }
+        public DateTime RestockDate { get; set; }
+        public string? Notes { get; set; }
+
+        public bool IsCorrection => QuantityChange < 0;
+        public string ChangeText => $"{(QuantityChange > 0 ? "+" : "")}{QuantityChange:F0}{Unit}";
+        public string DateText => RestockDate.ToString("MMM dd");
+        public bool HasNotes => !string.IsNullOrWhiteSpace(Notes);
+    }
+
     public partial class ReportsViewModel : ObservableObject
     {
         private readonly WashTrackContext _context;
@@ -58,6 +74,14 @@ namespace WashTrack.MVVM.ViewModels
 
         [ObservableProperty]
         private int lowStockCount;
+
+        [ObservableProperty]
+        private ObservableCollection<RestockReportRow> restockHistory = new();
+
+        // Count, not a sum: quantities span different units (L, kg, pcs),
+        // so totalling them across items would be meaningless.
+        [ObservableProperty]
+        private int correctionCount;
 
         public ReportsViewModel(WashTrackContext context)
         {
@@ -123,6 +147,28 @@ namespace WashTrack.MVVM.ViewModels
 
             InventoryUsage = new ObservableCollection<InventoryUsageReportRow>(rows);
             LowStockCount = activeItems.Count(i => i.IsLowStock);
+
+            // Not filtered to active items: deactivated ones keep their history
+            // on purpose, and dropping their movements would hide real stock
+            // changes from the period.
+            var restocks = await _context.InventoryRestockHistories
+                .AsNoTracking()
+                .Include(h => h.Inventory)
+                .Where(h => h.RestockDate.Date >= StartDate.Date && h.RestockDate.Date <= EndDate.Date)
+                .OrderByDescending(h => h.RestockDate)
+                .ToListAsync();
+
+            RestockHistory = new ObservableCollection<RestockReportRow>(
+                restocks.Select(h => new RestockReportRow
+                {
+                    ItemName = h.Inventory?.ItemName ?? "(deleted item)",
+                    Unit = h.Inventory?.Unit ?? string.Empty,
+                    QuantityChange = h.QuantityChange,
+                    RestockDate = h.RestockDate,
+                    Notes = h.Notes
+                }));
+
+            CorrectionCount = restocks.Count(r => r.QuantityChange < 0);
         }
 
         [RelayCommand]

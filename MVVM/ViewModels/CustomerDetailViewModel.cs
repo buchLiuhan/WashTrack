@@ -101,6 +101,21 @@ namespace WashTrack.MVVM.ViewModels
                 await Shell.Current.DisplayAlert("Error", "Contact number is required.", "OK");
                 return;
             }
+
+            // Accept what people actually paste — "0917 123 4567",
+            // "0917-123-4567", "+639171234567" — and store one canonical
+            // 09xxxxxxxxx form so the number stays searchable. Rejecting a
+            // correct-but-punctuated number is the most annoying way to
+            // validate, so normalize first and judge the result.
+            string normalizedContact = NormalizePhilippineMobile(ContactNumber);
+            if (normalizedContact.Length != 11 || !normalizedContact.StartsWith("09"))
+            {
+                await Shell.Current.DisplayAlert("Error",
+                    "Enter a valid 11-digit mobile number starting with 09 (e.g. 09171234567).",
+                    "OK");
+                return;
+            }
+            ContactNumber = normalizedContact;
             if (string.IsNullOrWhiteSpace(Address))
             {
                 await Shell.Current.DisplayAlert("Error", "Address is required.", "OK");
@@ -113,12 +128,27 @@ namespace WashTrack.MVVM.ViewModels
 
             if (_isEditing)
             {
+                // Customer arrives by navigation from CustomersViewModel, which
+                // loaded it on a different context, so it is detached here.
+                // Write through the tracked instance instead of attaching this
+                // one — attaching would throw the moment anything else in this
+                // ViewModel tracks the same customer (e.g. if the transactions
+                // query below ever adds .Include(t => t.Customer)).
+                var tracked = await _context.Customers.FindAsync(Customer.CustomerId);
+                if (tracked == null) return;
+
+                tracked.Name = Name;
+                tracked.ContactNumber = ContactNumber;
+                tracked.Email = Email;
+                tracked.Address = Address;
+                await _context.SaveChangesAsync();
+
+                // Keep the navigated instance in step, since it is what the
+                // page is bound to and what the message below carries.
                 Customer.Name = Name;
                 Customer.ContactNumber = ContactNumber;
                 Customer.Email = Email;
                 Customer.Address = Address;
-                _context.Customers.Update(Customer);
-                await _context.SaveChangesAsync();
 
                 if (FromTransaction)
                     WeakReferenceMessenger.Default.Send(new CustomerCreatedMessage(Customer));
@@ -159,6 +189,19 @@ namespace WashTrack.MVVM.ViewModels
                 { "Transaction", transaction }
             };
             await Shell.Current.GoToAsync(nameof(TransactionDetailPage), parameters);
+        }
+
+        // Strips formatting, then folds the +63 / 63 international prefixes
+        // down to the local 09 form. Anything else is returned as-is so the
+        // caller's length/prefix check rejects it.
+        private static string NormalizePhilippineMobile(string raw)
+        {
+            var digits = new string(raw.Where(char.IsDigit).ToArray());
+
+            if (digits.StartsWith("639") && digits.Length == 12)
+                return "0" + digits.Substring(2);
+
+            return digits;
         }
     }
 }
