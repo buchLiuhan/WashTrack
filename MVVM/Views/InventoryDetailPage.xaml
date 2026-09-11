@@ -48,10 +48,10 @@
                    Text="{Binding MinimumThreshold}"
                    Keyboard="Numeric" />
 
-            <Label Text="Reorder Quantity (Optional)"
+            <Label Text="Usual Restock Amount (Optional)"
                    Style="{StaticResource FieldLabelStyle}" />
             <Entry Placeholder="e.g. 5000"
-                   Text="{Binding ReorderQuantity}"
+                   Text="{Binding UsualRestockAmount}"
                    Keyboard="Numeric" />
 
             <Button Text="Save Item"

@@ -7,18 +7,40 @@ using WashTrack.Models;
 
 namespace WashTrack.MVVM.ViewModels
 {
-    // One row of the inventory report: how much of this item was consumed
-    // in the selected date range, alongside its current live stock.
-    public partial class InventoryUsageReportRow : ObservableObject
+    // One item's full stock position over the selected date range:
+    //
+    //     Opening + Stock In + Adjustments − Used = Closing
+    //
+    // Two event logs (what came in, what went out) can't answer "does my
+    // stock actually add up?" — this can, because every figure in the line
+    // is derived from the same history and has to balance. If it ever
+    // doesn't, something went unrecorded.
+    public partial class InventoryReconciliationRow : ObservableObject
     {
         public string ItemName { get; set; } = string.Empty;
         public string Unit { get; set; } = string.Empty;
-        public decimal QuantityUsed { get; set; }
-        public decimal CurrentStock { get; set; }
+
+        public decimal Opening { get; set; }
+        public decimal StockIn { get; set; }
+        public decimal Used { get; set; }
+
+        // Signed, and negative in practice: corrections for spillage,
+        // spoilage or a miscount. Kept out of Stock In so a bad month
+        // can't hide inside a good delivery.
+        public decimal Adjustments { get; set; }
+
+        public decimal Closing { get; set; }
         public bool IsLowStock { get; set; }
 
-        public string UsedText => $"Used: {QuantityUsed:F1}{Unit}";
-        public string StockText => $"{CurrentStock:F0}{Unit}";
+        public string OpeningText => $"{Opening:F0}{Unit}";
+        public string StockInText => $"+{StockIn:F0}{Unit}";
+        public string UsedText => $"−{Used:F0}{Unit}";
+        public string AdjustmentsText => $"{(Adjustments > 0 ? "+" : "−")}{Math.Abs(Adjustments):F0}{Unit}";
+        public string ClosingText => $"{Closing:F0}{Unit}";
+
+        // Row is hidden when zero — most items have no corrections, and an
+        // empty "0" line on every card buries the ones that do.
+        public bool HasAdjustments => Adjustments != 0;
     }
 
     // One stock movement in the selected date range: positive is new supply
@@ -70,7 +92,7 @@ namespace WashTrack.MVVM.ViewModels
         private string reportToggleText = "View Inventory Report";
 
         [ObservableProperty]
-        private ObservableCollection<InventoryUsageReportRow> inventoryUsage = new();
+        private ObservableCollection<InventoryReconciliationRow> inventoryUsage = new();
 
         [ObservableProperty]
         private int lowStockCount;
@@ -116,47 +138,96 @@ namespace WashTrack.MVVM.ViewModels
             IsLoading = false;
         }
 
-        // Consumption per item within the same date range, alongside a live
-        // stock snapshot (stock itself isn't date-ranged — it's "now").
+        // Builds the full stock position per item for the range, plus the
+        // movement log underneath it.
         private async Task LoadInventoryReportAsync()
         {
+            var rangeStart = StartDate.Date;
+            var rangeEnd = EndDate.Date;
+
             var activeItems = await _context.Inventories
                 .AsNoTracking()
                 .Where(i => i.IsActive)
                 .OrderBy(i => i.ItemName)
                 .ToListAsync();
 
-            var usageTotals = await _context.InventoryUsageHistories
+            // Everything from the start of the range onward — deliberately not
+            // capped at EndDate. Closing stock has to be wound back from
+            // CurrentStock, which is always "now", so movements made *after*
+            // the range are needed to undo them.
+            //
+            // Summed in memory rather than with a SQL GROUP BY: EF stores
+            // decimal as TEXT on SQLite, so aggregating server-side pushes
+            // these through SQLite's own numeric coercion. In memory they stay
+            // decimal the whole way.
+            var usageRows = await _context.InventoryUsageHistories
                 .AsNoTracking()
-                .Where(h => h.UsageDate.Date >= StartDate.Date && h.UsageDate.Date <= EndDate.Date)
-                .GroupBy(h => h.InventoryId)
-                .Select(g => new { InventoryId = g.Key, Total = g.Sum(h => h.QuantityUsed) })
+                .Where(h => h.UsageDate.Date >= rangeStart)
+                .Select(h => new { h.InventoryId, h.UsageDate, h.QuantityUsed })
+                .ToListAsync();
+
+            var restockRows = await _context.InventoryRestockHistories
+                .AsNoTracking()
+                .Include(h => h.Inventory)
+                .Where(h => h.RestockDate.Date >= rangeStart)
                 .ToListAsync();
 
             var rows = activeItems
-                .Select(i => new InventoryUsageReportRow
+                .Select(i =>
                 {
-                    ItemName = i.ItemName,
-                    Unit = i.Unit,
-                    QuantityUsed = usageTotals.FirstOrDefault(u => u.InventoryId == i.InventoryId)?.Total ?? 0m,
-                    CurrentStock = i.CurrentStock,
-                    IsLowStock = i.IsLowStock
+                    var itemUsage = usageRows.Where(u => u.InventoryId == i.InventoryId).ToList();
+                    var itemRestocks = restockRows.Where(r => r.InventoryId == i.InventoryId).ToList();
+
+                    bool InRange(DateTime d) => d.Date >= rangeStart && d.Date <= rangeEnd;
+
+                    decimal used = itemUsage
+                        .Where(u => InRange(u.UsageDate))
+                        .Sum(u => u.QuantityUsed);
+
+                    var movesInRange = itemRestocks.Where(r => InRange(r.RestockDate)).ToList();
+                    decimal stockIn = movesInRange.Where(r => r.QuantityChange > 0).Sum(r => r.QuantityChange);
+                    decimal adjustments = movesInRange.Where(r => r.QuantityChange < 0).Sum(r => r.QuantityChange);
+
+                    // Wind "now" back to the end of the range: undo anything
+                    // that moved after it. When EndDate is today (the default)
+                    // both of these are zero and closing == CurrentStock.
+                    decimal usedAfter = itemUsage
+                        .Where(u => u.UsageDate.Date > rangeEnd)
+                        .Sum(u => u.QuantityUsed);
+                    decimal movedAfter = itemRestocks
+                        .Where(r => r.RestockDate.Date > rangeEnd)
+                        .Sum(r => r.QuantityChange);
+
+                    decimal closing = i.CurrentStock + usedAfter - movedAfter;
+
+                    // Rearranged from closing = opening + in + adj − used.
+                    decimal opening = closing - stockIn - adjustments + used;
+
+                    return new InventoryReconciliationRow
+                    {
+                        ItemName = i.ItemName,
+                        Unit = i.Unit,
+                        Opening = opening,
+                        StockIn = stockIn,
+                        Used = used,
+                        Adjustments = adjustments,
+                        Closing = closing,
+                        IsLowStock = i.IsLowStock
+                    };
                 })
-                .OrderByDescending(r => r.QuantityUsed)
+                .OrderByDescending(r => r.Used)
                 .ToList();
 
-            InventoryUsage = new ObservableCollection<InventoryUsageReportRow>(rows);
+            InventoryUsage = new ObservableCollection<InventoryReconciliationRow>(rows);
             LowStockCount = activeItems.Count(i => i.IsLowStock);
 
-            // Not filtered to active items: deactivated ones keep their history
-            // on purpose, and dropping their movements would hide real stock
-            // changes from the period.
-            var restocks = await _context.InventoryRestockHistories
-                .AsNoTracking()
-                .Include(h => h.Inventory)
-                .Where(h => h.RestockDate.Date >= StartDate.Date && h.RestockDate.Date <= EndDate.Date)
+            // Movement log. Not filtered to active items: deactivated ones keep
+            // their history on purpose, and dropping their movements would hide
+            // real stock changes from the period.
+            var restocks = restockRows
+                .Where(h => h.RestockDate.Date >= rangeStart && h.RestockDate.Date <= rangeEnd)
                 .OrderByDescending(h => h.RestockDate)
-                .ToListAsync();
+                .ToList();
 
             RestockHistory = new ObservableCollection<RestockReportRow>(
                 restocks.Select(h => new RestockReportRow

@@ -76,10 +76,18 @@ namespace WashTrack.MVVM.ViewModels
             // Total customers
             TotalCustomers = await _context.Customers.CountAsync();
 
-            // Low stock
-            var lowStock = await _context.Inventories
-                .Where(i => i.CurrentStock <= i.MinimumThreshold)
-                .CountAsync();
+            // Low stock. The comparison runs in memory, not in SQL: EF stores
+            // decimal as TEXT on SQLite, so a server-side "CurrentStock <=
+            // MinimumThreshold" compares the two as strings — "500" <= "1000"
+            // is false, because '5' > '1' — and a genuinely low item goes
+            // uncounted. InventoryViewModel and ReportsViewModel filter the
+            // same way, so all three screens now agree.
+            var activeItems = await _context.Inventories
+                .AsNoTracking()
+                .Where(i => i.IsActive)
+                .ToListAsync();
+
+            var lowStock = activeItems.Count(i => i.IsLowStock);
 
             LowStockCount = lowStock;
             HasLowStock = lowStock > 0;

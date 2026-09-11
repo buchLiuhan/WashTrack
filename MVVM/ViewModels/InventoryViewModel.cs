@@ -19,8 +19,9 @@ namespace WashTrack.MVVM.ViewModels
         // keeps the card compact and stops it looking disjointed.
         public string StockText => $"{Item.CurrentStock:F0} {Item.Unit}";
 
-        // Average consumed per day over the last 30 days. Zero means the
-        // item has never been used yet.
+        // Weighted average consumed per day, recent days counting for more.
+        // See CalculateWeightedDailyUsage. Zero means the item has never
+        // been used yet.
         public decimal AverageDailyUsage { get; set; }
 
         public bool HasUsageData => AverageDailyUsage > 0;
@@ -39,7 +40,7 @@ namespace WashTrack.MVVM.ViewModels
             }
         }
 
-        public DateTime ReorderDate => DateTime.Today.AddDays(DaysUntilThreshold);
+        public DateTime RestockByDate => DateTime.Today.AddDays(DaysUntilThreshold);
 
         // What the card actually shows under the item name.
         public string ForecastText
@@ -49,17 +50,23 @@ namespace WashTrack.MVVM.ViewModels
                 if (!HasUsageData)
                     return "No usage data yet";
 
+                // Once it's low, "how many days left" is no longer the useful
+                // number — how much to add is. Echo back the owner's own usual
+                // restock amount if she set one, labelled as hers rather than
+                // as advice the app worked out.
                 if (Item.IsLowStock)
-                    return "Restock now";
+                    return Item.UsualRestockAmount.HasValue
+                        ? $"Restock now · usually {Item.UsualRestockAmount.Value:F0} {Item.Unit}"
+                        : "Restock now";
 
                 // Include the year once the date leaves the current one:
-                // "MMM dd" alone rendered a 2027 reorder date as "Aug 27",
+                // "MMM dd" alone rendered a 2027 restock date as "Aug 27",
                 // which reads as days away instead of a year away.
-                string dateText = ReorderDate.Year == DateTime.Today.Year
-                    ? $"{ReorderDate:MMM dd}"
-                    : $"{ReorderDate:MMM dd, yyyy}";
+                string dateText = RestockByDate.Year == DateTime.Today.Year
+                    ? $"{RestockByDate:MMM dd}"
+                    : $"{RestockByDate:MMM dd, yyyy}";
 
-                return $"~{DaysUntilThreshold} days left · reorder by {dateText}";
+                return $"~{DaysUntilThreshold} days left · restock by {dateText}";
             }
         }
     }
@@ -123,22 +130,29 @@ namespace WashTrack.MVVM.ViewModels
                 .OrderBy(i => i.ItemName)
                 .ToListAsync();
 
-            // Single query for all usage in the window, grouped by item.
-            var windowStart = DateTime.Today.AddDays(-30);
-            var usageTotals = await _context.InventoryUsageHistories
+            // Single query for all usage in the window. Rows come back
+            // individually rather than pre-grouped because the weighted
+            // average needs to know which day each one landed on.
+            var windowStart = DateTime.Today.AddDays(-(UsageWindowDays - 1));
+            var usageRows = await _context.InventoryUsageHistories
                 .AsNoTracking()
                 .Where(h => h.UsageDate >= windowStart)
-                .GroupBy(h => h.InventoryId)
-                .Select(g => new { InventoryId = g.Key, Total = g.Sum(h => h.QuantityUsed) })
+                .Select(h => new { h.InventoryId, h.UsageDate, h.QuantityUsed })
                 .ToListAsync();
+
+            var usageByItem = usageRows
+                .GroupBy(h => h.InventoryId)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Select(h => (Date: h.UsageDate, Quantity: h.QuantityUsed)).ToList());
 
             _loadedItems = items.Select(i =>
             {
-                var total = usageTotals.FirstOrDefault(u => u.InventoryId == i.InventoryId)?.Total ?? 0m;
+                usageByItem.TryGetValue(i.InventoryId, out var rows);
                 return new InventoryWithUsage
                 {
                     Item = i,
-                    AverageDailyUsage = total / 30m
+                    AverageDailyUsage = CalculateWeightedDailyUsage(rows)
                 };
             }).ToList();
 
@@ -151,6 +165,66 @@ namespace WashTrack.MVVM.ViewModels
             LowStockBannerText = BuildLowStockBannerText(lowStock);
 
             IsLoading = false;
+        }
+
+        // ===== USAGE FORECASTING =====
+
+        // Longest stretch of history the forecast will look back over.
+        private const int UsageWindowDays = 30;
+
+        // Weighted Moving Average of daily consumption.
+        //
+        //     D = Σ(wᵢ · xᵢ) / Σ(wᵢ)
+        //
+        // where xᵢ is the quantity used on day i and the weights wᵢ rise
+        // linearly toward the present. Two things this gets right that a
+        // flat total/30 did not:
+        //
+        //   1. The divisor is how long the item has actually been in use,
+        //      not a fixed 30. An item first used three days ago used to
+        //      have its consumption spread over a month it hadn't lived
+        //      through, which reported a tenth of the real daily figure and
+        //      promised the owner ten times the days of stock she had.
+        //
+        //   2. Recent days count for more. A flat mean treats consumption
+        //      from four weeks ago as evidence about tomorrow; this doesn't.
+        private static decimal CalculateWeightedDailyUsage(
+            List<(DateTime Date, decimal Quantity)>? usage)
+        {
+            if (usage == null || usage.Count == 0) return 0m;
+
+            var today = DateTime.Today;
+            var firstUsageDay = usage.Min(u => u.Date).Date;
+
+            // Observation window: first recorded usage through today,
+            // inclusive, capped at UsageWindowDays.
+            int days = (today - firstUsageDay).Days + 1;
+            days = Math.Clamp(days, 1, UsageWindowDays);
+
+            var windowStart = today.AddDays(-(days - 1));
+
+            // Bucket into calendar days. Days with no usage stay at zero on
+            // purpose — stock has to last through closed days too, so they
+            // belong in a "how many days will this last" figure.
+            var dailyTotals = new decimal[days];
+            foreach (var (date, quantity) in usage)
+            {
+                int index = (date.Date - windowStart).Days;
+                if (index >= 0 && index < days)
+                    dailyTotals[index] += quantity;
+            }
+
+            // Oldest day in the window weighs 1, newest weighs `days`.
+            decimal weightedSum = 0m;
+            decimal weightTotal = 0m;
+            for (int i = 0; i < days; i++)
+            {
+                decimal weight = i + 1;
+                weightedSum += weight * dailyTotals[i];
+                weightTotal += weight;
+            }
+
+            return weightTotal > 0 ? weightedSum / weightTotal : 0m;
         }
 
         // Re-slices the already-loaded list instead of re-querying —

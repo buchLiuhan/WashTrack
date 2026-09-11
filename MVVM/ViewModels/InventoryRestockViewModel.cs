@@ -35,6 +35,12 @@ namespace WashTrack.MVVM.ViewModels
             if (value == null) return;
             ItemName = value.ItemName;
             CurrentStockText = $"{value.CurrentStock:F0} {value.Unit}";
+
+            // Prefill with the item's usual restock amount so topping up a low
+            // item is one tap. Still editable — a batch rarely comes out to
+            // exactly the usual size, and corrections are typed in by hand.
+            if (value.UsualRestockAmount.HasValue && value.UsualRestockAmount.Value > 0)
+                QuantityChange = value.UsualRestockAmount.Value.ToString("F0");
         }
 
         [RelayCommand]

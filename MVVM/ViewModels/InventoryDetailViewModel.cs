@@ -35,7 +35,7 @@ namespace WashTrack.MVVM.ViewModels
         private string minimumThreshold = string.Empty;
 
         [ObservableProperty]
-        private string reorderQuantity = string.Empty;
+        private string usualRestockAmount = string.Empty;
 
         private bool _isEditing = false;
 
@@ -56,7 +56,7 @@ namespace WashTrack.MVVM.ViewModels
                 CurrentStockDisplay = $"{value.CurrentStock:F0} {value.Unit}";
                 Unit = value.Unit;
                 MinimumThreshold = value.MinimumThreshold.ToString();
-                ReorderQuantity = value.ReorderQuantity?.ToString() ?? string.Empty;
+                UsualRestockAmount = value.UsualRestockAmount?.ToString() ?? string.Empty;
             }
         }
 
@@ -90,20 +90,20 @@ namespace WashTrack.MVVM.ViewModels
                 return;
             }
 
-            decimal.TryParse(ReorderQuantity, out decimal reorder);
+            decimal.TryParse(UsualRestockAmount, out decimal restockAmount);
 
-            string reorderText = reorder > 0 ? $"{reorder:F0} {Unit}" : "Not set";
+            string restockAmountText = restockAmount > 0 ? $"{restockAmount:F0} {Unit}" : "Not set";
             string summary =
                 $"Item: {ItemName}\n" +
                 (IsNewItem ? $"Current Stock: {stock:F0} {Unit}\n" : string.Empty) +
                 $"Low Stock Alert: {threshold:F0} {Unit}\n" +
-                $"Reorder Quantity: {reorderText}";
+                $"Usual Restock Amount: {restockAmountText}";
 
-            // Soft warning only — reorder quantity is informational and
+            // Soft warning only — the restock amount is informational and
             // nothing downstream enforces it, so this never blocks saving.
-            if (reorder > 0 && reorder <= threshold)
+            if (restockAmount > 0 && restockAmount <= threshold)
             {
-                summary += "\n\n⚠️ This reorder quantity won't clear the low-stock warning after one restock — you may want to increase it.";
+                summary += "\n\n⚠️ This restock amount won't clear the low-stock warning in one go — you may want to increase it.";
             }
 
             bool confirmed = await Shell.Current.DisplayAlert(
@@ -122,7 +122,7 @@ namespace WashTrack.MVVM.ViewModels
                 tracked.ItemName = ItemName;
                 tracked.Unit = Unit;
                 tracked.MinimumThreshold = threshold;
-                tracked.ReorderQuantity = reorder > 0 ? reorder : null;
+                tracked.UsualRestockAmount = restockAmount > 0 ? restockAmount : null;
                 tracked.UpdatedAt = DateTime.Now;
             }
             else
@@ -133,7 +133,7 @@ namespace WashTrack.MVVM.ViewModels
                     CurrentStock = stock,
                     Unit = Unit,
                     MinimumThreshold = threshold,
-                    ReorderQuantity = reorder > 0 ? reorder : null,
+                    UsualRestockAmount = restockAmount > 0 ? restockAmount : null,
                     IsActive = true,
                     UpdatedAt = DateTime.Now,
                     LastRestockedAt = DateTime.Now

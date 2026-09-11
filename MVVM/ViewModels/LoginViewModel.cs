@@ -9,10 +9,18 @@ using WashTrack.Models;
 
 namespace WashTrack.MVVM.ViewModels
 {
+    // Drives the login page, which is really three screens in one. The page
+    // swaps between them using IsRegisterMode / IsRecoveryMode:
+    //   register — shown only on a fresh install, to create the owner account
+    //   login    — the normal path
+    //   recovery — username -> security question -> new password
+    // Passwords and security answers are only ever stored as SHA-256 hashes.
     public partial class LoginViewModel : ObservableObject
     {
         private readonly WashTrackContext _context;
 
+        // Fixed list offered at registration; the chosen one is saved on the
+        // User row and shown back during recovery.
         public ObservableCollection<string> SecurityQuestions { get; } = new()
         {
             "What was the name of your first pet?",
@@ -49,16 +57,21 @@ namespace WashTrack.MVVM.ViewModels
             _ = InitializeAsync();
         }
 
+        // No owner account yet means this is a first launch, so open straight
+        // into registration instead of asking for credentials that don't exist.
         private async Task InitializeAsync()
         {
             IsRegisterMode = !await _context.Users.AnyAsync();
         }
 
+        // SubmitButtonText is derived, so it has to be re-raised by hand.
         partial void OnIsRegisterModeChanged(bool value)
         {
             OnPropertyChanged(nameof(SubmitButtonText));
         }
 
+        // Single handler behind the one button on the login page — it registers
+        // or logs in depending on which mode the page is currently in.
         [RelayCommand]
         private async Task SubmitAsync()
         {
@@ -86,6 +99,7 @@ namespace WashTrack.MVVM.ViewModels
             }
         }
 
+        // Creates the one and only owner account, then drops the user into the app.
         private async Task RegisterAsync()
         {
             // Someone else may have registered first between page load and submit
@@ -135,10 +149,13 @@ namespace WashTrack.MVVM.ViewModels
 
         private async Task LoginAsync()
         {
+            // Compare hashes, never plain text — the stored password is a hash.
             var hashed = HashText(Password);
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Username == Username.Trim());
 
+            // Same message for both cases so a wrong guess can't reveal
+            // whether the username exists.
             if (user is null || user.Password != hashed)
             {
                 ErrorMessage = "Invalid username or password.";
@@ -148,6 +165,8 @@ namespace WashTrack.MVVM.ViewModels
             CompleteLogin();
         }
 
+        // Enters recovery mode with every field cleared, so a half-finished
+        // attempt never carries over into the next one.
         [RelayCommand]
         private void ForgotPassword()
         {
@@ -170,6 +189,7 @@ namespace WashTrack.MVVM.ViewModels
             InfoMessage = string.Empty;
         }
 
+        // Recovery step 1: look up the account and reveal its security question.
         [RelayCommand]
         private async Task FindAccountAsync()
         {
@@ -194,6 +214,7 @@ namespace WashTrack.MVVM.ViewModels
                     return;
                 }
 
+                // Unlocks the answer + new password fields on the page.
                 RecoveryQuestion = user.SecurityQuestion;
                 RecoveryQuestionLoaded = true;
             }
@@ -203,6 +224,7 @@ namespace WashTrack.MVVM.ViewModels
             }
         }
 
+        // Recovery step 2: check the security answer, then overwrite the password.
         [RelayCommand]
         private async Task ResetPasswordAsync()
         {
@@ -240,6 +262,8 @@ namespace WashTrack.MVVM.ViewModels
                 user.Password = HashText(NewPassword);
                 await _context.SaveChangesAsync();
 
+                // Back to login with the username pre-filled, password blank —
+                // the owner still has to log in with what they just set.
                 IsRecoveryMode = false;
                 Username = user.Username;
                 Password = string.Empty;
@@ -251,11 +275,15 @@ namespace WashTrack.MVVM.ViewModels
             }
         }
 
+        // Replaces the login page with the main shell. Swapping the root page
+        // (rather than navigating) means there's no back route to the login screen.
         private static void CompleteLogin()
         {
             Application.Current!.Windows[0].Page = new AppShell();
         }
 
+        // Security answers are matched case- and whitespace-insensitively, so
+        // they must be normalized the same way when saved and when checked.
         private static string NormalizeAnswer(string answer) => answer.Trim().ToLowerInvariant();
 
         private static string HashText(string text)

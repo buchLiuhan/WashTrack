@@ -237,8 +237,11 @@
                     </Border>
                 </Grid>
 
-                <!-- Usage List -->
-                <Label Text="SUPPLY USAGE"
+                <!-- Stock position: opening + in + adjustments − used = closing.
+                     Laid out as a card per item rather than a wide table so
+                     the five figures stay readable on a phone, and so the
+                     arithmetic visibly balances down to the Closing line. -->
+                <Label Text="STOCK SUMMARY"
                        Style="{StaticResource SectionHeaderLabel}"
                        IsVisible="{Binding IsLoading,
                            Converter={StaticResource InverseBoolConverter}}" />
@@ -254,39 +257,85 @@
                     </CollectionView.EmptyView>
 
                     <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="vm:InventoryUsageReportRow">
+                        <DataTemplate x:DataType="vm:InventoryReconciliationRow">
                             <Border Style="{StaticResource CardStyle}"
                                     Margin="0,4">
-                                <Grid ColumnDefinitions="*,Auto"
-                                      RowDefinitions="Auto,Auto">
+                                <VerticalStackLayout Spacing="0">
 
-                                    <Label Grid.Column="0" Grid.Row="0"
-                                           Text="{Binding ItemName}"
-                                           FontAttributes="Bold"
-                                           TextColor="{StaticResource TextPrimaryColor}" />
-
-                                    <Label Grid.Column="0" Grid.Row="1"
-                                           Text="{Binding UsedText}"
-                                           Style="{StaticResource MutedLabelStyle}" />
-
-                                    <StackLayout Grid.Column="1"
-                                                 Grid.RowSpan="2"
-                                                 VerticalOptions="Center"
-                                                 HorizontalOptions="End"
-                                                 Spacing="4">
-                                        <Label Text="{Binding StockText}"
-                                               Style="{StaticResource AccentLabelStyle}"
-                                               HorizontalOptions="End" />
-                                        <Border Style="{StaticResource PillDanger}"
+                                    <!-- Header: name + low stock pill -->
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Label Grid.Column="0"
+                                               Text="{Binding ItemName}"
+                                               FontAttributes="Bold"
+                                               TextColor="{StaticResource TextPrimaryColor}"
+                                               VerticalOptions="Center" />
+                                        <Border Grid.Column="1"
+                                                Style="{StaticResource PillDanger}"
                                                 HorizontalOptions="End"
                                                 IsVisible="{Binding IsLowStock}">
-                                            <!-- Icon dropped: red-on-red was invisible. -->
                                             <Label Text="Low Stock"
                                                    Style="{StaticResource PillLabelStyle}" />
                                         </Border>
-                                    </StackLayout>
+                                    </Grid>
 
-                                </Grid>
+                                    <Grid ColumnDefinitions="*,Auto"
+                                          RowDefinitions="Auto,Auto,Auto,Auto"
+                                          RowSpacing="2"
+                                          Margin="0,8,0,0">
+
+                                        <Label Grid.Row="0" Grid.Column="0"
+                                               Text="Opening"
+                                               Style="{StaticResource MutedLabelStyle}" />
+                                        <Label Grid.Row="0" Grid.Column="1"
+                                               Text="{Binding OpeningText}"
+                                               Style="{StaticResource MutedLabelStyle}"
+                                               HorizontalOptions="End" />
+
+                                        <Label Grid.Row="1" Grid.Column="0"
+                                               Text="Stock In"
+                                               Style="{StaticResource MutedLabelStyle}" />
+                                        <Label Grid.Row="1" Grid.Column="1"
+                                               Text="{Binding StockInText}"
+                                               Style="{StaticResource MutedLabelStyle}"
+                                               HorizontalOptions="End" />
+
+                                        <Label Grid.Row="2" Grid.Column="0"
+                                               Text="Used"
+                                               Style="{StaticResource MutedLabelStyle}" />
+                                        <Label Grid.Row="2" Grid.Column="1"
+                                               Text="{Binding UsedText}"
+                                               Style="{StaticResource MutedLabelStyle}"
+                                               HorizontalOptions="End" />
+
+                                        <!-- Only when nonzero -->
+                                        <Label Grid.Row="3" Grid.Column="0"
+                                               Text="Adjustments"
+                                               Style="{StaticResource MutedLabelStyle}"
+                                               IsVisible="{Binding HasAdjustments}" />
+                                        <Label Grid.Row="3" Grid.Column="1"
+                                               Text="{Binding AdjustmentsText}"
+                                               Style="{StaticResource MutedLabelStyle}"
+                                               HorizontalOptions="End"
+                                               IsVisible="{Binding HasAdjustments}" />
+                                    </Grid>
+
+                                    <BoxView HeightRequest="1"
+                                             Color="{StaticResource TextMutedColor}"
+                                             Opacity="0.3"
+                                             Margin="0,8,0,6" />
+
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Label Grid.Column="0"
+                                               Text="Closing"
+                                               FontAttributes="Bold"
+                                               TextColor="{StaticResource TextPrimaryColor}" />
+                                        <Label Grid.Column="1"
+                                               Text="{Binding ClosingText}"
+                                               Style="{StaticResource AccentLabelStyle}"
+                                               HorizontalOptions="End" />
+                                    </Grid>
+
+                                </VerticalStackLayout>
                             </Border>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>

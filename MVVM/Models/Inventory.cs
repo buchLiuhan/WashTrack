@@ -15,10 +15,16 @@ namespace WashTrack.Models
         [Required]
         public string Unit { get; set; } = string.Empty;
 
+        // WHEN to reorder: stock at or below this raises the low-stock alert.
         [Required]
         public decimal MinimumThreshold { get; set; }
 
-        public decimal? ReorderQuantity { get; set; }
+        // HOW MUCH is normally added when topping this item up — a bought
+        // pack size or a home-made batch, the app doesn't care which.
+        // Optional, set by the owner, and it never affects the low-stock
+        // alert (that's MinimumThreshold alone). Used to prefill the restock
+        // quantity and to fill out the "Restock now" hint.
+        public decimal? UsualRestockAmount { get; set; }
 
         public decimal? UnitCost { get; set; }
 
