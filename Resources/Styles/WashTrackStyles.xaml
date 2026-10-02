@@ -194,6 +194,21 @@
         <Setter Property="HeightRequest" Value="48" />
     </Style>
 
+    <!-- One option inside a segmented row. Unselected by default; the page
+         applies a DataTrigger to fill in the selected one, so which view you
+         are looking at is visible without reading the button labels. -->
+    <Style x:Key="SegmentButton" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="TextColor" Value="{StaticResource PrimaryColor}" />
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="6,0" />
+        <Setter Property="HeightRequest" Value="34" />
+        <Setter Property="BorderColor" Value="{StaticResource BorderColor}" />
+        <Setter Property="BorderWidth" Value="1" />
+    </Style>
+
     <!-- ═══════════════════════════════════════ -->
     <!--                INPUTS                   -->
     <!-- ═══════════════════════════════════════ -->

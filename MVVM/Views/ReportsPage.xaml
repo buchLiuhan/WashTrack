@@ -348,18 +348,79 @@
                        IsVisible="{Binding IsLoading,
                            Converter={StaticResource InverseBoolConverter}}" />
 
+                <!-- One segment per kind of movement: Used, Stock In, Stock Out.
+                     Each of the three is reachable on its own, so the figures
+                     that hide losses — usage and corrections — have to be
+                     looked at deliberately rather than skimmed past in a mixed
+                     list. The filled segment shows which view is active without
+                     reading labels. -->
+                <Grid ColumnDefinitions="*,*,*"
+                      ColumnSpacing="6"
+                      Margin="0,0,0,8"
+                      IsVisible="{Binding IsLoading,
+                          Converter={StaticResource InverseBoolConverter}}">
+
+                    <Button Grid.Column="0"
+                            Text="Used"
+                            Style="{StaticResource SegmentButton}"
+                            Command="{Binding SetMovementFilterCommand}"
+                            CommandParameter="Used">
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button"
+                                         Binding="{Binding IsMovementFilterUsed}"
+                                         Value="True">
+                                <Setter Property="BackgroundColor" Value="{StaticResource AccentColor}" />
+                                <Setter Property="TextColor" Value="{StaticResource TextLightColor}" />
+                                <Setter Property="BorderColor" Value="{StaticResource AccentColor}" />
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+
+                    <Button Grid.Column="1"
+                            Text="Stock In"
+                            Style="{StaticResource SegmentButton}"
+                            Command="{Binding SetMovementFilterCommand}"
+                            CommandParameter="In">
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button"
+                                         Binding="{Binding IsMovementFilterIn}"
+                                         Value="True">
+                                <Setter Property="BackgroundColor" Value="{StaticResource AccentColor}" />
+                                <Setter Property="TextColor" Value="{StaticResource TextLightColor}" />
+                                <Setter Property="BorderColor" Value="{StaticResource AccentColor}" />
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+
+                    <Button Grid.Column="2"
+                            Text="Stock Out"
+                            Style="{StaticResource SegmentButton}"
+                            Command="{Binding SetMovementFilterCommand}"
+                            CommandParameter="Out">
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button"
+                                         Binding="{Binding IsMovementFilterOut}"
+                                         Value="True">
+                                <Setter Property="BackgroundColor" Value="{StaticResource AccentColor}" />
+                                <Setter Property="TextColor" Value="{StaticResource TextLightColor}" />
+                                <Setter Property="BorderColor" Value="{StaticResource AccentColor}" />
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+                </Grid>
+
                 <CollectionView ItemsSource="{Binding RestockHistory}"
                                 IsVisible="{Binding IsLoading,
                                     Converter={StaticResource InverseBoolConverter}}">
 
                     <CollectionView.EmptyView>
-                        <Label Text="No stock movements in this date range."
+                        <Label Text="{Binding MovementEmptyText}"
                                Style="{StaticResource EmptyStateLabel}"
                                Margin="0,24,0,0" />
                     </CollectionView.EmptyView>
 
                     <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="vm:RestockReportRow">
+                        <DataTemplate x:DataType="vm:StockMovementRow">
                             <Border Style="{StaticResource CardStyle}"
                                     Margin="0,4">
                                 <Grid ColumnDefinitions="*,Auto"

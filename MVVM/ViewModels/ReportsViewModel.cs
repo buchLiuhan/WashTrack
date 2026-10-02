@@ -43,20 +43,42 @@ namespace WashTrack.MVVM.ViewModels
         public bool HasAdjustments => Adjustments != 0;
     }
 
-    // One stock movement in the selected date range: positive is new supply
-    // received, negative is a correction (spillage, spoilage, miscount).
-    public partial class RestockReportRow : ObservableObject
+    // One stock movement in the selected date range. Three kinds share this
+    // row because they're the same thing from the owner's side — stock moved:
+    //
+    //   Used     supplies consumed by a job (usage history)
+    //   Stock In new supply received        (restock, positive)
+    //   Stock Out a correction: spillage, spoilage, miscount (restock, negative)
+    //
+    // Every figure on the stock summary card above now has its own lines
+    // down here, so nothing on that card is asserted without working.
+    public partial class StockMovementRow : ObservableObject
     {
         public string ItemName { get; set; } = string.Empty;
         public string Unit { get; set; } = string.Empty;
+
+        // Signed: negative for usage and corrections, positive for new supply.
         public decimal QuantityChange { get; set; }
-        public DateTime RestockDate { get; set; }
+        public DateTime MovementDate { get; set; }
         public string? Notes { get; set; }
 
-        public bool IsCorrection => QuantityChange < 0;
+        // Separates usage from a correction — both are negative, so the sign
+        // alone can't tell them apart.
+        public bool IsUsage { get; set; }
+
+        // Usage can exist without an order (the column is nullable), so this
+        // doesn't assume one.
+        public int? TransactionId { get; set; }
+
+        public bool IsCorrection => !IsUsage && QuantityChange < 0;
         public string ChangeText => $"{(QuantityChange > 0 ? "+" : "")}{QuantityChange:F0}{Unit}";
-        public string DateText => RestockDate.ToString("MMM dd");
         public bool HasNotes => !string.IsNullOrWhiteSpace(Notes);
+
+        // Usage rows carry the order on the same line as the date rather than
+        // in a row of their own — it keeps every movement card the same height.
+        public string DateText => IsUsage && TransactionId.HasValue
+            ? $"{MovementDate:MMM dd} · Order #{TransactionId.Value:D4}"
+            : MovementDate.ToString("MMM dd");
     }
 
     public partial class ReportsViewModel : ObservableObject
@@ -98,12 +120,74 @@ namespace WashTrack.MVVM.ViewModels
         private int lowStockCount;
 
         [ObservableProperty]
-        private ObservableCollection<RestockReportRow> restockHistory = new();
+        private ObservableCollection<StockMovementRow> restockHistory = new();
 
         // Count, not a sum: quantities span different units (L, kg, pcs),
         // so totalling them across items would be meaningless.
         [ObservableProperty]
         private int correctionCount;
+
+        // ===== STOCK MOVEMENT FILTER =====
+
+        // Which slice of the movement log is on screen. One segment per kind
+        // of movement, so each of the three is reachable deliberately —
+        // there's no combined view, because mixing directions in one list
+        // makes it easy to skim past the losses.
+        //
+        // Held as a string so the three buttons can pass it as a
+        // CommandParameter without needing a converter for an enum.
+        [ObservableProperty]
+        private string movementFilter = MovementFilterUsed;
+
+        public const string MovementFilterUsed = "Used";
+        public const string MovementFilterIn = "In";
+        public const string MovementFilterOut = "Out";
+
+        // Drive the selected-state highlight on each segment button.
+        public bool IsMovementFilterUsed => MovementFilter == MovementFilterUsed;
+        public bool IsMovementFilterIn => MovementFilter == MovementFilterIn;
+        public bool IsMovementFilterOut => MovementFilter == MovementFilterOut;
+
+        // Every movement in range, before the segment filter. Lets the
+        // buttons re-slice in memory instead of re-querying.
+        private List<StockMovementRow> _allMovements = new();
+
+        partial void OnMovementFilterChanged(string value)
+        {
+            OnPropertyChanged(nameof(IsMovementFilterUsed));
+            OnPropertyChanged(nameof(IsMovementFilterIn));
+            OnPropertyChanged(nameof(IsMovementFilterOut));
+            OnPropertyChanged(nameof(MovementEmptyText));
+            ApplyMovementFilter();
+        }
+
+        // The empty state names the segment you're on. A single generic
+        // "no movements" line reads like the whole range is empty when it's
+        // only this one slice that is.
+        public string MovementEmptyText => MovementFilter switch
+        {
+            MovementFilterIn => "No stock was received in this date range.",
+            MovementFilterOut => "No corrections were recorded in this date range.",
+            _ => "No supplies were used in this date range."
+        };
+
+        [RelayCommand]
+        public void SetMovementFilter(string filter)
+        {
+            MovementFilter = filter;
+        }
+
+        private void ApplyMovementFilter()
+        {
+            IEnumerable<StockMovementRow> source = MovementFilter switch
+            {
+                MovementFilterIn => _allMovements.Where(m => !m.IsUsage && m.QuantityChange > 0),
+                MovementFilterOut => _allMovements.Where(m => !m.IsUsage && m.QuantityChange < 0),
+                _ => _allMovements.Where(m => m.IsUsage)
+            };
+
+            RestockHistory = new ObservableCollection<StockMovementRow>(source);
+        }
 
         public ReportsViewModel(WashTrackContext context)
         {
@@ -163,7 +247,16 @@ namespace WashTrack.MVVM.ViewModels
             var usageRows = await _context.InventoryUsageHistories
                 .AsNoTracking()
                 .Where(h => h.UsageDate.Date >= rangeStart)
-                .Select(h => new { h.InventoryId, h.UsageDate, h.QuantityUsed })
+                .Select(h => new
+                {
+                    h.InventoryId,
+                    h.UsageDate,
+                    h.QuantityUsed,
+                    h.TransactionId,
+                    h.Notes,
+                    ItemName = h.Inventory != null ? h.Inventory.ItemName : null,
+                    Unit = h.Inventory != null ? h.Inventory.Unit : null
+                })
                 .ToListAsync();
 
             var restockRows = await _context.InventoryRestockHistories
@@ -226,18 +319,42 @@ namespace WashTrack.MVVM.ViewModels
             // real stock changes from the period.
             var restocks = restockRows
                 .Where(h => h.RestockDate.Date >= rangeStart && h.RestockDate.Date <= rangeEnd)
-                .OrderByDescending(h => h.RestockDate)
                 .ToList();
 
-            RestockHistory = new ObservableCollection<RestockReportRow>(
-                restocks.Select(h => new RestockReportRow
+            var movements = restocks.Select(h => new StockMovementRow
+            {
+                ItemName = h.Inventory?.ItemName ?? "(deleted item)",
+                Unit = h.Inventory?.Unit ?? string.Empty,
+                QuantityChange = h.QuantityChange,
+                MovementDate = h.RestockDate,
+                Notes = h.Notes,
+                IsUsage = false
+            });
+
+            // Usage is stored as the positive amount consumed; negated here so
+            // every row in the log reads in the same direction — a minus on a
+            // card always means stock left.
+            var usage = usageRows
+                .Where(u => u.UsageDate.Date >= rangeStart && u.UsageDate.Date <= rangeEnd)
+                .Select(u => new StockMovementRow
                 {
-                    ItemName = h.Inventory?.ItemName ?? "(deleted item)",
-                    Unit = h.Inventory?.Unit ?? string.Empty,
-                    QuantityChange = h.QuantityChange,
-                    RestockDate = h.RestockDate,
-                    Notes = h.Notes
-                }));
+                    ItemName = u.ItemName ?? "(deleted item)",
+                    Unit = u.Unit ?? string.Empty,
+                    QuantityChange = -u.QuantityUsed,
+                    MovementDate = u.UsageDate,
+                    Notes = u.Notes,
+                    IsUsage = true,
+                    TransactionId = u.TransactionId
+                });
+
+            _allMovements = movements
+                .Concat(usage)
+                .OrderByDescending(m => m.MovementDate)
+                .ToList();
+
+            // Honours whichever segment is currently selected, so regenerating
+            // the report doesn't silently throw the user back to "All".
+            ApplyMovementFilter();
 
             CorrectionCount = restocks.Count(r => r.QuantityChange < 0);
         }
